@@ -28,6 +28,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   position: fixed;
   width: 100%;
+  z-index: 1000;
 `
 const ExternalLink = styled.div`
   width: 24rem;
