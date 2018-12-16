@@ -1,99 +1,149 @@
+import { isEqual } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, InputGroup } from '../../components/Elements'
+import { Button } from '../../components/Elements'
+import Flash from '../../components/Flash'
 import Modal from '../../components/Modal'
+import { useFlash } from '../../hooks/hooks'
 import { IApiError, ILiaison } from '../../sharedTypes'
 import { IForm } from '../../types'
 import api from '../../utils/api'
+import LiaisonForm from './LiaisonForm'
 import { LiaisonsContext } from './Liaisons'
 
 interface IProps {
-  liaison: ILiaison
-  on: boolean
-  setOn: (on: boolean) => void
+  liaison?: ILiaison
+  open: boolean
+  setOpen: (open: boolean) => void
+  action: 'update' | 'create'
 }
 
 const formatError = (err: IApiError) =>
   (err.response && err.response.data.message) || (err.status && err.status.toString()) || ''
 
-const LiaisonModal: React.FC<IProps> = ({ on, setOn, liaison }) => {
-  const [error, setError] = React.useState<string | undefined>(undefined)
-
+const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
+  const { error, setError } = useFlash({ initialSubmitted: false })
+  const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const context = React.useContext(LiaisonsContext)
-
-  React.useEffect(
-    () => {
-      const timeout = setTimeout(() => setError(undefined), 3500)
-      return () => {
-        clearTimeout(timeout)
-      }
-    },
-    [error]
-  )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
     const { abbreviation, email, image, name, phoneNumber, region } = e.currentTarget.elements
-    api.liaisons
-      .update({
-        abbreviation: abbreviation.value,
-        email: email.value,
-        image: image.value,
-        liaisonId: liaison.liaisonId,
-        name: name.value,
-        phoneNumber: phoneNumber.value,
-        region: region.value,
-      })
-      .then(newLiaison => {
-        context.updateLiaisons(newLiaison)
-        setOn(false)
-      })
-      .catch((err: IApiError) => setError(formatError(err)))
+    const updateLiaison = {
+      abbreviation: abbreviation.value,
+      email: email.value,
+      image: image.value,
+      liaisonId: liaison ? liaison.liaisonId : undefined,
+      name: name.value,
+      phoneNumber: phoneNumber.value,
+      region: region.value,
+    }
+    if (action === 'update') {
+      api.liaisons
+        .update(updateLiaison)
+        .then(newLiaison => {
+          context.updateLiaisons({ liaison: newLiaison, action })
+          if (isEqual(newLiaison, liaison)) {
+            setOpen(false)
+          }
+        })
+        .catch((err: IApiError) => setError(formatError(err)))
+    } else if (action === 'create') {
+      api.liaisons
+        .create(updateLiaison)
+        .then(newLiaison => {
+          context.updateLiaisons({ liaison: newLiaison, action })
+          setOpen(false)
+        })
+        .catch((err: IApiError) => setError(formatError(err)))
+    }
+  }
+
+  const handleCancel = () => {
+    setOpen(false)
+    setTimesDeleteClicked(0)
+  }
+
+  const handleDeleteClicked = () => {
+    if (liaison && timesDeleteClicked === 1) {
+      api.liaisons
+        .delete(liaison.liaisonId as string)
+        .then(res => {
+          context.updateLiaisons({ liaisonId: liaison.liaisonId, action: 'delete' })
+        })
+        .catch((err: IApiError) => {
+          setError(formatError(err))
+        })
+    } else {
+      setTimesDeleteClicked(1)
+    }
   }
 
   return (
-    <Modal on={on} setOn={setOn}>
-      <Form onSubmit={handleSubmit}>
-        {error && <Error>{error}</Error>}
-        <InputGroup>
-          <label htmlFor="name">Name</label>
-          <input type="text" id="name" defaultValue={liaison.name || ''} />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="region">Region</label>
-          <input type="text" id="region" defaultValue={liaison.region} />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="abbreviation">Abbreviation</label>
-          <input type="text" id="abbreviation" defaultValue={liaison.abbreviation || ''} />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" defaultValue={liaison.email || ''} />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="phoneNumber">PhoneNumber</label>
-          <input type="tel" id="phoneNumber" defaultValue={liaison.phoneNumber || ''} />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="image">Image</label>
-          <input type="url" id="image" defaultValue={liaison.image} />
-        </InputGroup>
-        <Button type="submit">Update Liaison</Button>
-      </Form>
+    <Modal open={open} setOpen={setOpen} closeButton={false}>
+      <Flash error={error} closeClicked={() => setError(undefined)} fixed={false} />
+      <ModalHeading>{`${
+        action === 'update' ? `Updating ${liaison && liaison.name}` : 'Create a new Liaison'
+      }`}</ModalHeading>
+      <LiaisonForm onSubmit={handleSubmit} liaison={liaison}>
+        <Buttons>
+          {action === 'update' &&
+            (timesDeleteClicked === 0 ? (
+              <DeleteButton type="button" onClick={handleDeleteClicked}>
+                Delete
+              </DeleteButton>
+            ) : (
+              <HighSevDeleteButton type="button" onClick={handleDeleteClicked}>
+                CONFIRM DELETE
+              </HighSevDeleteButton>
+            ))}
+          <RightButtons>
+            <OutlineButton type="button" onClick={handleCancel}>
+              Cancel
+            </OutlineButton>
+            <Button>{action === 'update' ? 'Update' : 'Create'} Liaison</Button>
+          </RightButtons>
+        </Buttons>
+      </LiaisonForm>
     </Modal>
   )
 }
 
 export default LiaisonModal
 
-const Form = styled.form`
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-`
-const Error = styled.h4`
-  color: ${props => props.theme.warning};
+const ModalHeading = styled.h3`
+  color: ${props => props.theme.primaryText};
+  padding: 1.2rem 1.6rem 0;
   text-align: center;
-  margin: -1rem;
+`
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-top: 2rem;
+  align-items: center;
+`
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: ${props => props.theme.warning};
+  font-weight: 500;
+  padding: 0;
+  margin-left: 1.2rem;
+  &:hover {
+    cursor: pointer;
+  }
+`
+const HighSevDeleteButton = styled(Button)`
+  background: ${props => props.theme.warning};
+  letter-spacing: 0.6px;
+`
+const RightButtons = styled.div`
+  margin-left: auto;
+`
+const OutlineButton = styled(Button)`
+  border: 2px solid ${props => props.theme.buttonBackground};
+  padding: 0.8rem 1.4rem;
+  background: none;
+  color: ${props => props.theme.buttonBackground};
+  margin-right: 1.6rem;
 `

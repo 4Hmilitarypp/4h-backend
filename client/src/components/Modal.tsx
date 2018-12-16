@@ -4,22 +4,25 @@ import Icon from '../components/Icon'
 import Portal from './Portal'
 
 interface IProps {
-  on: boolean
-  setOn: (on: boolean) => void
+  open: boolean
+  setOpen: (on: boolean) => void
+  closeButton?: boolean
 }
 
-const Modal: React.FC<IProps> = ({ children, on, setOn }) => {
+const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }) => {
   return (
     <Portal>
-      {on && (
+      {open && (
         <ModalWrapper>
           <ModalCard>
-            <CloseButton onClick={() => setOn(false)} data-testid="close-button">
-              <Icon name="close" color="#ffffff" />
-            </CloseButton>
+            {closeButton && (
+              <CloseButton onClick={() => setOpen(false)} data-testid="close-button">
+                <Icon name="close" color="#ffffff" />
+              </CloseButton>
+            )}
             <div>{children}</div>
           </ModalCard>
-          <Background onClick={() => setOn(false)} data-testid="background" />
+          <Background onClick={() => setOpen(false)} data-testid="background" />
         </ModalWrapper>
       )}
     </Portal>
@@ -46,8 +49,7 @@ const ModalCard = styled.div`
   border-radius: 5px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   z-index: 2;
-  min-width: 50rem;
-  margin-bottom: 10rem;
+  min-width: 60rem;
 `
 const Background = styled.div`
   position: absolute;
@@ -57,7 +59,6 @@ const Background = styled.div`
   top: 0;
   left: 0;
 `
-
 const CloseButton = styled.button`
   position: absolute;
   top: 0.9rem;

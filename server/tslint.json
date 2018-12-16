@@ -8,6 +8,7 @@
     "no-console": { "options": "log", "severity": "warning" },
     "member-access": false,
     "object-literal-sort-keys": true,
-    "no-angle-bracket-type-assertion": false
+    "no-angle-bracket-type-assertion": false,
+    "only-arrow-functions": false
   }
 }

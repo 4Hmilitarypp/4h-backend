@@ -6,15 +6,12 @@ import LiaisonModal from './LiaisonModal'
 
 const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
   const [modalOpen, setModalOpen] = React.useState(false)
-  const handleLiaisonClick = () => {
-    setModalOpen(true)
-  }
   return (
     <>
-      <LiaisonWrapper onClick={handleLiaisonClick}>
+      <LiaisonWrapper onClick={() => setModalOpen(true)}>
         <NameAndLocation>
           <Name>{liaison.name}</Name>
-          <Location>{`${liaison.region} (${liaison.abbreviation})`}</Location>
+          <Location>{`${liaison.region} (${liaison.abbreviation || 'None'})`}</Location>
         </NameAndLocation>
         <Contact>
           <Item>{liaison.email}</Item>
@@ -22,7 +19,7 @@ const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
         </Contact>
         <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
       </LiaisonWrapper>
-      <LiaisonModal on={modalOpen} setOn={setModalOpen} liaison={liaison} />
+      <LiaisonModal open={modalOpen} setOpen={setModalOpen} liaison={liaison} action="update" />
     </>
   )
 }

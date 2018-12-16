@@ -1,9 +1,11 @@
+import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import { ILiaison } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
 const Liaison = mongoose.model('Liaison')
+const Archive = mongoose.model('Archive')
 
 const formatLiaison = (dbLiaison: any): ILiaison => {
   const { _id, abbreviation, email, image, name, phoneNumber, region } = dbLiaison
@@ -36,8 +38,11 @@ export const updateLiaison: Controller = async (req, res) => {
 }
 
 export const deleteLiaison: Controller = async (req, res) => {
+  // const toDelete = await Liaison.findById(req.params.id)
+
   const deletedLiaison = await Liaison.findByIdAndDelete(req.params.id)
   if (deletedLiaison) {
+    await new Archive(omit(formatLiaison(deletedLiaison), 'liaisonId')).save()
     return res.status(204).send()
   }
   throw notFoundError

@@ -19,7 +19,7 @@ const liaisonSchema = new mongoose.Schema({
   },
   name: String,
   phoneNumber: { type: String, validate: [validator.isMobilePhone, 'Invalid Phone Number'] },
-  region: { type: String, required: 'Please Enter a region' },
+  region: { type: String, required: 'Please Enter a region', unique: true },
 })
 
 liaisonSchema.plugin(uniqueValidator)

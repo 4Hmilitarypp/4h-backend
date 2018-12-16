@@ -1,23 +1,56 @@
 import { RouteComponentProps } from '@reach/router'
+import { filter, map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Heading } from '../../components/Elements'
+import { Button, Heading } from '../../components/Elements'
+import Flash from '../../components/Flash'
+import { useFlash } from '../../hooks/hooks'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
+import LiaisonModal from './LiaisonModal'
 
 interface ILiaisonsContext {
   liaisons: ILiaison[] | undefined
-  updateLiaisons: (l: ILiaison) => void
+  updateLiaisons: (
+    args: {
+      liaison?: ILiaison
+      liaisonId?: string
+      action: 'create' | 'update' | 'delete'
+    }
+  ) => void
 }
 export const LiaisonsContext = React.createContext<ILiaisonsContext>(undefined as any)
 
 const Liaisons: React.FC<RouteComponentProps> = () => {
   const [liaisons, setLiaisons] = React.useState<ILiaison[] | undefined>(undefined)
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const { submitted, setSubmitted, successMessage, setSuccessMessage } = useFlash({ initialSubmitted: false })
 
-  const updateLiaisons = (liaison: ILiaison) => {
+  const updateLiaisons = ({
+    liaison,
+    liaisonId,
+    action,
+  }: {
+    liaison?: ILiaison
+    liaisonId?: string
+    action: 'create' | 'update' | 'delete'
+  }) => {
     if (liaisons) {
-      const newLiaisons = liaisons.map(l => (l.liaisonId === liaison.liaisonId ? liaison : l))
+      let newLiaisons: ILiaison[] = []
+      if (action === 'update' && liaison) {
+        newLiaisons = map(liaisons, l => (l.liaisonId === liaison.liaisonId ? liaison : l))
+        setSuccessMessage('Liaison Updated Successfully')
+        setSubmitted(true)
+      } else if (action === 'create' && liaison) {
+        newLiaisons = [liaison, ...liaisons]
+        setSuccessMessage('Liaison Created Successfully')
+        setSubmitted(true)
+      } else if (action === 'delete') {
+        newLiaisons = filter(liaisons, l => l.liaisonId !== liaisonId)
+        setSuccessMessage('Liaison Deleted Successfully')
+        setSubmitted(true)
+      }
       setLiaisons(newLiaisons)
     }
   }
@@ -31,15 +64,20 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
 
   return (
     <LiaisonsContainer>
+      <Flash successMessage={successMessage} submitted={submitted} closeClicked={() => setSubmitted(false)} />
       <LiaisonsContext.Provider value={{ liaisons, updateLiaisons }}>
-        <LiaisonHeading>Liaisons</LiaisonHeading>
+        <TableHeader>
+          <LiaisonHeading>Liaisons</LiaisonHeading>
+          <Button onClick={() => setModalOpen(true)}>+ Create a new Liaison</Button>
+        </TableHeader>
         {liaisons && (
           <ul>
-            {liaisons.map(l => (
+            {map(liaisons, l => (
               <Liaison key={l.region} liaison={l} />
             ))}
           </ul>
         )}
+        <LiaisonModal open={modalOpen} setOpen={setModalOpen} action="create" />
       </LiaisonsContext.Provider>
     </LiaisonsContainer>
   )
@@ -47,7 +85,12 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
 export default Liaisons
 
 const LiaisonsContainer = styled.div``
+const TableHeader = styled.div`
+  padding: 0rem 4rem 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+`
 const LiaisonHeading = styled(Heading)`
-  padding-left: 4rem;
-  padding-bottom: 4rem;
+  padding: 4rem 0 0;
 `

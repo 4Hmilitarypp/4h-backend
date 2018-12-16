@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 interface IProps {
   error?: string
   fixed?: boolean
-  submitted: boolean
+  submitted?: boolean
   successMessage?: string
   closeClicked: () => void
 }
@@ -18,7 +18,7 @@ const Flash: React.FC<IProps> = ({ successMessage: sm, error, submitted, fixed, 
         from={{ opacity: 0, height: 0 }}
         enter={{ opacity: 1, height: 'auto' }}
         leave={{ opacity: 0, height: 0 }}
-        items={(submitted && !error && successMessage.length > 0) as any}
+        items={submitted && !error && successMessage}
       >
         {(toggle: any) =>
           toggle &&
@@ -64,12 +64,14 @@ const Message = styled.h3`
 `
 
 const Response = styled.div`
-  position: fixed;
   padding: 2rem;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
+  &.fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+  }
 `
 
 const Close = styled.button`
@@ -96,9 +98,11 @@ const ResponseError = styled(Response)`
   max-width: 60rem;
   left: unset;
   right: unset;
-  margin-top: 2rem;
   border-radius: 5px;
   border: 5px solid ${props => props.theme.warning};
+  &.fixed {
+    margin-top: 2rem;
+  }
   .message {
     color: ${props => props.theme.black};
     padding-right: 2rem;

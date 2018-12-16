@@ -8,7 +8,7 @@ export interface ILiaison {
   abbreviation?: string | null
   email?: string | null
   image: string
-  liaisonId: string
+  liaisonId?: string
   name?: string | null
   phoneNumber?: string | null
   region: string

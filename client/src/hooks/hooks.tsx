@@ -33,11 +33,14 @@ interface IFlashReturn {
   setSubmitted: (newState: boolean) => void
   error?: string
   setError: (newState?: string) => void
+  successMessage?: string
+  setSuccessMessage: (newState?: string) => void
 }
 
 export const useFlash = ({ initialSubmitted, timeoutLength = 2500 }: IUseFlashArgs): IFlashReturn => {
   const [submitted, setSubmitted] = React.useState<boolean>(initialSubmitted)
   const [error, setError] = React.useState<string | undefined>(undefined)
+  const [successMessage, setSuccessMessage] = React.useState<string | undefined>(undefined)
 
   React.useEffect(
     () => {
@@ -54,5 +57,5 @@ export const useFlash = ({ initialSubmitted, timeoutLength = 2500 }: IUseFlashAr
     [submitted]
   )
 
-  return { submitted, setSubmitted, error, setError }
+  return { submitted, setSubmitted, error, setError, successMessage, setSuccessMessage }
 }
