@@ -2,23 +2,28 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { ILiaison } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
+import LiaisonModal from './LiaisonModal'
 
 const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
+  const [modalOpen, setModalOpen] = React.useState(false)
   const handleLiaisonClick = () => {
-    console.log('clicked')
+    setModalOpen(true)
   }
   return (
-    <LiaisonWrapper onClick={handleLiaisonClick}>
-      <NameAndLocation>
-        <Name>{liaison.name}</Name>
-        <Location>{`${liaison.region} (${liaison.abbreviation})`}</Location>
-      </NameAndLocation>
-      <Contact>
-        <Item>{liaison.email}</Item>
-        <Item>{liaison.phoneNumber}</Item>
-      </Contact>
-      <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
-    </LiaisonWrapper>
+    <>
+      <LiaisonWrapper onClick={handleLiaisonClick}>
+        <NameAndLocation>
+          <Name>{liaison.name}</Name>
+          <Location>{`${liaison.region} (${liaison.abbreviation})`}</Location>
+        </NameAndLocation>
+        <Contact>
+          <Item>{liaison.email}</Item>
+          <Item>{liaison.phoneNumber}</Item>
+        </Contact>
+        <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
+      </LiaisonWrapper>
+      <LiaisonModal on={modalOpen} setOn={setModalOpen} liaison={liaison} />
+    </>
   )
 }
 

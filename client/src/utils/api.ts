@@ -54,16 +54,16 @@ const users = {
 } */
 
 const liaisons = {
-  create: (data: ILiaison[]): Promise<ILiaison> => requests.post('/liaisons', data),
+  create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
   delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
   get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
-  update: (updates: ILiaison[]): Promise<ILiaison> => requests.put('/liaisons', updates),
+  update: (updates: ILiaison): Promise<ILiaison> => requests.put('/liaisons', updates),
 }
 const webinars = {
-  create: (data: IWebinar[]): Promise<IWebinar> => requests.post('/webinars', data),
+  create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),
   delete: (id: string): Promise<string> => requests.delete(`/webinars/${id}`),
   get: (): Promise<IWebinar[]> => requests.get('/webinars'),
-  update: (updates: IWebinar[]): Promise<IWebinar> => requests.put('/webinars', updates),
+  update: (updates: IWebinar): Promise<IWebinar> => requests.put('/webinars', updates),
 }
 
 /* function logout() {
