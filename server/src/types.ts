@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
-import { IApiError } from './sharedTypes'
+
+export interface IApiError extends Error {
+  status?: number
+  type?: string
+}
 
 export type Controller = (req: Request, res: Response, next?: NextFunction) => Promise<Response>
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void

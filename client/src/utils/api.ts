@@ -1,6 +1,6 @@
 import * as axios from 'axios'
 import { ILiaison, IWebinar } from '../sharedTypes'
-// import { IApiError } from '../sharedTypes'
+// import { IApiError } from '../types'
 
 let api: axios.AxiosInstance
 // let isLoggedIn: boolean

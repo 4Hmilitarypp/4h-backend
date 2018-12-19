@@ -28,6 +28,12 @@ export interface IBackgroundCoords {
   width: number
 }
 
+export interface IApiError extends Error {
+  status: number
+  type?: string
+  response: { data: { message?: string } }
+}
+
 /**
  * Styles
  */

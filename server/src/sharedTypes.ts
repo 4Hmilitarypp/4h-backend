@@ -1,8 +1,3 @@
-export interface IApiError extends Error {
-  status?: number
-  type?: string
-}
-
 export interface ILiaison {
   abbreviation?: string | null
   email?: string | null

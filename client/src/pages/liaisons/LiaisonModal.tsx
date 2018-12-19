@@ -5,8 +5,8 @@ import { Button } from '../../components/Elements'
 import Flash from '../../components/Flash'
 import Modal from '../../components/Modal'
 import { useFlash } from '../../hooks/hooks'
-import { IApiError, ILiaison } from '../../sharedTypes'
-import { IForm } from '../../types'
+import { ILiaison } from '../../sharedTypes'
+import { IApiError, IForm } from '../../types'
 import api from '../../utils/api'
 import LiaisonForm from './LiaisonForm'
 import { LiaisonsContext } from './Liaisons'
@@ -18,8 +18,7 @@ interface IProps {
   action: 'update' | 'create'
 }
 
-const formatError = (err: IApiError) =>
-  (err.response && err.response.data.message) || (err.status && err.status.toString()) || ''
+const formatError = (err: IApiError) => err.response.data.message || err.status.toString()
 
 const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   const { error, setError } = useFlash({ initialSubmitted: false })
