@@ -18,7 +18,7 @@ interface IProps {
   action: 'update' | 'create'
 }
 
-const formatError = (err: IApiError) => err.response.data.message || err.status.toString()
+const formatError = (err: IApiError) => err.response.data.message
 
 const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   const { error, setError } = useFlash({ initialSubmitted: false })

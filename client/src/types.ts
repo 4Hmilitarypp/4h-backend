@@ -30,8 +30,7 @@ export interface IBackgroundCoords {
 
 export interface IApiError extends Error {
   status: number
-  type?: string
-  response: { data: { message?: string } }
+  response: { data: { message: string } }
 }
 
 /**
