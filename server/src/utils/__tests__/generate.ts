@@ -98,6 +98,7 @@ describe('generate.research', () => {
       description: expect.any(String),
       researchId: expect.any(String),
       title: expect.any(String),
+      type: expect.stringMatching(/doc|pdf|link/),
       url: expect.any(String),
     })
   })
@@ -113,12 +114,14 @@ describe('generate.researches', () => {
           description: expect.any(String),
           researchId: expect.any(String),
           title: expect.any(String),
+          type: expect.stringMatching(/doc|pdf|link/),
           url: expect.any(String),
         },
         {
           description: expect.any(String),
           researchId: expect.any(String),
           title: expect.any(String),
+          type: expect.stringMatching(/doc|pdf|link/),
           url: expect.any(String),
         },
       ])

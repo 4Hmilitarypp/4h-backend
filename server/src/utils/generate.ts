@@ -18,6 +18,7 @@ const generate = {
     description: faker.lorem.words(descriptionLength),
     researchId: new ObjectId().toHexString(),
     title: faker.company.catchPhrase(),
+    type: new Array('doc', 'pdf', 'link')[faker.random.number({ min: 0, max: 2 })] as 'doc' | 'pdf' | 'link',
     url: faker.internet.domainName(),
     ...overrides,
   }),

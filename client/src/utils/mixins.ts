@@ -51,6 +51,8 @@ export const hoveredRow = () => `
   height: 100%;
   opacity: 0;
   border-radius: 5px;
+  top: 0;
+  left: 0;
   ${elevation(1)};
 }
 &:hover::after {

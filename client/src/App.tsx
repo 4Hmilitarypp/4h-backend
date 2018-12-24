@@ -8,7 +8,7 @@ import Liaisons from './pages/liaisons/Liaisons'
 import Media from './pages/Media'
 import NotFound from './pages/NotFound'
 import Partners from './pages/Partners'
-import Research from './pages/Research'
+import Researches from './pages/research/Researches'
 import Resources from './pages/Resources'
 import Webinars from './pages/Webinars'
 import Sidebar from './Sidebar'
@@ -49,7 +49,7 @@ class App extends React.Component<{}, {}> {
             <Partners path="/partners" />
             <Camps path="/camps" />
             <Webinars path="/webinars" />
-            <Research path="/research" />
+            <Researches path="/research" />
             <Resources path="/resources" />
             <Media path="/media" />
             <NotFound default={true} />

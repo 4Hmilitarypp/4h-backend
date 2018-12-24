@@ -44,12 +44,13 @@ export interface IWebinar {
   description: string
   title: string
   url: string
-  webinarId: string
+  webinarId?: string
 }
 
 export interface IResearch {
   description?: string
   title: string
-  researchId: string
+  type: 'doc' | 'pdf' | 'link'
+  researchId?: string
   url: string
 }

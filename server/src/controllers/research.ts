@@ -8,9 +8,9 @@ const Research = mongoose.model('Research')
 const Archive = mongoose.model('Archive')
 
 const formatResearch = (dbResearch: any): IResearch => {
-  const { _id, description, title, url } = dbResearch
+  const { _id, description, title, type, url } = dbResearch
   const researchId = _id.toString()
-  return { description, researchId, title, url }
+  return { description, researchId, title, type, url }
 }
 
 export const createResearch: Controller = async (req, res) => {

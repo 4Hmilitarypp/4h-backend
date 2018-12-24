@@ -4,14 +4,14 @@ import { Button } from '../../components/Elements'
 import Flash from '../../components/Flash'
 import Modal from '../../components/Modal'
 import { useFlash } from '../../hooks/hooks'
-import { ILiaison } from '../../sharedTypes'
+import { IResearch } from '../../sharedTypes'
 import { IApiError, IForm } from '../../types'
 import api from '../../utils/api'
-import LiaisonForm from './LiaisonForm'
-import { LiaisonsContext } from './Liaisons'
+import { ResearchContext } from './Researches'
+import ResearchForm from './ResearchForm'
 
 interface IProps {
-  liaison?: ILiaison
+  research?: IResearch
   open: boolean
   setOpen: (open: boolean) => void
   action: 'update' | 'create'
@@ -19,36 +19,34 @@ interface IProps {
 
 const formatError = (err: IApiError) => err.response.data.message
 
-const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
+const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) => {
   const { error, setError } = useFlash({ initialSubmitted: false })
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const context = React.useContext(LiaisonsContext)
+  const context = React.useContext(ResearchContext)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { abbreviation, email, image, name, phoneNumber, region } = e.currentTarget.elements
-    const updateLiaison = {
-      abbreviation: abbreviation.value,
-      email: email.value,
-      image: image.value,
-      liaisonId: liaison ? liaison.liaisonId : undefined,
-      name: name.value,
-      phoneNumber: phoneNumber.value,
-      region: region.value,
+    const { description, title, type, url } = e.currentTarget.elements
+    const updateResearch = {
+      description: description.value,
+      researchId: research ? research.researchId : undefined,
+      title: title.value,
+      type: type.value as 'pdf' | 'doc' | 'link',
+      url: url.value,
     }
     if (action === 'update') {
-      api.liaisons
-        .update(updateLiaison)
-        .then(newLiaison => {
-          context.updateLiaisons({ liaison: newLiaison, action })
+      api.research
+        .update(updateResearch)
+        .then(newResearch => {
+          context.updateResearches({ research: newResearch, action })
           setOpen(false)
         })
         .catch((err: IApiError) => setError(formatError(err)))
     } else if (action === 'create') {
-      api.liaisons
-        .create(updateLiaison)
-        .then(newLiaison => {
-          context.updateLiaisons({ liaison: newLiaison, action })
+      api.research
+        .create(updateResearch)
+        .then(newResearch => {
+          context.updateResearches({ research: newResearch, action })
           setOpen(false)
         })
         .catch((err: IApiError) => setError(formatError(err)))
@@ -61,11 +59,11 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   }
 
   const handleDeleteClicked = () => {
-    if (liaison && timesDeleteClicked === 1) {
-      api.liaisons
-        .delete(liaison.liaisonId as string)
+    if (research && timesDeleteClicked === 1) {
+      api.research
+        .delete(research.researchId as string)
         .then(res => {
-          context.updateLiaisons({ liaisonId: liaison.liaisonId, action: 'delete' })
+          context.updateResearches({ researchId: research.researchId, action: 'delete' })
         })
         .catch((err: IApiError) => {
           setError(formatError(err))
@@ -78,10 +76,8 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
       <Flash error={error} closeClicked={() => setError(undefined)} fixed={false} />
-      <ModalHeading>{`${
-        action === 'update' ? `Updating ${liaison && liaison.name}` : 'Create a new Liaison'
-      }`}</ModalHeading>
-      <LiaisonForm onSubmit={handleSubmit} liaison={liaison}>
+      <ModalHeading>{`${action === 'update' ? 'Updating a research item' : 'Create a new Research'}`}</ModalHeading>
+      <ResearchForm onSubmit={handleSubmit} research={research}>
         <Buttons>
           {action === 'update' &&
             (timesDeleteClicked === 0 ? (
@@ -97,15 +93,15 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
             <OutlineButton type="button" onClick={handleCancel}>
               Cancel
             </OutlineButton>
-            <Button>{action === 'update' ? 'Update' : 'Create'} Liaison</Button>
+            <Button>{action === 'update' ? 'Update' : 'Create'} Research</Button>
           </RightButtons>
         </Buttons>
-      </LiaisonForm>
+      </ResearchForm>
     </Modal>
   )
 }
 
-export default LiaisonModal
+export default ResearchModal
 
 const ModalHeading = styled.h3`
   color: ${props => props.theme.primaryText};
