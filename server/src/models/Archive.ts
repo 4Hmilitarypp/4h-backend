@@ -5,6 +5,9 @@ const archiveSchema = new mongoose.Schema(
     liaison: {
       type: Object,
     },
+    research: {
+      type: Object,
+    },
   },
   { strict: false }
 )

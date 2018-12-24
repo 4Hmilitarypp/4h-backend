@@ -91,3 +91,37 @@ describe('generate.webinars', () => {
     )
   })
 })
+describe('generate.research', () => {
+  it('should return a correct research', () => {
+    const res = generate.research(100)
+    expect(res).toEqual({
+      description: expect.any(String),
+      researchId: expect.any(String),
+      title: expect.any(String),
+      url: expect.any(String),
+    })
+  })
+})
+
+describe('generate.researches', () => {
+  it('should return multiple researches', () => {
+    const res = generate.researches(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          description: expect.any(String),
+          researchId: expect.any(String),
+          title: expect.any(String),
+          url: expect.any(String),
+        },
+        {
+          description: expect.any(String),
+          researchId: expect.any(String),
+          title: expect.any(String),
+          url: expect.any(String),
+        },
+      ])
+    )
+  })
+})

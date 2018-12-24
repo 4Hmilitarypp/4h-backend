@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import { ILiaison, IWebinar } from '../sharedTypes'
+import { ILiaison, IResearch, IWebinar } from '../sharedTypes'
 
 const generate = {
   liaison: (overrides?: Partial<ILiaison>): ILiaison => ({
@@ -14,6 +14,14 @@ const generate = {
   }),
   liaisons: (length: number): ILiaison[] => Array.from({ length }, () => generate.liaison()),
   objectId: () => new ObjectId().toHexString(),
+  research: (descriptionLength: number = 100, overrides: {} = {}): IResearch => ({
+    description: faker.lorem.words(descriptionLength),
+    researchId: new ObjectId().toHexString(),
+    title: faker.company.catchPhrase(),
+    url: faker.internet.domainName(),
+    ...overrides,
+  }),
+  researches: (length: number): IResearch[] => Array.from({ length }, () => generate.research(100)),
   webinar: (descriptionLength: number = 100, overrides: {} = {}): IWebinar => ({
     category: faker.commerce.productAdjective(),
     description: faker.lorem.words(descriptionLength),

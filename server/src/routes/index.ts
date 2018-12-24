@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
+import setupResearchRoutes from './research'
 import setupWebinarRoutes from './webinars'
 
 const setupRoutes = (app: Express) => {
@@ -15,5 +16,9 @@ const setupRoutes = (app: Express) => {
   const webinarRouter = express.Router()
   setupWebinarRoutes(webinarRouter)
   app.use('/api/webinars', webinarRouter)
+
+  const researchRouter = express.Router()
+  setupResearchRoutes(researchRouter)
+  app.use('/api/research', researchRouter)
 }
 export default setupRoutes

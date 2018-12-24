@@ -46,3 +46,10 @@ export interface IWebinar {
   url: string
   webinarId: string
 }
+
+export interface IResearch {
+  description?: string
+  title: string
+  researchId: string
+  url: string
+}

@@ -20,6 +20,7 @@ import './models/Archive'
 import './models/Liaison'
 import './models/Partner'
 import './models/PartnerSection'
+import './models/Research'
 import './models/Webinar'
 
 // Start our app!
