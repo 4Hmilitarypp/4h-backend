@@ -1,8 +1,8 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import request from 'supertest'
 import app from '../../app'
 import generate from '../../utils/generate'
+import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'research'
 
@@ -19,7 +19,7 @@ it('should return a 200 if get was successful', async () => {
 
   const res = await request(app).get('/api/research')
   expect(res.status).toBe(200)
-  expect(res.body).toEqual([{ ...research, researchId: expect.any(String) }])
+  expect(res.body).toEqual([{ ...research, _id: expect.any(String) }])
 })
 
 /**
@@ -33,9 +33,9 @@ it('should return a 201 if created was successful', async () => {
     .send(research)
 
   expect(res.status).toBe(201)
-  expect(res.body).toEqual({ ...research, researchId: expect.any(String) })
+  expect(res.body).toEqual({ ...research, _id: expect.any(String) })
   const inDb = await Research.find()
-  expect(inDb[0]).toMatchObject({ ...omit(research, 'researchId') })
+  expect(formatDb(inDb[0])).toMatchObject(research)
 })
 
 it('should return a 400 if a research with a duplicate title is created', async () => {
@@ -60,10 +60,9 @@ it('should return a 400 if a research with a duplicate title is created', async 
 it('should return a 200 if the update was successful', async () => {
   const originalResearch = generate.research()
   const inDb = await new Research(originalResearch).save()
-  expect(inDb).toMatchObject({ ...omit(originalResearch, 'researchId') })
 
   const updateResearch = generate.research()
-  updateResearch.researchId = inDb._id.toString()
+  updateResearch._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/research/')
@@ -71,17 +70,16 @@ it('should return a 200 if the update was successful', async () => {
 
   expect(res.status).toEqual(200)
   expect(res.body).toEqual(updateResearch)
-  const finalInDb = await Research.findById(res.body.researchId)
-  expect(finalInDb).toMatchObject({ ...omit(updateResearch, 'researchId') })
+  const finalInDb = await Research.findById(res.body._id)
+  expect(formatDb(finalInDb)).toMatchObject(updateResearch)
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
   const originalResearch = generate.research()
   const inDb = await new Research(originalResearch).save()
-  expect(inDb).toMatchObject({ ...omit(originalResearch, 'researchId') })
 
   const updateResearch = generate.research(100, { title: null })
-  updateResearch.researchId = inDb._id.toString()
+  updateResearch._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/research/')
@@ -90,13 +88,13 @@ it('should return a 400 if any of the fields are messed up', async () => {
   expect(res.status).toEqual(400)
   expect(res.body).toEqual({ message: expect.any(String) })
   const finalInDb = await Research.findById(inDb._id)
-  expect(finalInDb).toMatchObject({ ...omit(originalResearch, 'researchId') })
+  expect(formatDb(finalInDb)).toMatchObject(originalResearch)
 })
 
 it('should return a 404 if not found', async () => {
   const inDb = await Research.find()
   expect(inDb).toHaveLength(0)
-  const updateResearch = generate.research(100, { researchId: generate.objectId() })
+  const updateResearch = generate.research(100, { _id: generate.objectId() })
 
   const res = await request(app)
     .put('/api/research/')

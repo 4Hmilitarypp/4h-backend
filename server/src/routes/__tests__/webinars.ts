@@ -1,8 +1,8 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import request from 'supertest'
 import app from '../../app'
 import generate from '../../utils/generate'
+import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'webinars'
 
@@ -19,7 +19,7 @@ it('should return a 200 if get was successful', async () => {
 
   const res = await request(app).get('/api/webinars')
   expect(res.status).toBe(200)
-  expect(res.body).toEqual([{ ...webinar, webinarId: expect.any(String) }])
+  expect(res.body).toEqual([{ ...webinar, _id: expect.any(String) }])
 })
 
 /**
@@ -33,9 +33,9 @@ it('should return a 201 if created was successful', async () => {
     .send(webinar)
 
   expect(res.status).toBe(201)
-  expect(res.body).toEqual({ ...webinar, webinarId: expect.any(String) })
+  expect(res.body).toEqual({ ...webinar, _id: expect.any(String) })
   const inDb = await Webinar.find()
-  expect(inDb[0]).toMatchObject({ ...omit(webinar, 'webinarId') })
+  expect(formatDb(inDb[0])).toMatchObject(webinar)
 })
 
 it('should return a 400 if a webinar with a bad form is created', async () => {
@@ -56,10 +56,9 @@ it('should return a 400 if a webinar with a bad form is created', async () => {
 it('should return a 200 if the update was successful', async () => {
   const originalWebinar = generate.webinar()
   const inDb = await new Webinar(originalWebinar).save()
-  expect(inDb).toMatchObject({ ...omit(originalWebinar, 'webinarId') })
 
   const updateWebinar = generate.webinar()
-  updateWebinar.webinarId = inDb._id.toString()
+  updateWebinar._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/webinars/')
@@ -67,17 +66,16 @@ it('should return a 200 if the update was successful', async () => {
 
   expect(res.status).toEqual(200)
   expect(res.body).toEqual(updateWebinar)
-  const finalInDb = await Webinar.findById(res.body.webinarId)
-  expect(finalInDb).toMatchObject({ ...omit(updateWebinar, 'webinarId') })
+  const finalInDb = await Webinar.findById(res.body._id)
+  expect(formatDb(finalInDb)).toMatchObject(updateWebinar)
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
   const originalWebinar = generate.webinar()
   const inDb = await new Webinar(originalWebinar).save()
-  expect(inDb).toMatchObject({ ...omit(originalWebinar, 'webinarId') })
 
   const updateWebinar = generate.webinar(100, { title: null })
-  updateWebinar.webinarId = inDb._id.toString()
+  updateWebinar._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/webinars/')
@@ -86,7 +84,7 @@ it('should return a 400 if any of the fields are messed up', async () => {
   expect(res.status).toEqual(400)
   expect(res.body).toEqual({ message: expect.any(String) })
   const finalInDb = await Webinar.findById(inDb._id)
-  expect(finalInDb).toMatchObject({ ...omit(originalWebinar, 'webinarId') })
+  expect(formatDb(finalInDb)).toMatchObject(originalWebinar)
 })
 
 it('should return a 404 if not found', async () => {

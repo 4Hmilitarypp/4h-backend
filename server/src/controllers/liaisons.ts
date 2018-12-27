@@ -1,48 +1,41 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
-import { ILiaison } from '../sharedTypes'
+// import { ILiaison } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { omitV } from '../utils/object'
 
 const Liaison = mongoose.model('Liaison')
 const Archive = mongoose.model('Archive')
 
-const formatLiaison = (dbLiaison: any): ILiaison => {
-  const { _id, abbreviation, email, image, name, phoneNumber, region } = dbLiaison
-  const liaisonId = _id.toString()
-  return { abbreviation, email, image, liaisonId, name, phoneNumber, region }
-}
-
 export const createLiaison: Controller = async (req, res) => {
-  const dirtyLiaison = await new Liaison(req.body).save()
-  return res.status(201).json(formatLiaison(dirtyLiaison))
+  const liaison = await new Liaison(req.body).save()
+  return res.status(201).json(omitV(liaison))
 }
 
 export const getLiaisons: Controller = async (req, res) => {
-  const dirtyLiaisons = await Liaison.find()
-  const liaisons = dirtyLiaisons.map(formatLiaison)
+  const liaisons = await Liaison.find().select('-__v')
   return res.json(liaisons)
 }
 
 export const updateLiaison: Controller = async (req, res) => {
-  const { liaisonId, ...updates } = req.body
-  const dirtyLiaison = await Liaison.findOneAndUpdate({ _id: liaisonId }, updates, {
+  const { _id, ...updates } = req.body
+  const liaison = await Liaison.findByIdAndUpdate(_id, updates, {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyLiaison) {
-    return res.status(200).json(formatLiaison(dirtyLiaison))
+  if (liaison) {
+    return res.status(200).json(omitV(liaison))
   }
   throw notFoundError
 }
 
 export const deleteLiaison: Controller = async (req, res) => {
-  // const toDelete = await Liaison.findById(req.params.id)
-
-  const deletedLiaison = await Liaison.findByIdAndDelete(req.params.id)
-  if (deletedLiaison) {
-    await new Archive(omit(formatLiaison(deletedLiaison), 'liaisonId')).save()
+  const dirtyDeletedLiaison = await Liaison.findByIdAndDelete(req.params.id)
+  if (dirtyDeletedLiaison) {
+    // Need to create a new object because we get a strange stack error from mongoose otherwise
+    const { _id, ...deletedLiaison } = (dirtyDeletedLiaison as any)._doc
+    await new Archive(deletedLiaison).save()
     return res.status(204).send()
   }
   throw notFoundError

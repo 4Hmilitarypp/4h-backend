@@ -1,38 +1,31 @@
 import { omit } from 'lodash'
 import mongoose from 'mongoose'
-import { IResearch } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { omitV } from '../utils/object'
 
 const Research = mongoose.model('Research')
 const Archive = mongoose.model('Archive')
 
-const formatResearch = (dbResearch: any): IResearch => {
-  const { _id, description, title, type, url } = dbResearch
-  const researchId = _id.toString()
-  return { description, researchId, title, type, url }
-}
-
 export const createResearch: Controller = async (req, res) => {
-  const dirtyResearch = await new Research(req.body).save()
-  return res.status(201).json(formatResearch(dirtyResearch))
+  const research = await new Research(req.body).save()
+  return res.status(201).json(omitV(research))
 }
 
 export const getResearch: Controller = async (req, res) => {
-  const dirtyResearch = await Research.find()
-  const research = dirtyResearch.map(formatResearch)
+  const research = await Research.find().select('-__v')
   return res.json(research)
 }
 
 export const updateResearch: Controller = async (req, res) => {
-  const { researchId, ...updates } = req.body
-  const dirtyResearch = await Research.findOneAndUpdate({ _id: researchId }, updates, {
+  const { _id, ...updates } = req.body
+  const research = await Research.findByIdAndUpdate(_id, updates, {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyResearch) {
-    return res.status(200).json(formatResearch(dirtyResearch))
+  if (research) {
+    return res.status(200).json(omitV(research))
   }
   throw notFoundError
 }
@@ -40,9 +33,10 @@ export const updateResearch: Controller = async (req, res) => {
 export const deleteResearch: Controller = async (req, res) => {
   // const toDelete = await Research.findById(req.params.id)
 
-  const deletedResearch = await Research.findByIdAndDelete(req.params.id)
-  if (deletedResearch) {
-    await new Archive(omit(formatResearch(deletedResearch), 'researchId')).save()
+  const dirtyDeletedResearch = await Research.findByIdAndDelete(req.params.id)
+  if (dirtyDeletedResearch) {
+    const { _id, ...deletedResearch } = (dirtyDeletedResearch as any)._doc
+    await new Archive(omit(deletedResearch)).save()
     return res.status(204).send()
   }
   throw notFoundError

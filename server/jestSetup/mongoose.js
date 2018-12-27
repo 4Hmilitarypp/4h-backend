@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 // Load models since we will not be instantiating our express server.
 require('../dist/models/Archive')
+require('../dist/models/CurriculumResource')
 require('../dist/models/Liaison')
 require('../dist/models/Partner')
 require('../dist/models/PartnerSection')

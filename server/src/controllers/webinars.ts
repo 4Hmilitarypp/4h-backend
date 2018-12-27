@@ -1,43 +1,39 @@
 import mongoose from 'mongoose'
-import { IWebinar } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { omitV } from '../utils/object'
 
 const Webinar = mongoose.model('Webinar')
-
-const formatWebinar = (dbWebinar: any): IWebinar => {
-  const { _id, category, description, title, url } = dbWebinar
-  const webinarId = _id.toString()
-  return { category, description, title, url, webinarId }
-}
+const Archive = mongoose.model('Archive')
 
 export const createWebinar: Controller = async (req, res) => {
-  const dirtyWebinar = await new Webinar(req.body).save()
-  return res.status(201).json(formatWebinar(dirtyWebinar))
+  const webinar = await new Webinar(req.body).save()
+  return res.status(201).json(omitV(webinar))
 }
 
 export const getWebinars: Controller = async (req, res) => {
-  const dirtyWebinars = await Webinar.find()
-  const webinars = dirtyWebinars.map(formatWebinar)
+  const webinars = await Webinar.find().select('-__v')
   return res.json(webinars)
 }
 
 export const updateWebinar: Controller = async (req, res) => {
-  const { webinarId, ...updates } = req.body
-  const dirtyWebinar = await Webinar.findOneAndUpdate({ _id: webinarId }, updates, {
+  const { _id, ...updates } = req.body
+  const webinar = await Webinar.findByIdAndUpdate(_id, updates, {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyWebinar) {
-    return res.status(200).json(formatWebinar(dirtyWebinar))
+  if (webinar) {
+    return res.status(200).json(omitV(webinar))
   }
   throw notFoundError
 }
 
 export const deleteWebinar: Controller = async (req, res) => {
-  const deletedWebinar = await Webinar.findByIdAndDelete(req.params.id)
-  if (deletedWebinar) {
+  const dirtyDeletedWebinar = await Webinar.findByIdAndDelete(req.params.id)
+  if (dirtyDeletedWebinar) {
+    const { _id, ...deletedWebinar } = (dirtyDeletedWebinar as any)._doc
+    await new Archive(deletedWebinar).save()
     return res.status(204).send()
   }
   throw notFoundError

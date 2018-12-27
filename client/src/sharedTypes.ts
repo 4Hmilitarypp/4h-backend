@@ -1,8 +1,8 @@
 export interface ILiaison {
+  _id?: string
   abbreviation?: string | null
   email?: string | null
   image: string
-  liaisonId?: string
   name?: string | null
   phoneNumber?: string | null
   region: string
@@ -40,17 +40,17 @@ export interface IPartner extends IPartnerSection {
 }
 
 export interface IWebinar {
+  _id?: string
   category: string
   description: string
   title: string
   url: string
-  webinarId?: string
 }
 
 export interface IResearch {
+  _id?: string
   description?: string
   title: string
   type: 'doc' | 'pdf' | 'link'
-  researchId?: string
   url: string
 }

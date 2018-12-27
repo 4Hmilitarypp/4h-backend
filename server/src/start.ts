@@ -15,15 +15,16 @@ mongoose.connection.on('error', err => {
   console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`)
 })
 
-// READY?! Let's go!
+// register models with mongoose
 import './models/Archive'
+import './models/CurriculumResource'
 import './models/Liaison'
 import './models/Partner'
 import './models/PartnerSection'
 import './models/Research'
 import './models/Webinar'
 
-// Start our app!
+// bring in the app
 import app from './app'
 
 app.set('port', process.env.PORT || 7777)

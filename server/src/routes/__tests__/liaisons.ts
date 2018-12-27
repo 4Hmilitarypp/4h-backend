@@ -1,8 +1,8 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import request from 'supertest'
 import app from '../../app'
 import generate from '../../utils/generate'
+import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'liaisons'
 
@@ -19,7 +19,7 @@ it('should return a 200 if get was successful', async () => {
 
   const res = await request(app).get('/api/liaisons')
   expect(res.status).toBe(200)
-  expect(res.body).toEqual([{ ...liaison, liaisonId: expect.any(String) }])
+  expect(res.body).toEqual([{ ...liaison, _id: expect.any(String) }])
 })
 
 /**
@@ -33,9 +33,9 @@ it('should return a 201 if created was successful', async () => {
     .send(liaison)
 
   expect(res.status).toBe(201)
-  expect(res.body).toEqual({ ...liaison, liaisonId: expect.any(String) })
+  expect(res.body).toEqual({ ...liaison, _id: expect.any(String) })
   const inDb = await Liaison.find()
-  expect(inDb[0]).toMatchObject({ ...omit(liaison, 'liaisonId') })
+  expect(formatDb(inDb[0])).toMatchObject(liaison)
 })
 
 it('should return a 400 if a liaison with a duplicate abbreviation is created', async () => {
@@ -60,10 +60,9 @@ it('should return a 400 if a liaison with a duplicate abbreviation is created', 
 it('should return a 200 if the update was successful', async () => {
   const originalLiaison = generate.liaison({ abbreviation: 'KSA' })
   const inDb = await new Liaison(originalLiaison).save()
-  expect(inDb).toMatchObject({ ...omit(originalLiaison, 'liaisonId') })
 
   const updateLiaison = generate.liaison({ abbreviation: 'KSB' })
-  updateLiaison.liaisonId = inDb._id.toString()
+  updateLiaison._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/liaisons/')
@@ -71,17 +70,16 @@ it('should return a 200 if the update was successful', async () => {
 
   expect(res.status).toEqual(200)
   expect(res.body).toEqual(updateLiaison)
-  const finalInDb = await Liaison.findById(res.body.liaisonId)
-  expect(finalInDb).toMatchObject({ ...omit(updateLiaison, 'liaisonId') })
+  const finalInDb = await Liaison.findById(res.body._id)
+  expect(formatDb(finalInDb)).toMatchObject(updateLiaison)
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
   const originalLiaison = generate.liaison({ abbreviation: 'KSA' })
   const inDb = await new Liaison(originalLiaison).save()
-  expect(inDb).toMatchObject({ ...omit(originalLiaison, 'liaisonId') })
 
   const updateLiaison = generate.liaison({ abbreviation: 'KSA', email: 'hi@k' })
-  updateLiaison.liaisonId = inDb._id.toString()
+  updateLiaison._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/liaisons/')
@@ -90,13 +88,13 @@ it('should return a 400 if any of the fields are messed up', async () => {
   expect(res.status).toEqual(400)
   expect(res.body).toEqual({ message: expect.any(String) })
   const finalInDb = await Liaison.findById(inDb._id)
-  expect(finalInDb).toMatchObject({ ...omit(originalLiaison, 'liaisonId') })
+  expect(formatDb(finalInDb)).toMatchObject(originalLiaison)
 })
 
 it('should return a 404 if not found', async () => {
   const inDb = await Liaison.find()
   expect(inDb).toHaveLength(0)
-  const updateLiaison = generate.liaison({ abbreviation: 'KSA', liaisonId: generate.objectId() })
+  const updateLiaison = generate.liaison({ abbreviation: 'KSA', _id: generate.objectId() })
 
   const res = await request(app)
     .put('/api/liaisons/')
