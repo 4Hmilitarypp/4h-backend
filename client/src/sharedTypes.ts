@@ -54,3 +54,24 @@ export interface IResearch {
   type: 'doc' | 'pdf' | 'link'
   url: string
 }
+
+export interface IDisplayCurriculumResource {
+  _id?: string
+  description: string
+  featuredImage?: IImage
+  title: string
+}
+
+export interface ICurriculumResource extends IDisplayCurriculumResource {
+  lessons: ILesson[]
+}
+
+export interface ILesson {
+  _id?: string
+  category?: string
+  docUrl?: string
+  externalUrl?: string
+  pdfUrl?: string
+  pptUrl?: string
+  title: string
+}

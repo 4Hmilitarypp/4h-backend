@@ -1,8 +1,8 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import request from 'supertest'
-import app from './app'
-import generate from './utils/generate'
+import app from '../../app'
+import generate from '../../utils/generate'
+import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'curriculumResources'
 
@@ -19,7 +19,7 @@ it('should return a 200 if get was successful', async () => {
 
   const res = await request(app).get('/api/curriculumResources')
   expect(res.status).toBe(200)
-  expect(res.body).toEqual([{ ...curriculumResource, curriculumResourceId: expect.any(String) }])
+  expect(res.body).toEqual([{ ...curriculumResource, _id: expect.any(String) }])
 })
 
 /**
@@ -33,9 +33,9 @@ it('should return a 201 if created was successful', async () => {
     .send(curriculumResource)
 
   expect(res.status).toBe(201)
-  expect(res.body).toEqual({ ...curriculumResource, curriculumResourceId: expect.any(String) })
+  expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String) })
   const inDb = await CurriculumResource.find()
-  expect(inDb[0]).toMatchObject({ ...omit(curriculumResource, 'curriculumResourceId') })
+  expect(formatDb(inDb[0])).toMatchObject(curriculumResource)
 })
 
 it('should return a 400 if a curriculumResource with a duplicate abbreviation is created', async () => {
@@ -60,10 +60,9 @@ it('should return a 400 if a curriculumResource with a duplicate abbreviation is
 it('should return a 200 if the update was successful', async () => {
   const originalCurriculumResource = generate.curriculumResource({ abbreviation: 'KSA' })
   const inDb = await new CurriculumResource(originalCurriculumResource).save()
-  expect(inDb).toMatchObject({ ...omit(originalCurriculumResource, 'curriculumResourceId') })
 
   const updateCurriculumResource = generate.curriculumResource({ abbreviation: 'KSB' })
-  updateCurriculumResource.curriculumResourceId = inDb._id.toString()
+  updateCurriculumResource._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/curriculumResources/')
@@ -71,17 +70,16 @@ it('should return a 200 if the update was successful', async () => {
 
   expect(res.status).toEqual(200)
   expect(res.body).toEqual(updateCurriculumResource)
-  const finalInDb = await CurriculumResource.findById(res.body.curriculumResourceId)
-  expect(finalInDb).toMatchObject({ ...omit(updateCurriculumResource, 'curriculumResourceId') })
+  const finalInDb = await CurriculumResource.findById(res.body._id)
+  expect(formatDb(finalInDb)).toMatchObject(updateCurriculumResource)
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
   const originalCurriculumResource = generate.curriculumResource({ abbreviation: 'KSA' })
   const inDb = await new CurriculumResource(originalCurriculumResource).save()
-  expect(inDb).toMatchObject({ ...omit(originalCurriculumResource, 'curriculumResourceId') })
 
   const updateCurriculumResource = generate.curriculumResource({ abbreviation: 'KSA', email: 'hi@k' })
-  updateCurriculumResource.curriculumResourceId = inDb._id.toString()
+  updateCurriculumResource._id = inDb._id.toString()
 
   const res = await request(app)
     .put('/api/curriculumResources/')
@@ -90,16 +88,13 @@ it('should return a 400 if any of the fields are messed up', async () => {
   expect(res.status).toEqual(400)
   expect(res.body).toEqual({ message: expect.any(String) })
   const finalInDb = await CurriculumResource.findById(inDb._id)
-  expect(finalInDb).toMatchObject({ ...omit(originalCurriculumResource, 'curriculumResourceId') })
+  expect(formatDb(finalInDb)).toMatchObject(originalCurriculumResource)
 })
 
 it('should return a 404 if not found', async () => {
   const inDb = await CurriculumResource.find()
   expect(inDb).toHaveLength(0)
-  const updateCurriculumResource = generate.curriculumResource({
-    abbreviation: 'KSA',
-    curriculumResourceId: generate.objectId(),
-  })
+  const updateCurriculumResource = generate.curriculumResource({ abbreviation: 'KSA', _id: generate.objectId() })
 
   const res = await request(app)
     .put('/api/curriculumResources/')

@@ -16,8 +16,8 @@ const ResearchForm: React.FC<IProps> = ({ onSubmit, research, children }) => (
     </InputGroup>
     <InputGroup>
       <label htmlFor="type">Research Type</label>
-      <select id="type" name="type" required={true} value={research ? research.type : ''}>
-        <option disabled={true} selected={true} value="">
+      <select id="type" name="type" required={true} defaultValue={research ? research.type : ''}>
+        <option disabled={true} value="">
           -- select an option --
         </option>
         <option value={'pdf'}>PDF</option>

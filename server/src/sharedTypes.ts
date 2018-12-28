@@ -55,21 +55,23 @@ export interface IResearch {
   url: string
 }
 
-export interface ICurriculumResource {
+export interface IDisplayCurriculumResource {
   _id?: string
-  description?: string
+  description: string
   featuredImage?: IImage
-  resources: IResource[]
   title: string
-  url: string
 }
 
-export interface IResource {
+export interface ICurriculumResource extends IDisplayCurriculumResource {
+  lessons: ILesson[]
+}
+
+export interface ILesson {
   _id?: string
   category?: string
-  docUrl: string
-  externalUrl: string
-  pdfUrl: string
-  powerpointUrl: string
+  docUrl?: string
+  externalUrl?: string
+  pdfUrl?: string
+  pptUrl?: string
   title: string
 }

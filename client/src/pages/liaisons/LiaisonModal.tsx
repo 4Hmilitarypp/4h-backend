@@ -28,10 +28,10 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
     e.preventDefault()
     const { abbreviation, email, image, name, phoneNumber, region } = e.currentTarget.elements
     const updateLiaison = {
+      _id: liaison ? liaison._id : undefined,
       abbreviation: abbreviation.value,
       email: email.value,
       image: image.value,
-      liaisonId: liaison ? liaison.liaisonId : undefined,
       name: name.value,
       phoneNumber: phoneNumber.value,
       region: region.value,
@@ -63,9 +63,9 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   const handleDeleteClicked = () => {
     if (liaison && timesDeleteClicked === 1) {
       api.liaisons
-        .delete(liaison.liaisonId as string)
+        .delete(liaison._id as string)
         .then(res => {
-          context.updateLiaisons({ liaisonId: liaison.liaisonId, action: 'delete' })
+          context.updateLiaisons({ _id: liaison._id, action: 'delete' })
         })
         .catch((err: IApiError) => {
           setError(formatError(err))

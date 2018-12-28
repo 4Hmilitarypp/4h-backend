@@ -1,50 +1,47 @@
-/* import { omit } from 'lodash'
 import mongoose from 'mongoose'
-import { ICurriculumResource } from '../sharedTypes'
+// import { ICurriculumResource } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { omitV } from '../utils/object'
 
 const CurriculumResource = mongoose.model('CurriculumResource')
 const Archive = mongoose.model('Archive')
 
-const formatCurriculumResource = (dbCurriculumResource: any): ICurriculumResource => {
-  const { _id, abbreviation, email, image, name, phoneNumber, region } = dbCurriculumResource
-  const curriculumResourceId = _id.toString()
-  return { abbreviation, email, image, curriculumResourceId, name, phoneNumber, region }
-}
-
 export const createCurriculumResource: Controller = async (req, res) => {
-  const dirtyCurriculumResource = await new CurriculumResource(req.body).save()
-  return res.status(201).json(formatCurriculumResource(dirtyCurriculumResource))
+  const curriculumResource = await new CurriculumResource(req.body).save()
+  return res.status(201).json(omitV(curriculumResource))
 }
 
 export const getCurriculumResources: Controller = async (req, res) => {
-  const dirtyCurriculumResources = await CurriculumResource.find()
-  const curriculumResources = dirtyCurriculumResources.map(formatCurriculumResource)
+  const curriculumResources = await CurriculumResource.find().select('-__v -resources')
   return res.json(curriculumResources)
 }
 
+export const getCurriculumResource: Controller = async (req, res) => {
+  const curriculumResource = await CurriculumResource.findById(req.params.id).select('-__v')
+  return res.json(curriculumResource)
+}
+
 export const updateCurriculumResource: Controller = async (req, res) => {
-  const { curriculumResourceId, ...updates } = req.body
-  const dirtyCurriculumResource = await CurriculumResource.findOneAndUpdate({ _id: curriculumResourceId }, updates, {
+  const { _id, ...updates } = req.body
+  const curriculumResource = await CurriculumResource.findByIdAndUpdate(_id, updates, {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyCurriculumResource) {
-    return res.status(200).json(formatCurriculumResource(dirtyCurriculumResource))
+  if (curriculumResource) {
+    return res.status(200).json(omitV(curriculumResource))
   }
   throw notFoundError
 }
 
 export const deleteCurriculumResource: Controller = async (req, res) => {
-  // const toDelete = await CurriculumResource.findById(req.params.id)
-
-  const deletedCurriculumResource = await CurriculumResource.findByIdAndDelete(req.params.id)
-  if (deletedCurriculumResource) {
-    await new Archive(omit(formatCurriculumResource(deletedCurriculumResource), 'curriculumResourceId')).save()
+  const dirtyDeletedCurriculumResource = await CurriculumResource.findByIdAndDelete(req.params.id)
+  if (dirtyDeletedCurriculumResource) {
+    // Need to create a new object because we get a strange stack error from mongoose otherwise
+    const { _id, ...deletedCurriculumResource } = (dirtyDeletedCurriculumResource as any)._doc
+    await new Archive(deletedCurriculumResource).save()
     return res.status(204).send()
   }
   throw notFoundError
 }
- */

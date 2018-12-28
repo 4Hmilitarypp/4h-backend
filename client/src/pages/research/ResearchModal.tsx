@@ -28,8 +28,8 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
     e.preventDefault()
     const { description, title, type, url } = e.currentTarget.elements
     const updateResearch = {
+      _id: research ? research._id : undefined,
       description: description.value,
-      researchId: research ? research.researchId : undefined,
       title: title.value,
       type: type.value as 'pdf' | 'doc' | 'link',
       url: url.value,
@@ -61,9 +61,9 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
   const handleDeleteClicked = () => {
     if (research && timesDeleteClicked === 1) {
       api.research
-        .delete(research.researchId as string)
+        .delete(research._id as string)
         .then(res => {
-          context.updateResearches({ researchId: research.researchId, action: 'delete' })
+          context.updateResearches({ _id: research._id, action: 'delete' })
         })
         .catch((err: IApiError) => {
           setError(formatError(err))

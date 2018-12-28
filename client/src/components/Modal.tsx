@@ -51,6 +51,8 @@ const ModalCard = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   z-index: 2;
   min-width: 60rem;
+  max-height: 90vh;
+  overflow-y: scroll;
 `
 const Background = styled.div`
   position: absolute;

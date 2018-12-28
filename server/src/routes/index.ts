@@ -1,5 +1,5 @@
 import express, { Express } from 'express'
-// import setupCurriculumResourceRoutes from './curriculumResources'
+import setupCurriculumResourceRoutes from './curriculumResources'
 import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
 import setupResearchRoutes from './research'
@@ -22,8 +22,8 @@ const setupRoutes = (app: Express) => {
   setupResearchRoutes(researchRouter)
   app.use('/api/research', researchRouter)
 
-  /* const curriculumResourcesRouter = express.Router()
+  const curriculumResourcesRouter = express.Router()
   setupCurriculumResourceRoutes(curriculumResourcesRouter)
-  app.use('/api/curriculumResources', curriculumResourcesRouter) */
+  app.use('/api/curriculumResources', curriculumResourcesRouter)
 }
 export default setupRoutes

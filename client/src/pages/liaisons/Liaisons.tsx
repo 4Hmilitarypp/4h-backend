@@ -14,9 +14,9 @@ interface ILiaisonsContext {
   liaisons: ILiaison[] | undefined
   updateLiaisons: (
     args: {
-      liaison?: ILiaison
-      liaisonId?: string
+      _id?: string
       action: 'create' | 'update' | 'delete'
+      liaison?: ILiaison
     }
   ) => void
 }
@@ -28,18 +28,18 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
   const { submitted, setSubmitted, successMessage, setSuccessMessage } = useFlash({ initialSubmitted: false })
 
   const updateLiaisons = ({
-    liaison,
-    liaisonId,
+    _id,
     action,
+    liaison,
   }: {
-    liaison?: ILiaison
-    liaisonId?: string
+    _id?: string
     action: 'create' | 'update' | 'delete'
+    liaison?: ILiaison
   }) => {
     if (liaisons) {
       let newLiaisons: ILiaison[] = []
       if (action === 'update' && liaison) {
-        newLiaisons = map(liaisons, l => (l.liaisonId === liaison.liaisonId ? liaison : l))
+        newLiaisons = map(liaisons, l => (l._id === liaison._id ? liaison : l))
         setSuccessMessage('Liaison Updated Successfully')
         setSubmitted(true)
       } else if (action === 'create' && liaison) {
@@ -47,7 +47,7 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
         setSuccessMessage('Liaison Created Successfully')
         setSubmitted(true)
       } else if (action === 'delete') {
-        newLiaisons = filter(liaisons, l => l.liaisonId !== liaisonId)
+        newLiaisons = filter(liaisons, l => l._id !== _id)
         setSuccessMessage('Liaison Deleted Successfully')
         setSubmitted(true)
       }

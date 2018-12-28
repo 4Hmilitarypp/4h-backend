@@ -14,9 +14,9 @@ interface IResearchContext {
   researches: IResearch[] | undefined
   updateResearches: (
     args: {
-      research?: IResearch
-      researchId?: string
+      _id?: string
       action: 'create' | 'update' | 'delete'
+      research?: IResearch
     }
   ) => void
 }
@@ -28,18 +28,18 @@ const Researches: React.FC<RouteComponentProps> = () => {
   const { submitted, setSubmitted, successMessage, setSuccessMessage } = useFlash({ initialSubmitted: false })
 
   const updateResearches = ({
-    research,
-    researchId,
+    _id,
     action,
+    research,
   }: {
-    research?: IResearch
-    researchId?: string
+    _id?: string
     action: 'create' | 'update' | 'delete'
+    research?: IResearch
   }) => {
     if (researches) {
       let newResearches: IResearch[] = []
       if (action === 'update' && research) {
-        newResearches = map(researches, r => (r.researchId === research.researchId ? research : r))
+        newResearches = map(researches, r => (r._id === research._id ? research : r))
         setSuccessMessage('Research Updated Successfully')
         setSubmitted(true)
       } else if (action === 'create' && research) {
@@ -47,7 +47,7 @@ const Researches: React.FC<RouteComponentProps> = () => {
         setSuccessMessage('Research Created Successfully')
         setSubmitted(true)
       } else if (action === 'delete') {
-        newResearches = filter(researches, r => r.researchId !== researchId)
+        newResearches = filter(researches, r => r._id !== _id)
         setSuccessMessage('Research Deleted Successfully')
         setSubmitted(true)
       }

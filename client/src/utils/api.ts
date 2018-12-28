@@ -1,5 +1,5 @@
 import * as axios from 'axios'
-import { ILiaison, IResearch, IWebinar } from '../sharedTypes'
+import { ICurriculumResource, IDisplayCurriculumResource, ILiaison, IResearch, IWebinar } from '../sharedTypes'
 // import { IApiError } from '../types'
 
 let api: axios.AxiosInstance
@@ -65,6 +65,13 @@ const research = {
   get: (): Promise<IResearch[]> => requests.get('/research'),
   update: (updates: IResearch): Promise<IResearch> => requests.put('/research', updates),
 }
+const curriculumResource = {
+  create: (data: ICurriculumResource): Promise<ICurriculumResource> => requests.post('/curriculumResources', data),
+  delete: (id: string): Promise<string> => requests.delete(`/curriculumResources/${id}`),
+  get: (): Promise<IDisplayCurriculumResource[]> => requests.get('/curriculumResources'),
+  getById: (id: string): Promise<ICurriculumResource> => requests.get(`/curriculumResources/${id}`),
+  update: (updates: ICurriculumResource): Promise<ICurriculumResource> => requests.put('/curriculumResources', updates),
+}
 const webinars = {
   create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),
   delete: (id: string): Promise<string> => requests.delete(`/webinars/${id}`),
@@ -99,6 +106,7 @@ function init({
 
 const restApi = {
   // auth,
+  curriculumResource,
   init,
   liaisons,
   research,

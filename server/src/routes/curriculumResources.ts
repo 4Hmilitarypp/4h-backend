@@ -1,4 +1,4 @@
-/* import { Router } from 'express'
+import { Router } from 'express'
 import * as curriculumResourceController from '../controllers/curriculumResources'
 
 import { catchErrors } from '../handlers/errorHandlers'
@@ -15,4 +15,3 @@ const setupCurriculumResourceRoutes = (router: Router) => {
     .get(catchErrors(curriculumResourceController.getCurriculumResource))
 }
 export default setupCurriculumResourceRoutes
- */

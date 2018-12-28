@@ -3,13 +3,13 @@ import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
 import Header from './Header'
 import Camps from './pages/Camps'
+import CurriculumResources from './pages/curriculumResources/CurriculumResources'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import Media from './pages/Media'
 import NotFound from './pages/NotFound'
 import Partners from './pages/Partners'
 import Researches from './pages/research/Researches'
-import Resources from './pages/Resources'
 import Webinars from './pages/Webinars'
 import Sidebar from './Sidebar'
 
@@ -50,7 +50,7 @@ class App extends React.Component<{}, {}> {
             <Camps path="/camps" />
             <Webinars path="/webinars" />
             <Researches path="/research" />
-            <Resources path="/resources" />
+            <CurriculumResources path="/curriculum-resources/*" />
             <Media path="/media" />
             <NotFound default={true} />
           </Router>

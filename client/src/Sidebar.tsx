@@ -30,7 +30,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           <SideBarLink to="/research" className={path === '/research' ? 'active' : ''}>
             Research
           </SideBarLink>
-          <SideBarLink to="/resources" className={path === '/resources' ? 'active' : ''}>
+          <SideBarLink to="/curriculum-resources" className={path === '/curriculum-resources' ? 'active' : ''}>
             Resources
           </SideBarLink>
         </Links>
