@@ -3,8 +3,7 @@ import { filter, map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../components/Elements'
-import Flash from '../../components/Flash'
-import { useFlash } from '../../hooks/hooks'
+import FlashContext from '../../contexts/FlashContext'
 import { IResearch } from '../../sharedTypes'
 import api from '../../utils/api'
 import Research from './Research'
@@ -25,8 +24,7 @@ export const ResearchContext = React.createContext<IResearchContext>(undefined a
 const Researches: React.FC<RouteComponentProps> = () => {
   const [researches, setResearches] = React.useState<IResearch[] | undefined>(undefined)
   const [modalOpen, setModalOpen] = React.useState(false)
-  const { submitted, setSubmitted, successMessage, setSuccessMessage } = useFlash({ initialSubmitted: false })
-
+  const flashContext = React.useContext(FlashContext)
   const updateResearches = ({
     _id,
     action,
@@ -40,16 +38,13 @@ const Researches: React.FC<RouteComponentProps> = () => {
       let newResearches: IResearch[] = []
       if (action === 'update' && research) {
         newResearches = map(researches, r => (r._id === research._id ? research : r))
-        setSuccessMessage('Research Updated Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Research Updated Successfully' })
       } else if (action === 'create' && research) {
         newResearches = [research, ...researches]
-        setSuccessMessage('Research Created Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Research Created Successfully' })
       } else if (action === 'delete') {
         newResearches = filter(researches, r => r._id !== _id)
-        setSuccessMessage('Research Deleted Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Research Deleted Successfully' })
       }
       setResearches(newResearches)
     }
@@ -64,7 +59,6 @@ const Researches: React.FC<RouteComponentProps> = () => {
 
   return (
     <ResearchesContainer>
-      <Flash successMessage={successMessage} submitted={submitted} closeClicked={() => setSubmitted(false)} />
       <ResearchContext.Provider value={{ researches, updateResearches }}>
         <TableHeader>
           <ResearchHeading>Research</ResearchHeading>

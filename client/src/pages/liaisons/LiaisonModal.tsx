@@ -1,9 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button } from '../../components/Elements'
-import Flash from '../../components/Flash'
 import Modal from '../../components/Modal'
-import { useFlash } from '../../hooks/hooks'
+import FlashContext from '../../contexts/FlashContext'
 import { ILiaison } from '../../sharedTypes'
 import { IApiError, IForm } from '../../types'
 import api from '../../utils/api'
@@ -20,9 +19,10 @@ interface IProps {
 const formatError = (err: IApiError) => err.response.data.message
 
 const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
-  const { error, setError } = useFlash({ initialSubmitted: false })
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const context = React.useContext(LiaisonsContext)
+  const liaisonContext = React.useContext(LiaisonsContext)
+
+  const flashContext = React.useContext(FlashContext)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -40,18 +40,18 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
       api.liaisons
         .update(updateLiaison)
         .then(newLiaison => {
-          context.updateLiaisons({ liaison: newLiaison, action })
+          liaisonContext.updateLiaisons({ liaison: newLiaison, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => setError(formatError(err)))
+        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
     } else if (action === 'create') {
       api.liaisons
         .create(updateLiaison)
         .then(newLiaison => {
-          context.updateLiaisons({ liaison: newLiaison, action })
+          liaisonContext.updateLiaisons({ liaison: newLiaison, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => setError(formatError(err)))
+        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
     }
   }
 
@@ -65,10 +65,10 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
       api.liaisons
         .delete(liaison._id as string)
         .then(res => {
-          context.updateLiaisons({ _id: liaison._id, action: 'delete' })
+          liaisonContext.updateLiaisons({ _id: liaison._id, action: 'delete' })
         })
         .catch((err: IApiError) => {
-          setError(formatError(err))
+          flashContext.set({ message: formatError(err), isError: true })
         })
     } else {
       setTimesDeleteClicked(1)
@@ -77,7 +77,6 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
 
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
-      <Flash error={error} closeClicked={() => setError(undefined)} fixed={false} />
       <ModalHeading>{`${
         action === 'update' ? `Updating ${liaison && liaison.name}` : 'Create a new Liaison'
       }`}</ModalHeading>

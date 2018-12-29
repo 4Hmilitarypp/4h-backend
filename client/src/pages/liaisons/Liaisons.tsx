@@ -3,8 +3,7 @@ import { filter, map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../components/Elements'
-import Flash from '../../components/Flash'
-import { useFlash } from '../../hooks/hooks'
+import FlashContext from '../../contexts/FlashContext'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
@@ -25,7 +24,8 @@ export const LiaisonsContext = React.createContext<ILiaisonsContext>(undefined a
 const Liaisons: React.FC<RouteComponentProps> = () => {
   const [liaisons, setLiaisons] = React.useState<ILiaison[] | undefined>(undefined)
   const [modalOpen, setModalOpen] = React.useState(false)
-  const { submitted, setSubmitted, successMessage, setSuccessMessage } = useFlash({ initialSubmitted: false })
+
+  const flashContext = React.useContext(FlashContext)
 
   const updateLiaisons = ({
     _id,
@@ -40,16 +40,13 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
       let newLiaisons: ILiaison[] = []
       if (action === 'update' && liaison) {
         newLiaisons = map(liaisons, l => (l._id === liaison._id ? liaison : l))
-        setSuccessMessage('Liaison Updated Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Liaison Updated Successfully' })
       } else if (action === 'create' && liaison) {
         newLiaisons = [liaison, ...liaisons]
-        setSuccessMessage('Liaison Created Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Liaison Created Successfully' })
       } else if (action === 'delete') {
         newLiaisons = filter(liaisons, l => l._id !== _id)
-        setSuccessMessage('Liaison Deleted Successfully')
-        setSubmitted(true)
+        flashContext.set({ message: 'Liaison Deleted Successfully' })
       }
       setLiaisons(newLiaisons)
     }
@@ -64,7 +61,6 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
 
   return (
     <LiaisonsContainer>
-      <Flash successMessage={successMessage} submitted={submitted} closeClicked={() => setSubmitted(false)} />
       <LiaisonsContext.Provider value={{ liaisons, updateLiaisons }}>
         <TableHeader>
           <LiaisonHeading>Liaisons</LiaisonHeading>

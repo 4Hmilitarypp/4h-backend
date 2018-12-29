@@ -13,7 +13,7 @@ export const createCurriculumResource: Controller = async (req, res) => {
 }
 
 export const getCurriculumResources: Controller = async (req, res) => {
-  const curriculumResources = await CurriculumResource.find().select('-__v -resources')
+  const curriculumResources = await CurriculumResource.find().select('-__v -lessons')
   return res.json(curriculumResources)
 }
 

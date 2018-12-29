@@ -1,22 +1,50 @@
+import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { InputGroup } from '../../../components/Elements'
-import { IDisplayCurriculumResource } from '../../../sharedTypes'
+import FlashContext from '../../../contexts/FlashContext'
+import { IDisplayCurriculumResource, ILesson } from '../../../sharedTypes'
+import { IApiError, IForm } from '../../../types'
+import api from '../../../utils/api'
+import { CurriculumResourceContext } from '../CurriculumResources'
+
+const formatError = (err: IApiError) => err.response.data.message
 
 interface IProps {
+  action: 'create' | 'update'
   curriculumResource?: IDisplayCurriculumResource
-  onSubmit: (e: any) => void
+  lessons: ILesson[]
   setRef: (ref: React.RefObject<HTMLFormElement>) => void
 }
 
-const CurriculumResourceForm: React.FC<IProps> = ({ onSubmit, curriculumResource, setRef }) => {
+const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, lessons, setRef }) => {
   const formRef = React.useRef<HTMLFormElement>(null)
+  const flashContext = React.useContext(FlashContext)
+  const curriculumResourceContext = React.useContext(CurriculumResourceContext)
 
   React.useEffect(() => setRef(formRef), [formRef])
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
+    e.preventDefault()
+    const { description, title, featuredImageAlt, featuredImageUrl } = e.currentTarget.elements
+    const featuredImage = { alt: featuredImageAlt.value, url: featuredImageUrl.value }
+    const updateCurriculumResource = {
+      _id: curriculumResource ? curriculumResource._id : undefined,
+      description: description.value,
+      featuredImage,
+      lessons,
+      title: title.value,
+    }
+    api.curriculumResource[action](updateCurriculumResource)
+      .then(newCurriculumResource => {
+        curriculumResourceContext.setCurriculumResources({ curriculumResource: newCurriculumResource, action })
+        navigate('/curriculum-resources')
+      })
+      .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
+  }
+
   return (
-    <Form onSubmit={onSubmit} ref={formRef}>
-      {console.log(curriculumResource, curriculumResource && curriculumResource.description)}
+    <Form onSubmit={handleSubmit} ref={formRef}>
       <CustomInputGroup>
         <label htmlFor="title">Curriculum Resource Title</label>
         <input type="text" id="title" defaultValue={(curriculumResource && curriculumResource.title) || ''} />

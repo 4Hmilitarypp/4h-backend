@@ -2,8 +2,7 @@ import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, SubHeading } from '../../../components/Elements'
-import Flash from '../../../components/Flash'
-import { useFlash } from '../../../hooks/hooks'
+import FlashContext from '../../../contexts/FlashContext'
 import { ICurriculumResource, ILesson } from '../../../sharedTypes'
 import { IApiError, IForm } from '../../../types'
 import api from '../../../utils/api'
@@ -11,25 +10,24 @@ import { CurriculumResourceContext } from '../CurriculumResources'
 import CurriculumResourceForm from './CurriculumResourceForm'
 import LessonForm from './LessonForm'
 
+const formatError = (err: IApiError) => err.response.data.message
+
 interface IProps extends RouteComponentProps {
   _id?: string
 }
-
-const formatError = (err: IApiError) => err.response.data.message
 
 const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   // the full curriculumResource
   const [curriculumResource, setCurriculumResource] = React.useState<ICurriculumResource | undefined>(undefined)
   // the lessons belonging to a curriculumResource
   const [lessons, setLessons] = React.useState<ILesson[]>([])
-  const [clickedLesson, setClickedLesson] = React.useState<ILesson | undefined>(undefined)
   const [curriculumFormRef, setCurriculumFormRef] = React.useState<React.RefObject<HTMLFormElement> | undefined>(
     undefined
   )
   const [action] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
-  const { error, setError } = useFlash({ initialSubmitted: false })
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const context = React.useContext(CurriculumResourceContext)
+  const curriculumResourceContext = React.useContext(CurriculumResourceContext)
+  const flashContext = React.useContext(FlashContext)
 
   React.useEffect(() => {
     if (action === 'update' && _id) {
@@ -39,26 +37,6 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
         .catch(err => console.error(err))
     }
   }, [])
-
-  const handleCurriculumResourceSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
-    e.preventDefault()
-    const { description, title, featuredImageAlt, featuredImageUrl } = e.currentTarget.elements
-    const featuredImage = { alt: featuredImageAlt.value, url: featuredImageUrl.value }
-    const updateCurriculumResource = {
-      _id: curriculumResource ? curriculumResource._id : undefined,
-      description: description.value,
-      featuredImage,
-      lessons,
-      title: title.value,
-    }
-    api.curriculumResource[action](updateCurriculumResource)
-      .then(newCurriculumResource => {
-        context.setCurriculumResources({ curriculumResource: newCurriculumResource, action })
-        navigate('/curriculum-resources')
-        // setOpen(false)
-      })
-      .catch((err: IApiError) => setError(formatError(err)))
-  }
 
   const handleLessonSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -75,7 +53,6 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   }
 
   const handleCancel = () => {
-    // setOpen(false)
     setTimesDeleteClicked(0)
     navigate('/curriculum-resources')
   }
@@ -85,11 +62,11 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
       api.curriculumResource
         .delete(curriculumResource._id as string)
         .then(res => {
-          context.setCurriculumResources({ _id: curriculumResource._id, action: 'delete' })
+          curriculumResourceContext.setCurriculumResources({ _id: curriculumResource._id, action: 'delete' })
           navigate('/curriculum-resources')
         })
         .catch((err: IApiError) => {
-          setError(formatError(err))
+          flashContext.set({ message: formatError(err), isError: true })
         })
     } else {
       setTimesDeleteClicked(1)
@@ -98,24 +75,23 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
 
   return (
     <div>
-      <Flash error={error} closeClicked={() => setError(undefined)} fixed={false} />
       <ModalHeading>{`${
-        action === 'update' ? 'Updating a curriculumResource item' : 'Create a new CurriculumResource'
+        action === 'update' ? 'Updating a Curriculum Resource' : 'Create a new Curriculum Resource'
       }`}</ModalHeading>
       <SubHeading>Curriculum Resource Form</SubHeading>
       <CurriculumResourceForm
-        onSubmit={handleCurriculumResourceSubmit}
+        action={action}
         curriculumResource={curriculumResource}
         setRef={setCurriculumFormRef}
+        lessons={lessons}
       />
-      <Lessons>
+      {/* <Lessons>
         {lessons.map(l => (
           <div key={l.title} onClick={() => setClickedLesson(l)}>
             {l.title}
           </div>
         ))}
-      </Lessons>
-      {clickedLesson}
+      </Lessons> */}
       <SubHeading>Lesson Form</SubHeading>
       <LessonForm onSubmit={handleLessonSubmit} lesson={curriculumResource && curriculumResource.lessons[0]}>
         <Buttons>
@@ -168,7 +144,7 @@ const ModalHeading = styled.h3`
   padding: 1.2rem 1.6rem 0;
   text-align: center;
 `
-const Lessons = styled.div``
+// const Lessons = styled.div``
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

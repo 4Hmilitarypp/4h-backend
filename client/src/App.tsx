@@ -1,6 +1,8 @@
 import { Router } from '@reach/router'
 import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
+import FlashContext, { useFlash } from './contexts/FlashContext'
+import Flash from './Flash'
 import Header from './Header'
 import Camps from './pages/Camps'
 import CurriculumResources from './pages/curriculumResources/CurriculumResources'
@@ -31,18 +33,20 @@ export const theme = {
   white: '#fff',
 }
 
-class App extends React.Component<{}, {}> {
-  render() {
-    return (
-      <ThemeProvider theme={theme}>
-        <AppWContainer data-testid="app">
-          <GlobalStyle />
-          <HeaderContainer>
-            <Header path="/*" />
-          </HeaderContainer>
-          <SidebarContainer>
-            <Sidebar path="/*" />
-          </SidebarContainer>
+const App: React.FC<{}> = () => {
+  const { flashState, resetFlashState, setFlashState } = useFlash()
+  return (
+    <ThemeProvider theme={theme}>
+      <AppWContainer data-testid="app">
+        <GlobalStyle />
+        <HeaderContainer>
+          <Header path="/*" />
+        </HeaderContainer>
+        <SidebarContainer>
+          <Sidebar path="/*" />
+        </SidebarContainer>
+        <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
+          <Flash />
           <Router primary={false}>
             <Home path="/" />
             <Liaisons path="/liaisons" />
@@ -54,10 +58,10 @@ class App extends React.Component<{}, {}> {
             <Media path="/media" />
             <NotFound default={true} />
           </Router>
-        </AppWContainer>
-      </ThemeProvider>
-    )
-  }
+        </FlashContext.Provider>
+      </AppWContainer>
+    </ThemeProvider>
+  )
 }
 
 export default App

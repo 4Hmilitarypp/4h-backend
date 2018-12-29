@@ -1,9 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button } from '../../components/Elements'
-import Flash from '../../components/Flash'
 import Modal from '../../components/Modal'
-import { useFlash } from '../../hooks/hooks'
+import FlashContext from '../../contexts/FlashContext'
 import { IResearch } from '../../sharedTypes'
 import { IApiError, IForm } from '../../types'
 import api from '../../utils/api'
@@ -20,9 +19,9 @@ interface IProps {
 const formatError = (err: IApiError) => err.response.data.message
 
 const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) => {
-  const { error, setError } = useFlash({ initialSubmitted: false })
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const context = React.useContext(ResearchContext)
+  const researchContext = React.useContext(ResearchContext)
+  const flashContext = React.useContext(FlashContext)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -38,18 +37,18 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
       api.research
         .update(updateResearch)
         .then(newResearch => {
-          context.updateResearches({ research: newResearch, action })
+          researchContext.updateResearches({ research: newResearch, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => setError(formatError(err)))
+        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
     } else if (action === 'create') {
       api.research
         .create(updateResearch)
         .then(newResearch => {
-          context.updateResearches({ research: newResearch, action })
+          researchContext.updateResearches({ research: newResearch, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => setError(formatError(err)))
+        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
     }
   }
 
@@ -63,10 +62,10 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
       api.research
         .delete(research._id as string)
         .then(res => {
-          context.updateResearches({ _id: research._id, action: 'delete' })
+          researchContext.updateResearches({ _id: research._id, action: 'delete' })
         })
         .catch((err: IApiError) => {
-          setError(formatError(err))
+          flashContext.set({ message: formatError(err), isError: true })
         })
     } else {
       setTimesDeleteClicked(1)
@@ -75,7 +74,6 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
 
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
-      <Flash error={error} closeClicked={() => setError(undefined)} fixed={false} />
       <ModalHeading>{`${action === 'update' ? 'Updating a research item' : 'Create a new Research'}`}</ModalHeading>
       <ResearchForm onSubmit={handleSubmit} research={research}>
         <Buttons>
