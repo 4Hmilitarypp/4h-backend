@@ -4,7 +4,7 @@ import FlashContext from '../../../contexts/FlashContext'
 import { ICurriculumResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 
-export const useCurriculumResources = () => {
+const useCurriculumResources = () => {
   const [curriculumResources, setCurriculumResources] = React.useState<ICurriculumResource[] | undefined>(undefined)
   React.useEffect(() => {
     api.curriculumResource
@@ -43,3 +43,4 @@ export const useCurriculumResources = () => {
   }
   return { curriculumResources, updateCurriculumResources }
 }
+export default useCurriculumResources

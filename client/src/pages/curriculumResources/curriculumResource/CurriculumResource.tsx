@@ -3,7 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, SubHeading } from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
-import { ICurriculumResource, ILesson } from '../../../sharedTypes'
+import { ICurriculumResource } from '../../../sharedTypes'
 import { IApiError } from '../../../types'
 import api from '../../../utils/api'
 import { CurriculumResourceContext } from '../CurriculumResources'
@@ -19,8 +19,6 @@ interface IProps extends RouteComponentProps {
 const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   // the full curriculumResource
   const [curriculumResource, setCurriculumResource] = React.useState<ICurriculumResource | undefined>(undefined)
-  // the lessons belonging to a curriculumResource
-  const [lessons, setLessons] = React.useState<ILesson[]>([])
   const [curriculumFormRef, setCurriculumFormRef] = React.useState<React.RefObject<HTMLFormElement> | undefined>(
     undefined
   )
@@ -33,13 +31,8 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
     if (action === 'update' && _id) {
       api.curriculumResource
         .getById(_id)
-        .then(r => {
-          setCurriculumResource(r)
-        })
+        .then(r => setCurriculumResource(r))
         .catch(err => console.error(err))
-      api.lessons.get(_id).then(l => {
-        setLessons(l).catch(err => console.error(err))
-      })
     }
   }, [])
 
@@ -71,7 +64,7 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
       }`}</ModalHeading>
       <SubHeading>Curriculum Resource Form</SubHeading>
       <CurriculumResourceForm action={action} curriculumResource={curriculumResource} setRef={setCurriculumFormRef} />
-      <Lessons lessons={lessons} updateLessons={setLessons} />
+      {_id && action === 'update' && <Lessons resourceId={_id} />}
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (

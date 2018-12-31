@@ -1,43 +1,49 @@
-import { Link, RouteComponentProps } from '@reach/router'
+import { Link } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, Heading } from '../../../components/Elements'
-import { ILesson } from '../../../sharedTypes'
-import { hoveredRow } from '../../../utils/mixins'
-import { CurriculumResourceContext } from '../CurriculumResources'
+import { Button, Heading } from '../../../../components/Elements'
+import { ILesson } from '../../../../sharedTypes'
+import { hoveredRow } from '../../../../utils/mixins'
+import LessonModal from './LessonModal'
+import useLessons from './useLessons'
 
-const Lessons: React.FC<IProps> = RouteComponentProps => {
-  const context = React.useContext(CurriculumResourceContext)
+interface ILessonContext {
+  lessons: ILesson[] | undefined
+  resourceId: string
+  updateLessons: (
+    args: {
+      _id?: string
+      action: 'create' | 'update' | 'delete'
+      lesson?: ILesson
+    }
+  ) => void
+}
+export const LessonContext = React.createContext<ILessonContext>(undefined as any)
+
+const Lessons: React.FC<{ resourceId: string }> = ({ resourceId }) => {
+  const { lessons, updateLessons } = useLessons(resourceId)
+
+  const [modalOpen, setModalOpen] = React.useState(false)
   return (
     <div>
       <TableHeader>
-        <CurriculumResourceHeading>Curriculum Resources</CurriculumResourceHeading>
+        <Heading>Lessons</Heading>
         <Button as={Link} to="new">
-          + Create a new CurriculumResource
+          + Create a new Lesson
         </Button>
       </TableHeader>
-      <ul>
-        {map(context.curriculumResources, r => (
-          <Wrapper to={r._id} key={r._id}>
-            <Title>{r.title}</Title>
+      <LessonContext.Provider value={{ lessons, updateLessons, resourceId }}>
+        {map(lessons, l => (
+          <Wrapper key={l._id}>
+            <Title>{l.title}</Title>
+            <LessonModal open={modalOpen} setOpen={setModalOpen} lesson={l} action="update" />
           </Wrapper>
         ))}
-      </ul>
+      </LessonContext.Provider>
     </div>
   )
 }
-
-{
-  /* <Lessons>
-        {lessons.map(l => (
-          <div key={l.title} onClick={() => setClickedLesson(l)}>
-            {l.title}
-          </div>
-        ))}
-      </Lessons> */
-}
-;<SubHeading>Lesson Form</SubHeading>
 
 export default Lessons
 
@@ -47,10 +53,7 @@ const TableHeader = styled.div`
   justify-content: space-between;
   align-items: flex-end;
 `
-const CurriculumResourceHeading = styled(Heading)`
-  padding: 4rem 0 0;
-`
-const Wrapper = styled(Link)`
+const Wrapper = styled.div`
   padding: 2rem;
   position: relative;
   ${hoveredRow()};

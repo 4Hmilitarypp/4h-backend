@@ -3,7 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { InputGroup } from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
-import { ICurriculumResource, ILesson } from '../../../sharedTypes'
+import { ICurriculumResource } from '../../../sharedTypes'
 import { IApiError, IForm } from '../../../types'
 import api from '../../../utils/api'
 import { CurriculumResourceContext } from '../CurriculumResources'
@@ -36,7 +36,7 @@ const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, 
     api.curriculumResource[action](updateCurriculumResource)
       .then(newCurriculumResource => {
         curriculumResourceContext.updateCurriculumResources({ curriculumResource: newCurriculumResource, action })
-        navigate('/curriculum-resources')
+        navigate(`/curriculum-resources/${newCurriculumResource._id}`)
       })
       .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
   }

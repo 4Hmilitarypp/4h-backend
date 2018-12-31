@@ -34,10 +34,13 @@ const curriculumResource = {
 }
 
 const lessons = {
-  create: (data: ILesson): Promise<ILesson> => requests.post('/lessons', data),
-  delete: (id: string): Promise<string> => requests.delete(`/lessons/${id}`),
-  get: (): Promise<ILesson[]> => requests.get('/lessons'),
-  update: (updates: ILesson): Promise<ILesson> => requests.put('/lessons', updates),
+  create: (resourceId: string, data: ILesson): Promise<ILesson> =>
+    requests.post(`/curriculumResources/${resourceId}/lessons/`, data),
+  delete: (resourceId: string, id: string): Promise<string> =>
+    requests.delete(`/curriculumResources/${resourceId}/lessons/${id}`),
+  get: (resourceId: string): Promise<ILesson[]> => requests.get(`/curriculumResources/${resourceId}/lessons/`),
+  update: (resourceId: string, updates: ILesson): Promise<ILesson> =>
+    requests.put(`/curriculumResources/${resourceId}/lessons/`, updates),
 }
 const webinars = {
   create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),

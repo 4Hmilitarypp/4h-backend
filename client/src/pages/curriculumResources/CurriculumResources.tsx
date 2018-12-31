@@ -3,7 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { ICurriculumResource } from '../../sharedTypes'
 import CurriculumResource from './curriculumResource/CurriculumResource'
-import { useCurriculumResources } from './curriculumResource/useCurriculumResources'
+import useCurriculumResources from './curriculumResource/useCurriculumResources'
 import CurriculumResourceTable from './CurriculumResourceTable'
 
 interface ICurriculumResourceContext {
