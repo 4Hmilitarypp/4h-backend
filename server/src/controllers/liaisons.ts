@@ -8,7 +8,8 @@ const Liaison = mongoose.model('Liaison')
 const Archive = mongoose.model('Archive')
 
 export const createLiaison: Controller = async (req, res) => {
-  const liaison = await new Liaison(req.body).save()
+  const { _id, ...newLiaison } = req.body
+  const liaison = await new Liaison(newLiaison).save()
   return res.status(201).json(omitV(liaison))
 }
 
@@ -35,7 +36,7 @@ export const deleteLiaison: Controller = async (req, res) => {
   if (dirtyDeletedLiaison) {
     // Need to create a new object because we get a strange stack error from mongoose otherwise
     const { _id, ...deletedLiaison } = (dirtyDeletedLiaison as any)._doc
-    await new Archive(deletedLiaison).save()
+    await new Archive({ ...deletedLiaison, type: 'liaison' }).save()
     return res.status(204).send()
   }
   throw notFoundError

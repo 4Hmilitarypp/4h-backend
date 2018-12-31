@@ -1,4 +1,3 @@
-import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
@@ -8,7 +7,8 @@ const Research = mongoose.model('Research')
 const Archive = mongoose.model('Archive')
 
 export const createResearch: Controller = async (req, res) => {
-  const research = await new Research(req.body).save()
+  const { _id, ...newResearch } = req.body
+  const research = await new Research(newResearch).save()
   return res.status(201).json(omitV(research))
 }
 
@@ -31,12 +31,10 @@ export const updateResearch: Controller = async (req, res) => {
 }
 
 export const deleteResearch: Controller = async (req, res) => {
-  // const toDelete = await Research.findById(req.params.id)
-
   const dirtyDeletedResearch = await Research.findByIdAndDelete(req.params.id)
   if (dirtyDeletedResearch) {
     const { _id, ...deletedResearch } = (dirtyDeletedResearch as any)._doc
-    await new Archive(omit(deletedResearch)).save()
+    await new Archive({ ...deletedResearch, type: 'research' }).save()
     return res.status(204).send()
   }
   throw notFoundError

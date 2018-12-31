@@ -1,5 +1,10 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
+import { ICurriculumResource, ILesson, Omit } from '../sharedTypes'
+
+export interface ICurriculumResourceDocument extends Omit<ICurriculumResource, '_id'>, Document {
+  lessons?: ILesson[]
+}
 
 const featuredImageSchema = new mongoose.Schema({
   _id: { auto: false },
@@ -14,21 +19,11 @@ const featuredImageSchema = new mongoose.Schema({
 })
 
 const lessonSchema = new mongoose.Schema({
-  category: {
-    type: String,
-  },
-  docUrl: {
-    type: String,
-  },
-  externalUrl: {
-    type: String,
-  },
-  pdfUrl: {
-    type: String,
-  },
-  pptUrl: {
-    type: String,
-  },
+  category: String,
+  docUrl: String,
+  externalUrl: String,
+  pdfUrl: String,
+  pptUrl: String,
   title: {
     required: 'lesson title is required',
     type: String,
@@ -42,13 +37,7 @@ const curriculumResource = new mongoose.Schema({
     type: String,
   },
   featuredImage: featuredImageSchema,
-  lessons: {
-    type: [lessonSchema],
-    validate: {
-      message: 'at least one lesson is required',
-      validator: (v: any) => v === null || v.length > 0,
-    },
-  },
+  lessons: [lessonSchema],
   title: {
     required: 'title is required',
     type: String,
@@ -58,4 +47,8 @@ const curriculumResource = new mongoose.Schema({
 
 curriculumResource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
 
-export default mongoose.model('CurriculumResource', curriculumResource, 'curriculumResources')
+export default mongoose.model<ICurriculumResourceDocument>(
+  'CurriculumResource',
+  curriculumResource,
+  'curriculumResources'
+)

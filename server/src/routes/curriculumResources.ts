@@ -13,5 +13,11 @@ const setupCurriculumResourceRoutes = (router: Router) => {
     .route('/:id')
     .delete(catchErrors(curriculumResourceController.deleteCurriculumResource))
     .get(catchErrors(curriculumResourceController.getCurriculumResource))
+  router
+    .route('/:resourceId/lessons')
+    .get(catchErrors(curriculumResourceController.getLessons))
+    .post(catchErrors(curriculumResourceController.createLesson))
+    .put(catchErrors(curriculumResourceController.updateLesson))
+  router.route('/:resourceId/lessons/:id').delete(catchErrors(curriculumResourceController.deleteLesson))
 }
 export default setupCurriculumResourceRoutes
