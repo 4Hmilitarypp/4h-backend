@@ -3,7 +3,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { InputGroup } from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
-import { IDisplayCurriculumResource, ILesson } from '../../../sharedTypes'
+import { ICurriculumResource, ILesson } from '../../../sharedTypes'
 import { IApiError, IForm } from '../../../types'
 import api from '../../../utils/api'
 import { CurriculumResourceContext } from '../CurriculumResources'
@@ -12,12 +12,11 @@ const formatError = (err: IApiError) => err.response.data.message
 
 interface IProps {
   action: 'create' | 'update'
-  curriculumResource?: IDisplayCurriculumResource
-  lessons: ILesson[]
+  curriculumResource?: ICurriculumResource
   setRef: (ref: React.RefObject<HTMLFormElement>) => void
 }
 
-const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, lessons, setRef }) => {
+const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, setRef }) => {
   const formRef = React.useRef<HTMLFormElement>(null)
   const flashContext = React.useContext(FlashContext)
   const curriculumResourceContext = React.useContext(CurriculumResourceContext)
@@ -32,12 +31,11 @@ const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, 
       _id: curriculumResource ? curriculumResource._id : undefined,
       description: description.value,
       featuredImage,
-      lessons,
       title: title.value,
     }
     api.curriculumResource[action](updateCurriculumResource)
       .then(newCurriculumResource => {
-        curriculumResourceContext.setCurriculumResources({ curriculumResource: newCurriculumResource, action })
+        curriculumResourceContext.updateCurriculumResources({ curriculumResource: newCurriculumResource, action })
         navigate('/curriculum-resources')
       })
       .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))

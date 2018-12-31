@@ -1,7 +1,21 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { InputGroup } from '../../../components/Elements'
-import { ILesson } from '../../../sharedTypes'
+import { InputGroup } from '../../../../components/Elements'
+import { ILesson } from '../../../../sharedTypes'
+
+const handleLessonSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
+  e.preventDefault()
+  const { category, docUrl, externalUrl, pdfUrl, pptUrl, title } = e.currentTarget.elements
+  const lesson = {
+    category: category ? category.value : undefined,
+    docUrl: docUrl ? docUrl.value : undefined,
+    externalUrl: externalUrl ? externalUrl.value : undefined,
+    pdfUrl: pdfUrl ? pdfUrl.value : undefined,
+    pptUrl: pptUrl ? pptUrl.value : undefined,
+    title: title.value,
+  }
+  setLessons([...lessons, lesson])
+}
 
 interface IProps {
   onSubmit: (e: any) => void
@@ -10,7 +24,6 @@ interface IProps {
 
 const LessonForm: React.FC<IProps> = ({ onSubmit, lesson, children }) => (
   <Form onSubmit={onSubmit}>
-    {console.log(lesson)}
     <CustomInputGroup>
       <label htmlFor="title">Lesson Title</label>
       <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} />

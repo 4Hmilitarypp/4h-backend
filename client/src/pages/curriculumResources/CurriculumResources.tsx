@@ -1,14 +1,14 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { ICurriculumResource, IDisplayCurriculumResource } from '../../sharedTypes'
+import { ICurriculumResource } from '../../sharedTypes'
 import CurriculumResource from './curriculumResource/CurriculumResource'
 import { useCurriculumResources } from './curriculumResource/useCurriculumResources'
 import CurriculumResourceTable from './CurriculumResourceTable'
 
 interface ICurriculumResourceContext {
-  curriculumResources: ICurriculumResource[] | IDisplayCurriculumResource[] | undefined
-  setCurriculumResources: (
+  curriculumResources: ICurriculumResource[] | undefined
+  updateCurriculumResources: (
     args: {
       _id?: string
       action: 'create' | 'update' | 'delete'
@@ -19,11 +19,11 @@ interface ICurriculumResourceContext {
 export const CurriculumResourceContext = React.createContext<ICurriculumResourceContext>(undefined as any)
 
 const CurriculumResources: React.FC<RouteComponentProps> = () => {
-  const { curriculumResources, setCurriculumResources } = useCurriculumResources()
+  const { curriculumResources, updateCurriculumResources } = useCurriculumResources()
 
   return (
     <CurriculumResourcesContainer>
-      <CurriculumResourceContext.Provider value={{ curriculumResources, setCurriculumResources }}>
+      <CurriculumResourceContext.Provider value={{ curriculumResources, updateCurriculumResources }}>
         <Router>
           <CurriculumResourceTable path="/" />
           <CurriculumResource path="/:_id" />

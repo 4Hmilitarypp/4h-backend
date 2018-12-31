@@ -55,15 +55,11 @@ export interface IResearch {
   url: string
 }
 
-export interface IDisplayCurriculumResource {
+export interface ICurriculumResource {
   _id?: string
   description: string
   featuredImage?: IImage
   title: string
-}
-
-export interface ICurriculumResource extends IDisplayCurriculumResource {
-  lessons: ILesson[]
 }
 
 export interface ILesson {

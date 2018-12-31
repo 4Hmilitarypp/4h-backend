@@ -1,13 +1,11 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../../contexts/FlashContext'
-import { ICurriculumResource, IDisplayCurriculumResource } from '../../../sharedTypes'
+import { ICurriculumResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 
 export const useCurriculumResources = () => {
-  const [curriculumResources, setCurriculumResources] = React.useState<
-    ICurriculumResource[] | IDisplayCurriculumResource[] | undefined
-  >(undefined)
+  const [curriculumResources, setCurriculumResources] = React.useState<ICurriculumResource[] | undefined>(undefined)
   React.useEffect(() => {
     api.curriculumResource
       .get()
@@ -27,7 +25,7 @@ export const useCurriculumResources = () => {
     curriculumResource?: ICurriculumResource
   }) => {
     if (curriculumResources) {
-      let newCurriculumResources: ICurriculumResource[] | IDisplayCurriculumResource[] = []
+      let newCurriculumResources: ICurriculumResource[] = []
       if (action === 'update' && curriculumResource) {
         newCurriculumResources = map(curriculumResources, r =>
           r._id === curriculumResource._id ? curriculumResource : r
@@ -43,5 +41,5 @@ export const useCurriculumResources = () => {
       setCurriculumResources(newCurriculumResources)
     }
   }
-  return { curriculumResources, setCurriculumResources: updateCurriculumResources }
+  return { curriculumResources, updateCurriculumResources }
 }
