@@ -1,6 +1,5 @@
 import { omit } from 'lodash'
 import mongoose from 'mongoose'
-import { ILesson } from 'src/sharedTypes'
 import { ICurriculumResourceDocument } from '../models/CurriculumResource'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
@@ -54,10 +53,11 @@ export const deleteCurriculumResource: Controller = async (req, res) => {
   throw notFoundError
 }
 
+// ! something is wrong with creating a lesson!
 export const createLesson: Controller = async (req, res) => {
   const { resourceId } = req.params
   // @ts-ignore
-  const { _id, newLesson } = req.body
+  const { _id, ...newLesson } = req.body
   const updatedCurriculumResource = (await CurriculumResource.findByIdAndUpdate(
     resourceId,
     {
@@ -82,9 +82,9 @@ export const getLessons: Controller = async (req, res) => {
   throw notFoundError
 }
 
-const findLessonById = (id: string, lessons?: ILesson[]) => {
+const findLessonById = (id: string, lessons?: any) => {
   if (lessons) {
-    return lessons.find((l: any) => l._id.toString() === id)
+    return lessons.id(id)
   }
   return false
 }

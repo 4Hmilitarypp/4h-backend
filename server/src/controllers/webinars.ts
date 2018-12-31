@@ -7,7 +7,8 @@ const Webinar = mongoose.model('Webinar')
 const Archive = mongoose.model('Archive')
 
 export const createWebinar: Controller = async (req, res) => {
-  const webinar = await new Webinar(req.body).save()
+  const { _id, ...newWebinar } = req.body
+  const webinar = await new Webinar(newWebinar).save()
   return res.status(201).json(omitV(webinar))
 }
 

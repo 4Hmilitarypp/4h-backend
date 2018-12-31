@@ -27,7 +27,6 @@ const lessonSchema = new mongoose.Schema({
   title: {
     required: 'lesson title is required',
     type: String,
-    unique: true,
   },
 })
 
