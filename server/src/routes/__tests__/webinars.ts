@@ -35,7 +35,7 @@ it('should return a 201 if created was successful', async () => {
   expect(res.status).toBe(201)
   expect(res.body).toEqual({ ...webinar, _id: expect.any(String) })
   const inDb = await Webinar.find()
-  expect(formatDb(inDb[0])).toMatchObject(webinar)
+  expect(formatDb(inDb[0])).toMatchObject({ ...webinar, _id: res.body._id })
 })
 
 it('should return a 400 if a webinar with a bad form is created', async () => {

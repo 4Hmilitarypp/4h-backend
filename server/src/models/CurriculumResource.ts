@@ -3,7 +3,7 @@ import uniqueValidator from 'mongoose-unique-validator'
 import { ICurriculumResource, ILesson, Omit } from '../sharedTypes'
 
 export interface ICurriculumResourceDocument extends Omit<ICurriculumResource, '_id'>, Document {
-  lessons?: ILesson[]
+  lessons: ILesson[]
 }
 
 const featuredImageSchema = new mongoose.Schema({

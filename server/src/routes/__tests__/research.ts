@@ -35,7 +35,7 @@ it('should return a 201 if created was successful', async () => {
   expect(res.status).toBe(201)
   expect(res.body).toEqual({ ...research, _id: expect.any(String) })
   const inDb = await Research.find()
-  expect(formatDb(inDb[0])).toMatchObject(research)
+  expect(formatDb(inDb[0])).toMatchObject({ ...research, _id: res.body._id })
 })
 
 it('should return a 400 if a research with a duplicate title is created', async () => {

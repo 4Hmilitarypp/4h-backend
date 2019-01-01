@@ -1,8 +1,33 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import { ILiaison, IResearch, IWebinar } from '../sharedTypes'
+import {
+  ICurriculumResource,
+  ICurriculumResourceWithLessons,
+  ILesson,
+  ILiaison,
+  IResearch,
+  IWebinar,
+} from '../sharedTypes'
 
 const generate = {
+  curriculumResource: (overrides?: Partial<ICurriculumResource>, lesson?: ILesson): ICurriculumResourceWithLessons => ({
+    _id: generate.objectId(),
+    description: faker.lorem.paragraph(),
+    featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
+    lessons: lesson ? [lesson] : undefined,
+    title: faker.company.catchPhrase(),
+    ...overrides,
+  }),
+  curriculumResources: (length: number): ICurriculumResourceWithLessons[] =>
+    Array.from({ length }, () => generate.curriculumResource()),
+  lesson: (overrides?: Partial<ILesson>): ILesson => ({
+    _id: generate.objectId(),
+    pdfUrl: faker.internet.url(),
+    pptUrl: faker.internet.url(),
+    title: faker.company.catchPhrase(),
+    ...overrides,
+  }),
+  lessons: (length: number): ILesson[] => Array.from({ length }, () => generate.lesson()),
   liaison: (overrides?: Partial<ILiaison>): ILiaison => ({
     _id: generate.objectId(),
     email: faker.internet.email(),

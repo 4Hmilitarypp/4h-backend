@@ -1,5 +1,75 @@
 import generate from '../generate'
 
+describe('generate.curriculumResource', () => {
+  it('should return a correct curriculumResource', () => {
+    const res = generate.curriculumResource()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      description: expect.any(String),
+      featuredImage: { url: expect.any(String), alt: expect.any(String) },
+      title: expect.any(String),
+    })
+  })
+})
+
+describe('generate.curriculumResources', () => {
+  it('should return multiple curriculumResources', () => {
+    const res = generate.curriculumResources(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          title: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          title: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
+describe('generate.lesson', () => {
+  it('should return a correct lesson', () => {
+    const res = generate.lesson()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      pdfUrl: expect.any(String),
+      pptUrl: expect.any(String),
+      title: expect.any(String),
+    })
+  })
+})
+
+describe('generate.lessons', () => {
+  it('should return multiple lessons', () => {
+    const res = generate.lessons(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          pdfUrl: expect.any(String),
+          pptUrl: expect.any(String),
+          title: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          pdfUrl: expect.any(String),
+          pptUrl: expect.any(String),
+          title: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
 describe('generate.liaison', () => {
   it('should return a full liaison', () => {
     const res = generate.liaison()

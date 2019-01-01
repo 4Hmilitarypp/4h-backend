@@ -35,7 +35,7 @@ it('should return a 201 if created was successful', async () => {
   expect(res.status).toBe(201)
   expect(res.body).toEqual({ ...liaison, _id: expect.any(String) })
   const inDb = await Liaison.find()
-  expect(formatDb(inDb[0])).toMatchObject(liaison)
+  expect(formatDb(inDb[0])).toMatchObject({ ...liaison, _id: res.body._id })
 })
 
 it('should return a 400 if a liaison with a duplicate abbreviation is created', async () => {

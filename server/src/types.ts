@@ -12,7 +12,7 @@ export type Middleware = (req: Request, res: Response, next: NextFunction) => vo
 export type ErrorHandler = (err: IApiError, req: Request, res: Response, next: NextFunction) => Response | void
 const hasNested = (err: any) => {
   for (const key in err.errors) {
-    if (err.errors[key] && err.errors[key].name === 'ValidatorError') {
+    if ((err.errors[key] && err.errors[key].name === 'ValidatorError') || err.errors[key].name === 'ValidationError') {
       return true
     }
   }

@@ -62,6 +62,10 @@ export interface ICurriculumResource {
   title: string
 }
 
+export interface ICurriculumResourceWithLessons extends ICurriculumResource {
+  lessons?: ILesson[]
+}
+
 export interface ILesson {
   _id?: string
   category?: string

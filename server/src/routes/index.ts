@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import { notFoundError } from '../utils/errors'
 import setupCurriculumResourceRoutes from './curriculumResources'
 import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
@@ -25,5 +26,9 @@ const setupRoutes = (app: Express) => {
   const curriculumResourcesRouter = express.Router()
   setupCurriculumResourceRoutes(curriculumResourcesRouter)
   app.use('/api/curriculumResources', curriculumResourcesRouter)
+
+  app.use('/api', () => {
+    throw notFoundError
+  })
 }
 export default setupRoutes

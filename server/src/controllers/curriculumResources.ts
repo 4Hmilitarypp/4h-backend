@@ -53,7 +53,6 @@ export const deleteCurriculumResource: Controller = async (req, res) => {
   throw notFoundError
 }
 
-// ! something is wrong with creating a lesson!
 export const createLesson: Controller = async (req, res) => {
   const { resourceId } = req.params
   // @ts-ignore
@@ -63,7 +62,7 @@ export const createLesson: Controller = async (req, res) => {
     {
       $push: { lessons: newLesson },
     },
-    { new: true }
+    { context: 'query', new: true, runValidators: true }
   )) as any
   if (updatedCurriculumResource) {
     // will only return the last lesson in the list. If they are ordered in the db this won't work and I'll need to find a way to get the actual created lesson
