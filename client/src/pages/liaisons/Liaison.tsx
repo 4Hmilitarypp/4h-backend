@@ -47,6 +47,7 @@ const Contact = styled.div`
 const Name = styled.span`
   font-weight: 700;
   display: block;
+  color: ${props => props.theme.primaryGrey};
 `
 const Item = styled.span`
   display: block;
@@ -55,7 +56,7 @@ const Item = styled.span`
 const Location = styled.div`
   display: block;
   font-weight: 500;
-  color: ${props => props.theme.lightGray};
+  color: ${props => props.theme.lightGrey};
 `
 const SchoolLogo = styled.img`
   width: 100%;

@@ -12,7 +12,7 @@ import { LessonContext } from './Lessons'
 interface IProps {
   lesson?: ILesson
   open: boolean
-  setOpen: (open: boolean) => void
+  setOpen: (isOpen: boolean) => void
   action: 'update' | 'create'
 }
 
@@ -45,7 +45,7 @@ const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
 
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
-      <ModalHeading>{`${action === 'update' ? 'Updating a lesson item' : 'Create a new Lesson'}`}</ModalHeading>
+      <ModalHeading>{`${action === 'update' ? 'Updating a Lesson' : 'Create a new Lesson'}`}</ModalHeading>
       <LessonForm action={action} setOpen={setOpen} lesson={lesson}>
         <Buttons>
           {action === 'update' &&
@@ -80,7 +80,7 @@ const ModalHeading = styled.h3`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-top: 2rem;
+  padding: 2rem 1.2rem;
   align-items: center;
 `
 const DeleteButton = styled.button`
@@ -102,9 +102,9 @@ const RightButtons = styled.div`
   margin-left: auto;
 `
 const OutlineButton = styled(Button)`
-  border: 2px solid ${props => props.theme.buttonBackground};
+  border: 2px solid ${props => props.theme.primaryLink};
   padding: 0.8rem 1.4rem;
   background: none;
-  color: ${props => props.theme.buttonBackground};
+  color: ${props => props.theme.primaryLink};
   margin-right: 1.6rem;
 `

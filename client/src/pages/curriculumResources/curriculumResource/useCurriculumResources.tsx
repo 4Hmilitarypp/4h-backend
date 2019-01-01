@@ -7,7 +7,7 @@ import api from '../../../utils/api'
 const useCurriculumResources = () => {
   const [curriculumResources, setCurriculumResources] = React.useState<ICurriculumResource[] | undefined>(undefined)
   React.useEffect(() => {
-    api.curriculumResource
+    api.curriculumResources
       .get()
       .then(r => setCurriculumResources(r))
       .catch(err => console.error(err))

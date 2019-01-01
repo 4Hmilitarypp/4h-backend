@@ -25,7 +25,7 @@ const research = {
   get: (): Promise<IResearch[]> => requests.get('/research'),
   update: (updates: IResearch): Promise<IResearch> => requests.put('/research', updates),
 }
-const curriculumResource = {
+const curriculumResources = {
   create: (data: ICurriculumResource): Promise<ICurriculumResource> => requests.post('/curriculumResources', data),
   delete: (id: string): Promise<string> => requests.delete(`/curriculumResources/${id}`),
   get: (): Promise<ICurriculumResource[]> => requests.get('/curriculumResources'),
@@ -65,7 +65,7 @@ function init({
 }
 
 const restApi = {
-  curriculumResource,
+  curriculumResources,
   init,
   lessons,
   liaisons,

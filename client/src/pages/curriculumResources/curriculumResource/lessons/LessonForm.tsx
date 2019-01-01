@@ -23,6 +23,7 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
     e.preventDefault()
     const { category, docUrl, externalUrl, pdfUrl, pptUrl, title } = e.currentTarget.elements
     const updateLesson = {
+      _id: lesson ? lesson._id : undefined,
       category: category ? category.value : undefined,
       docUrl: docUrl ? docUrl.value : undefined,
       externalUrl: externalUrl ? externalUrl.value : undefined,
@@ -39,14 +40,26 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
   }
   return (
     <Form onSubmit={handleSubmit}>
-      <CustomInputGroup>
+      <InputGroup>
         <label htmlFor="title">Lesson Title</label>
         <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} />
-      </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="pdfUrl">Url to Lesson</label>
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="pdfUrl">Url to Pdf for Lesson</label>
         <input type="url" id="pdfUrl" defaultValue={lesson && lesson.pdfUrl} />
-      </CustomInputGroup>
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="docUrl">Url to Word Document for Lesson</label>
+        <input type="url" id="docUrl" defaultValue={lesson && lesson.docUrl} />
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="pptUrl">Url to PowerPoint for Lesson</label>
+        <input type="url" id="pptUrl" defaultValue={lesson && lesson.pptUrl} />
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="externalUrl">Url to external website for Lesson</label>
+        <input type="url" id="externalUrl" defaultValue={lesson && lesson.externalUrl} />
+      </InputGroup>
       {children}
     </Form>
   )
@@ -57,10 +70,4 @@ const Form = styled.form`
   padding: 1.2rem 2rem 0;
   display: flex;
   flex-direction: column;
-`
-const CustomInputGroup = styled(InputGroup)`
-  input,
-  textarea {
-    background: ${props => props.theme.white};
-  }
 `

@@ -33,7 +33,7 @@ const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, 
       featuredImage,
       title: title.value,
     }
-    api.curriculumResource[action](updateCurriculumResource)
+    api.curriculumResources[action](updateCurriculumResource)
       .then(newCurriculumResource => {
         curriculumResourceContext.updateCurriculumResources({ curriculumResource: newCurriculumResource, action })
         navigate(`/curriculum-resources/${newCurriculumResource._id}`)

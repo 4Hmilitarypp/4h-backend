@@ -79,7 +79,7 @@ const Close = styled.button`
 `
 
 const ResponseSuccess = styled(Response)`
-  border: 5px solid ${props => props.theme.green};
+  border: 5px solid ${props => props.theme.success};
 `
 const ResponseError = styled(Response)`
   border: 5px solid ${props => props.theme.warning};

@@ -90,7 +90,7 @@ const Close = styled.button`
 
 const ResponseSuccess = styled(Response)`
   width: 100%;
-  background: ${props => props.theme.green};
+  background: ${props => props.theme.success};
 `
 const ResponseError = styled(Response)`
   margin: 0 auto;

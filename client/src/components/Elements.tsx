@@ -1,17 +1,16 @@
 import { Link as UnstyledLink } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { IHeadingProps } from '../types'
 import { elevation, transition } from '../utils/mixins'
 
 // TODO Refactor this to use an Input and a label and return actual components.
 
 export const InputGroup = styled.div`
-  margin-bottom: 1.2rem;
+  margin: 0 0.4rem 1.2rem;
   flex-grow: 1;
   label,
   legend {
-    color: ${props => props.theme.grey};
+    color: ${props => props.theme.primaryGrey};
     padding-bottom: 0.4rem;
   }
   label,
@@ -23,29 +22,36 @@ export const InputGroup = styled.div`
   textarea {
     width: 100%;
     border-radius: 5px;
-    padding: 1.2rem 1.6rem;
+    padding: 0.9rem 1.5rem;
     border: none;
-    background: ${props => props.theme.inputGray};
+    background: ${props => props.theme.primaryBackground};
   }
 `
 export const PageWrapper = styled.div`
-  padding: 2rem;
+  padding: 0 2rem 2rem;
   max-width: 140rem;
   margin: 0 auto;
 `
-export const Heading: any = styled.h1`
-  color: ${(props: IHeadingProps) => (props.color ? props.theme[props.color] : props.theme.gray)};
-  padding-top: 2rem;
-  padding-bottom: 0.4rem;
-  text-align: ${(props: IHeadingProps) => (props.center ? 'center' : '')};
+export const Heading = styled.h1`
+  color: ${props => props.theme.primaryBlack};
+  padding: 3.2rem 0 3.2rem;
+  text-align: center;
+  line-height: 1.2;
+`
+export const SubHeading = styled.h2`
+  color: ${props => props.theme.primaryBlack};
+  padding: 3.2rem 0 3.2rem;
+  text-align: center;
+  line-height: 1.2;
 `
 export const Button: any = styled.button`
   border-radius: 5px;
   color: ${props => props.theme.white};
-  background: ${props => props.theme.buttonBackground};
+  background: ${props => props.theme.primaryLink};
   border: none;
-  padding: 0.8rem 1.6rem;
+  padding: 1.2rem 1.6rem;
   font-weight: 500;
+  line-height: normal;
   ${elevation(3)};
   ${transition({ prop: 'all', time: 0.15, name: 'easeOutQuart' })};
   &:hover,
@@ -59,19 +65,13 @@ export const Button: any = styled.button`
 export const SecondaryButton = styled(Button)`
   background: ${props => props.theme.secondary};
 `
-export const SubHeading: any = styled.h2`
-  color: ${(props: IHeadingProps) => (props.color ? props.theme[props.color] : props.theme.secondary)};
-  padding-top: 3.2rem;
-  padding-bottom: 1.2rem;
-  text-align: ${(props: any) => (props.center === false ? 'left' : 'center')};
-`
 export const Section = styled.section`
-  max-width: 85rem;
+  max-width: 80rem;
   margin: 0 auto;
 `
 export const A = styled.a`
   font-weight: 500;
-  color: ${props => props.theme.primaryText};
+  color: ${props => props.theme.primaryLink};
   &:hover {
     opacity: 0.8;
   }
@@ -79,13 +79,14 @@ export const A = styled.a`
 // Have to do the props thing because of a jest error
 export const Link = styled(props => <UnstyledLink {...props} />)`
   font-weight: 500;
-  color: ${props => props.theme.primaryText};
+  color: ${props => props.theme.primaryLink};
   &:hover {
     opacity: 0.8;
   }
 `
 export const P = styled.p`
   padding-bottom: 1.6rem;
+  color: ${props => props.theme.primaryGrey};
   &:last-child {
     padding-bottom: 0;
   }
@@ -93,13 +94,13 @@ export const P = styled.p`
 export const DynamicSection = styled(Section)`
   a {
     font-weight: 500;
-    color: ${props => props.theme.primaryText};
+    color: ${props => props.theme.primaryLink};
     &:hover {
       opacity: 0.8;
     }
   }
   p {
-    padding-bottom: 1.6rem;
+    padding-bottom: 1.5rem;
     &:last-child {
       padding-bottom: 0;
     }
@@ -108,4 +109,24 @@ export const DynamicSection = styled(Section)`
     list-style: initial;
     padding-left: 4rem;
   }
+`
+
+export const Pdf: any = styled.object`
+  height: 100%;
+  width: 100%;
+  padding-bottom: 2rem;
+`
+export const Doc: any = styled.iframe`
+  height: 100%;
+  width: 100%;
+  padding-bottom: 5rem;
+`
+export const EmbedWrapper = styled.div`
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background: hsl(206, 7%, 21%);
 `

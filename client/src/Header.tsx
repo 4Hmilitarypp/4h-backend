@@ -22,7 +22,7 @@ export default Header
 const HeaderWrapper = styled.header`
   background: ${props => props.theme.primary};
   color: ${props => props.theme.white};
-  padding: 1.2rem;
+  padding: 1.1rem 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

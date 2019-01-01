@@ -1,7 +1,7 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, SubHeading } from '../../../components/Elements'
+import { Button, Heading } from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
 import { ICurriculumResource } from '../../../sharedTypes'
 import { IApiError } from '../../../types'
@@ -22,19 +22,27 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   const [curriculumFormRef, setCurriculumFormRef] = React.useState<React.RefObject<HTMLFormElement> | undefined>(
     undefined
   )
-  const [action] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
+  const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const curriculumResourceContext = React.useContext(CurriculumResourceContext)
   const flashContext = React.useContext(FlashContext)
 
-  React.useEffect(() => {
-    if (action === 'update' && _id) {
-      api.curriculumResource
-        .getById(_id)
-        .then(r => setCurriculumResource(r))
-        .catch(err => console.error(err))
-    }
-  }, [])
+  React.useEffect(
+    () => {
+      if (_id === 'new') {
+        setAction('create')
+      } else {
+        setAction('update')
+      }
+      if (action === 'update' && _id) {
+        api.curriculumResources
+          .getById(_id)
+          .then(r => setCurriculumResource(r))
+          .catch(err => console.error(err))
+      }
+    },
+    [_id]
+  )
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
@@ -43,7 +51,7 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
 
   const handleDeleteClicked = () => {
     if (curriculumResource && timesDeleteClicked === 1) {
-      api.curriculumResource
+      api.curriculumResources
         .delete(curriculumResource._id as string)
         .then(res => {
           curriculumResourceContext.updateCurriculumResources({ _id: curriculumResource._id, action: 'delete' })
@@ -59,12 +67,10 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
 
   return (
     <div>
-      <ModalHeading>{`${
+      <CustomHeading>{`${
         action === 'update' ? 'Updating a Curriculum Resource' : 'Create a new Curriculum Resource'
-      }`}</ModalHeading>
-      <SubHeading>Curriculum Resource Form</SubHeading>
+      }`}</CustomHeading>
       <CurriculumResourceForm action={action} curriculumResource={curriculumResource} setRef={setCurriculumFormRef} />
-      {_id && action === 'update' && <Lessons resourceId={_id} />}
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
@@ -85,18 +91,16 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
           </Button>
         </RightButtons>
       </Buttons>
+      {_id && action === 'update' && <Lessons resourceId={_id} />}
     </div>
   )
 }
 
 export default CurriculumResource
 
-const ModalHeading = styled.h3`
-  color: ${props => props.theme.primaryText};
-  padding: 1.2rem 1.6rem 0;
-  text-align: center;
+const CustomHeading = styled(Heading)`
+  font-size: 2.4rem;
 `
-// const Lessons = styled.div``
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
@@ -122,9 +126,9 @@ const RightButtons = styled.div`
   margin-left: auto;
 `
 const OutlineButton = styled(Button)`
-  border: 2px solid ${props => props.theme.buttonBackground};
+  border: 2px solid ${props => props.theme.primaryLink};
   padding: 0.8rem 1.4rem;
   background: none;
-  color: ${props => props.theme.buttonBackground};
+  color: ${props => props.theme.primaryLink};
   margin-right: 1.6rem;
 `

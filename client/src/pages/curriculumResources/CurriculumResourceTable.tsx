@@ -16,13 +16,13 @@ const CurriculumResourceTable: React.FC<RouteComponentProps> = () => {
           + Create a new CurriculumResource
         </Button>
       </TableHeader>
-      <ul>
+      <div>
         {map(context.curriculumResources, r => (
           <Wrapper to={r._id} key={r._id}>
             <Title>{r.title}</Title>
           </Wrapper>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
@@ -41,6 +41,7 @@ const CurriculumResourceHeading = styled(Heading)`
 const Wrapper = styled(Link)`
   padding: 2rem;
   position: relative;
+  display: block;
   ${hoveredRow()};
   &:nth-child(2n - 1) {
     background: ${props => props.theme.white};
@@ -48,4 +49,5 @@ const Wrapper = styled(Link)`
 `
 const Title = styled.span`
   font-weight: 500;
+  color: ${props => props.theme.primaryGrey};
 `

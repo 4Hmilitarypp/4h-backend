@@ -16,21 +16,24 @@ import Webinars from './pages/Webinars'
 import Sidebar from './Sidebar'
 
 export const theme = {
-  black: 'hsl(150, 20%, 20%)',
-  buttonBackground: '#278657',
-  gray: 'hsl(150, 20%, 25%)',
-  green: '#0ac775',
-  grey: 'hsl(150, 20%, 25%)',
-  inputGray: 'hsl(150,39%,96%)',
-  inputGrey: 'hsl(150,39%,96%)',
-  lightGray: 'hsl(150, 20%, 40%)',
-  lightGrey: 'hsl(150, 20%, 40%',
-  offWhite: '#f7f8f7',
+  lightGrey: 'hsl(150, 20%, 40%)',
+  offWhite: 'hsl(150, 40%, 96%)',
   primary: 'hsl(150, 50%, 40%)',
-  primaryText: '#0e8147',
-  secondary: '#5a2a82',
-  warning: '#bb0000',
-  white: '#fff',
+  primaryBackground: 'hsl(150,39%,96%)',
+  primaryBlack: 'hsl(150, 20%, 20%)',
+  primaryDark: 'hsl(150, 39%, 27%)',
+  primaryGrey: 'hsl(150, 6%, 31%)',
+  primaryLight: 'hsl(149, 32%, 85%)',
+  primaryLink: 'hsl(150, 80%, 28%)',
+  secondary: 'hsl(266, 55%, 35%)',
+  secondaryBackground: 'hsl(268, 48%, 95%)',
+  secondaryBlack: 'hsl(266, 20%, 20%)',
+  secondaryGrey: 'hsl(266, 6%, 31%)',
+  secondaryLight: 'hsl(266, 32%, 85%)',
+  secondaryMiddle: 'hsl(266, 33%, 55%)',
+  success: 'hsl(154, 90%, 41%)',
+  warning: 'hsl(0, 100%, 37%)',
+  white: 'hsl(0, 0%, 100%)',
 }
 
 const App: React.FC<{}> = () => {
@@ -68,7 +71,7 @@ export default App
 
 const GlobalStyle = createGlobalStyle`
   body {
-  background: ${theme.inputGray};
+  background: ${theme.primaryBackground};
   font-family: Rubik, arial, sans-serif;
   }
   input,

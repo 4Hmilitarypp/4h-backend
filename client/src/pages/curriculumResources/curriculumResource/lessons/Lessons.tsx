@@ -1,10 +1,9 @@
-import { Link } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, Heading } from '../../../../components/Elements'
+import { Heading } from '../../../../components/Elements'
 import { ILesson } from '../../../../sharedTypes'
-import { hoveredRow } from '../../../../utils/mixins'
+import Lesson from './Lesson'
 import LessonModal from './LessonModal'
 import useLessons from './useLessons'
 
@@ -25,42 +24,53 @@ const Lessons: React.FC<{ resourceId: string }> = ({ resourceId }) => {
   const { lessons, updateLessons } = useLessons(resourceId)
 
   const [modalOpen, setModalOpen] = React.useState(false)
+
   return (
-    <div>
+    <Wrapper>
       <TableHeader>
-        <Heading>Lessons</Heading>
-        <Button as={Link} to="new">
-          + Create a new Lesson
-        </Button>
+        <Spacer />
+        <CustomHeading>Lessons</CustomHeading>
+        <CreateButton onClick={() => setModalOpen(true)}>+ New Lesson</CreateButton>
       </TableHeader>
       <LessonContext.Provider value={{ lessons, updateLessons, resourceId }}>
-        {map(lessons, l => (
-          <Wrapper key={l._id}>
-            <Title>{l.title}</Title>
-            <LessonModal open={modalOpen} setOpen={setModalOpen} lesson={l} action="update" />
-          </Wrapper>
-        ))}
+        {map(lessons, l => {
+          return <Lesson lesson={l} key={l._id} />
+        })}
+        <LessonModal open={modalOpen} setOpen={setModalOpen} action="create" />
       </LessonContext.Provider>
-    </div>
+    </Wrapper>
   )
 }
 
 export default Lessons
-
+const Wrapper = styled.div`
+  margin-top: 3.2rem;
+  background: ${props => props.theme.primaryLight};
+  padding-bottom: 3.2rem;
+`
 const TableHeader = styled.div`
-  padding: 0rem 4rem 1.6rem;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  padding: 0 3.2rem;
 `
-const Wrapper = styled.div`
-  padding: 2rem;
-  position: relative;
-  ${hoveredRow()};
-  &:nth-child(2n - 1) {
-    background: ${props => props.theme.white};
-  }
+const Spacer = styled.div`
+  width: 11.7rem;
 `
-const Title = styled.span`
+const CustomHeading = styled(Heading)`
+  font-size: 2.4rem;
+`
+const CreateButton = styled.button`
+  background: ${props => props.theme.primaryBackground};
+  border: none;
+  color: ${props => props.theme.primaryLink};
   font-weight: 500;
+  margin-top: 1.6rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.4rem;
+  align-self: flex-start;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 `

@@ -52,7 +52,7 @@ const ModalCard = styled.div`
   z-index: 2;
   min-width: 60rem;
   max-height: 90vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 `
 const Background = styled.div`
   position: absolute;

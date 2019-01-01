@@ -30,13 +30,13 @@ const useLessons = (resourceId?: string) => {
       let newLessons: ILesson[] = []
       if (action === 'update' && lesson) {
         newLessons = map(lessons, r => (r._id === lesson._id ? lesson : r))
-        flashContext.set({ message: 'Curriculum Resource Updated Successfully' })
+        flashContext.set({ message: 'Lesson Updated Successfully' })
       } else if (action === 'create' && lesson) {
         newLessons = [lesson, ...lessons]
-        flashContext.set({ message: 'Curriculum Resource Created Successfully' })
+        flashContext.set({ message: 'Lesson Created Successfully' })
       } else if (action === 'delete') {
         newLessons = filter(lessons, r => r._id !== _id)
-        flashContext.set({ message: 'Curriculum Resource Deleted Successfully' })
+        flashContext.set({ message: 'Lesson Deleted Successfully' })
       }
       setLessons(newLessons)
     }

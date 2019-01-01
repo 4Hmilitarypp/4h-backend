@@ -1,6 +1,5 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import styled from 'styled-components/macro'
 import { ICurriculumResource } from '../../sharedTypes'
 import CurriculumResource from './curriculumResource/CurriculumResource'
 import useCurriculumResources from './curriculumResource/useCurriculumResources'
@@ -22,16 +21,12 @@ const CurriculumResources: React.FC<RouteComponentProps> = () => {
   const { curriculumResources, updateCurriculumResources } = useCurriculumResources()
 
   return (
-    <CurriculumResourcesContainer>
-      <CurriculumResourceContext.Provider value={{ curriculumResources, updateCurriculumResources }}>
-        <Router>
-          <CurriculumResourceTable path="/" />
-          <CurriculumResource path="/:_id" />
-        </Router>
-      </CurriculumResourceContext.Provider>
-    </CurriculumResourcesContainer>
+    <CurriculumResourceContext.Provider value={{ curriculumResources, updateCurriculumResources }}>
+      <Router>
+        <CurriculumResourceTable path="/" />
+        <CurriculumResource path="/:_id" />
+      </Router>
+    </CurriculumResourceContext.Provider>
   )
 }
 export default CurriculumResources
-
-const CurriculumResourcesContainer = styled.div``
