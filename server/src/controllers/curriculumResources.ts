@@ -40,8 +40,8 @@ export const getCurriculumResourceBySlug: Controller = async (req, res) => {
 }
 
 export const updateCurriculumResource: Controller = async (req, res) => {
-  const { _id, lessons, ...updates } = req.body
-  const curriculumResource = await CurriculumResource.findByIdAndUpdate(_id, updates, {
+  const { _id, lessons, slug, ...updates } = req.body
+  const curriculumResource = await CurriculumResource.findOneAndUpdate({ _id }, updates, {
     context: 'query',
     new: true,
     runValidators: true,

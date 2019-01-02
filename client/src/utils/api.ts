@@ -1,5 +1,5 @@
 import * as axios from 'axios'
-import { ICurriculumResource, ILesson, ILiaison, IResearch, IWebinar } from '../sharedTypes'
+import { ICurriculumResource, ILesson, ILiaison, IResearch, IWebinar, Omit } from '../sharedTypes'
 
 let api: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
@@ -26,11 +26,11 @@ const research = {
   update: (updates: IResearch): Promise<IResearch> => requests.put('/research', updates),
 }
 const curriculumResources = {
-  create: (data: ICurriculumResource): Promise<ICurriculumResource> => requests.post('/curriculumResources', data),
+  create: (data: Omit<ICurriculumResource, 'slug'>): Promise<ICurriculumResource> => requests.post('/curriculumResources', data),
   delete: (id: string): Promise<string> => requests.delete(`/curriculumResources/${id}`),
   get: (): Promise<ICurriculumResource[]> => requests.get('/curriculumResources'),
   getById: (id: string): Promise<ICurriculumResource> => requests.get(`/curriculumResources/${id}`),
-  update: (updates: ICurriculumResource): Promise<ICurriculumResource> => requests.put('/curriculumResources', updates),
+  update: (updates: Omit<ICurriculumResource, 'slug'>): Promise<ICurriculumResource> => requests.put('/curriculumResources', updates),
 }
 
 const lessons = {

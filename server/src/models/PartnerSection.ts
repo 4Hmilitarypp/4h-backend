@@ -8,13 +8,24 @@ const partnerSectionSchema = new mongoose.Schema({
   title: { type: String, required: 'Please enter a title' },
 })
 
-partnerSectionSchema.pre('save', async function(next) {
+partnerSectionSchema.pre('save', function(next) {
   if (!this.isModified('title')) {
     next()
     return
   }
   ;(<any>this).slug = slugify((<any>this).title)
   next()
+})
+
+partnerSectionSchema.pre('findOneAndUpdate', function(next) {
+  const title = this.getUpdate().title
+  if (title) {
+    ;(this as any)._update.slug = slugify(title)
+    next()
+  } else {
+    next()
+    return
+  }
 })
 
 export default mongoose.model('PartnerSection', partnerSectionSchema)

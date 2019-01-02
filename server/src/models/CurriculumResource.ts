@@ -48,13 +48,24 @@ const curriculumResource = new mongoose.Schema({
 
 curriculumResource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
 
-curriculumResource.pre('save', async function(this: ICurriculumResourceDocument, next) {
+curriculumResource.pre('save', function(this: ICurriculumResourceDocument, next) {
   if (!this.isModified('title')) {
     next()
     return
   }
   this.slug = slugify(this.title)
   next()
+})
+
+curriculumResource.pre('findOneAndUpdate', function(next) {
+  const title = this.getUpdate().title
+  if (title) {
+    ;(this as any)._update.slug = slugify(title)
+    next()
+  } else {
+    next()
+    return
+  }
 })
 
 export default mongoose.model<ICurriculumResourceDocument>(

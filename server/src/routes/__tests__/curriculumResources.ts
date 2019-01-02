@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import slugify from 'slugify'
 import request from 'supertest'
 import app from '../../app'
 import { ICurriculumResourceDocument } from '../../models/CurriculumResource'
@@ -92,9 +93,9 @@ describe('curriculumResources', () => {
   /**
    * PUT
    */
-  it('should return a 200 if the update was successful', async () => {
+  it('should return a 200 if the update was successful and slug should still be title', async () => {
     const originalCurriculumResource = generate.curriculumResource()
-    const inDb = await new CurriculumResource(originalCurriculumResource).save()
+    const inDb = (await new CurriculumResource(originalCurriculumResource).save()) as ICurriculumResourceDocument
 
     const updateCurriculumResource = generate.curriculumResource({ title: 'updated title' })
     updateCurriculumResource._id = inDb._id.toString()
@@ -104,9 +105,13 @@ describe('curriculumResources', () => {
       .send(updateCurriculumResource)
 
     expect(res.status).toEqual(200)
-    expect(res.body).toEqual(updateCurriculumResource)
-    const finalInDb = await CurriculumResource.findById(res.body._id)
-    expect(formatDb(finalInDb)).toMatchObject({ ...updateCurriculumResource, lessons: expect.any(Array) })
+    expect(res.body).toEqual({ ...updateCurriculumResource, slug: expect.any(String) })
+    const finalInDb = (await CurriculumResource.findById(res.body._id)) as ICurriculumResourceDocument
+    expect(formatDb(finalInDb)).toMatchObject({
+      ...updateCurriculumResource,
+      lessons: expect.any(Array),
+      slug: slugify(finalInDb.title),
+    })
   })
 
   it('should return a 404 if not found', async () => {
