@@ -59,6 +59,7 @@ export interface ICurriculumResource {
   _id?: string
   description: string
   featuredImage?: IImage
+  slug: string
   title: string
 }
 

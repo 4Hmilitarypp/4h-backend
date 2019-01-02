@@ -4,6 +4,7 @@ import * as curriculumResourceController from '../controllers/curriculumResource
 import { catchErrors } from '../handlers/errorHandlers'
 
 const setupCurriculumResourceRoutes = (router: Router) => {
+  router.route('/slug/:slug').get(catchErrors(curriculumResourceController.getCurriculumResourceBySlug))
   router
     .route('/')
     .get(catchErrors(curriculumResourceController.getCurriculumResources))

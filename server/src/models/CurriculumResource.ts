@@ -1,5 +1,6 @@
 import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
+import slugify from 'slugify'
 import { ICurriculumResource, ILesson, Omit } from '../sharedTypes'
 
 export interface ICurriculumResourceDocument extends Omit<ICurriculumResource, '_id'>, Document {
@@ -37,6 +38,7 @@ const curriculumResource = new mongoose.Schema({
   },
   featuredImage: featuredImageSchema,
   lessons: [lessonSchema],
+  slug: String,
   title: {
     required: 'title is required',
     type: String,
@@ -45,6 +47,15 @@ const curriculumResource = new mongoose.Schema({
 })
 
 curriculumResource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
+
+curriculumResource.pre('save', async function(this: ICurriculumResourceDocument, next) {
+  if (!this.isModified('title')) {
+    next()
+    return
+  }
+  this.slug = slugify(this.title)
+  next()
+})
 
 export default mongoose.model<ICurriculumResourceDocument>(
   'CurriculumResource',

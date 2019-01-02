@@ -15,6 +15,7 @@ const generate = {
     description: faker.lorem.paragraph(),
     featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
     lessons: lesson ? [lesson] : undefined,
+    slug: faker.lorem.word(),
     title: faker.company.catchPhrase(),
     ...overrides,
   }),

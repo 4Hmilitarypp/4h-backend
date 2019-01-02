@@ -26,7 +26,17 @@ export const getCurriculumResources: Controller = async (req, res) => {
 
 export const getCurriculumResource: Controller = async (req, res) => {
   const curriculumResource = await CurriculumResource.findById(req.params.id).select('-__v')
-  return res.json(curriculumResource)
+  if (curriculumResource) {
+    return res.json(curriculumResource)
+  }
+  throw notFoundError
+}
+export const getCurriculumResourceBySlug: Controller = async (req, res) => {
+  const curriculumResource = await CurriculumResource.findOne({ slug: req.params.slug }).select('-__v')
+  if (curriculumResource) {
+    return res.json(curriculumResource)
+  }
+  throw notFoundError
 }
 
 export const updateCurriculumResource: Controller = async (req, res) => {

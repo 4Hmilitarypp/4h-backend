@@ -7,6 +7,7 @@ describe('generate.curriculumResource', () => {
       _id: expect.any(String),
       description: expect.any(String),
       featuredImage: { url: expect.any(String), alt: expect.any(String) },
+      slug: expect.any(String),
       title: expect.any(String),
     })
   })
@@ -22,12 +23,14 @@ describe('generate.curriculumResources', () => {
           _id: expect.any(String),
           description: expect.any(String),
           featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          slug: expect.any(String),
           title: expect.any(String),
         },
         {
           _id: expect.any(String),
           description: expect.any(String),
           featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          slug: expect.any(String),
           title: expect.any(String),
         },
       ])

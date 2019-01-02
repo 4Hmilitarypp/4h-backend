@@ -22,7 +22,7 @@ describe('curriculumResources', () => {
 
     const res = await request(app).get('/api/curriculumResources')
     expect(res.status).toBe(200)
-    expect(res.body).toEqual([{ ...curriculumResource, _id: expect.any(String) }])
+    expect(res.body).toEqual([{ ...curriculumResource, _id: expect.any(String), slug: expect.any(String) }])
   })
 
   it('should return a 200 if getOne was successful and return lessons with the CR', async () => {
@@ -34,7 +34,22 @@ describe('curriculumResources', () => {
 
     const res = await request(app).get(`/api/curriculumResources/${inDb[0]._id}`)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String) })
+    expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String), slug: expect.any(String) })
+  })
+
+  it('should return a 200 if getOneBySlug was successful and return lessons with the CR', async () => {
+    const lesson = generate.lesson()
+    const curriculumResource = generate.curriculumResource({}, lesson)
+    await new CurriculumResource(curriculumResource).save()
+    const inDb = (await CurriculumResource.find()) as ICurriculumResourceDocument[]
+    expect(inDb).toHaveLength(1)
+
+    const slug = inDb[0].slug
+    expect(slug).toBe(inDb[0].slug)
+
+    const res = await request(app).get(`/api/curriculumResources/slug/${slug}`)
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String), slug: expect.any(String) })
   })
 
   /**
@@ -48,9 +63,14 @@ describe('curriculumResources', () => {
       .send(curriculumResource)
 
     expect(res.status).toBe(201)
-    expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String) })
+    expect(res.body).toEqual({ ...curriculumResource, _id: expect.any(String), slug: expect.any(String) })
     const inDb = await CurriculumResource.find()
-    expect(formatDb(inDb[0])).toMatchObject({ ...curriculumResource, lessons: expect.any(Array), _id: res.body._id })
+    expect(formatDb(inDb[0])).toMatchObject({
+      ...curriculumResource,
+      _id: res.body._id,
+      lessons: expect.any(Array),
+      slug: res.body.slug,
+    })
   })
 
   it('should return a 400 if a curriculumResource with a duplicate title is created', async () => {
