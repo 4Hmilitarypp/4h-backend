@@ -63,7 +63,7 @@ const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, 
           type="text"
           id="featuredImageAlt"
           defaultValue={
-            (curriculumResource && curriculumResource.featuredImage && curriculumResource.featuredImage.url) || ''
+            (curriculumResource && curriculumResource.featuredImage && curriculumResource.featuredImage.alt) || ''
           }
         />
         <CustomInputGroup>
