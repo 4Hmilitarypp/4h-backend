@@ -55,7 +55,7 @@ export interface IResearch {
   url: string
 }
 
-export interface ICurriculumResource {
+export interface IResource {
   _id?: string
   description: string
   featuredImage?: IImage
@@ -63,7 +63,7 @@ export interface ICurriculumResource {
   title: string
 }
 
-export interface ICurriculumResourceWithLessons extends ICurriculumResource {
+export interface IResourceWithLessons extends IResource {
   lessons?: ILesson[]
 }
 

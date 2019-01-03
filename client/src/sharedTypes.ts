@@ -55,11 +55,11 @@ export interface IResearch {
   url: string
 }
 
-export interface ICurriculumResource {
+export interface IResource {
   _id?: string
   description: string
   featuredImage?: IImage
-	slug: string
+  slug: string
   title: string
 }
 

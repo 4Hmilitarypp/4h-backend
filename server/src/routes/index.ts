@@ -1,9 +1,9 @@
 import express, { Express } from 'express'
 import { notFoundError } from '../utils/errors'
-import setupCurriculumResourceRoutes from './curriculumResources'
 import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
 import setupResearchRoutes from './research'
+import setupResourceRoutes from './resources'
 import setupWebinarRoutes from './webinars'
 
 const setupRoutes = (app: Express) => {
@@ -23,9 +23,9 @@ const setupRoutes = (app: Express) => {
   setupResearchRoutes(researchRouter)
   app.use('/api/research', researchRouter)
 
-  const curriculumResourcesRouter = express.Router()
-  setupCurriculumResourceRoutes(curriculumResourcesRouter)
-  app.use('/api/curriculumResources', curriculumResourcesRouter)
+  const resourcesRouter = express.Router()
+  setupResourceRoutes(resourcesRouter)
+  app.use('/api/resources', resourcesRouter)
 
   app.use('/api', () => {
     throw notFoundError

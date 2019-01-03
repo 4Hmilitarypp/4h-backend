@@ -4,20 +4,20 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../components/Elements'
 import { hoveredRow } from '../../utils/mixins'
-import { CurriculumResourceContext } from './CurriculumResources'
+import { ResourceContext } from './Resources'
 
-const CurriculumResourceTable: React.FC<RouteComponentProps> = () => {
-  const context = React.useContext(CurriculumResourceContext)
+const ResourceTable: React.FC<RouteComponentProps> = () => {
+  const context = React.useContext(ResourceContext)
   return (
     <div>
       <TableHeader>
-        <CurriculumResourceHeading>Curriculum Resources</CurriculumResourceHeading>
+        <ResourceHeading>Resources</ResourceHeading>
         <Button as={Link} to="new">
-          + Create a new CurriculumResource
+          + Create a new Resource
         </Button>
       </TableHeader>
       <div>
-        {map(context.curriculumResources, r => (
+        {map(context.resources, r => (
           <Wrapper to={r._id} key={r._id}>
             <Title>{r.title}</Title>
           </Wrapper>
@@ -27,7 +27,7 @@ const CurriculumResourceTable: React.FC<RouteComponentProps> = () => {
   )
 }
 
-export default CurriculumResourceTable
+export default ResourceTable
 
 const TableHeader = styled.div`
   padding: 0rem 4rem 1.6rem;
@@ -35,7 +35,7 @@ const TableHeader = styled.div`
   justify-content: space-between;
   align-items: flex-end;
 `
-const CurriculumResourceHeading = styled(Heading)`
+const ResourceHeading = styled(Heading)`
   padding: 4rem 0 0;
 `
 const Wrapper = styled(Link)`

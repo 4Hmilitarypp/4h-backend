@@ -1,9 +1,9 @@
 import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
-import { ICurriculumResource, ILesson, Omit } from '../sharedTypes'
+import { ILesson, IResource, Omit } from '../sharedTypes'
 
-export interface ICurriculumResourceDocument extends Omit<ICurriculumResource, '_id'>, Document {
+export interface IResourceDocument extends Omit<IResource, '_id'>, Document {
   lessons: ILesson[]
 }
 
@@ -31,7 +31,7 @@ const lessonSchema = new mongoose.Schema({
   },
 })
 
-const curriculumResource = new mongoose.Schema({
+const resource = new mongoose.Schema({
   description: {
     required: 'description is required',
     type: String,
@@ -46,9 +46,9 @@ const curriculumResource = new mongoose.Schema({
   },
 })
 
-curriculumResource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
+resource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
 
-curriculumResource.pre('save', function(this: ICurriculumResourceDocument, next) {
+resource.pre('save', function(this: IResourceDocument, next) {
   if (!this.isModified('title')) {
     next()
     return
@@ -57,7 +57,7 @@ curriculumResource.pre('save', function(this: ICurriculumResourceDocument, next)
   next()
 })
 
-curriculumResource.pre('findOneAndUpdate', function(next) {
+resource.pre('findOneAndUpdate', function(next) {
   const title = this.getUpdate().title
   if (title) {
     ;(this as any)._update.slug = slugify(title)
@@ -68,8 +68,4 @@ curriculumResource.pre('findOneAndUpdate', function(next) {
   }
 })
 
-export default mongoose.model<ICurriculumResourceDocument>(
-  'CurriculumResource',
-  curriculumResource,
-  'curriculumResources'
-)
+export default mongoose.model<IResourceDocument>('Resource', resource, 'resources')

@@ -17,11 +17,11 @@ mongoose.connection.on('error', err => {
 
 // register models with mongoose
 import './models/Archive'
-import './models/CurriculumResource'
 import './models/Liaison'
 import './models/Partner'
 import './models/PartnerSection'
 import './models/Research'
+import './models/Resource'
 import './models/Webinar'
 
 // bring in the app

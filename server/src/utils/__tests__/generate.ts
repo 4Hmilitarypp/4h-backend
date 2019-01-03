@@ -1,43 +1,5 @@
 import generate from '../generate'
 
-describe('generate.curriculumResource', () => {
-  it('should return a correct curriculumResource', () => {
-    const res = generate.curriculumResource()
-    expect(res).toEqual({
-      _id: expect.any(String),
-      description: expect.any(String),
-      featuredImage: { url: expect.any(String), alt: expect.any(String) },
-      slug: expect.any(String),
-      title: expect.any(String),
-    })
-  })
-})
-
-describe('generate.curriculumResources', () => {
-  it('should return multiple curriculumResources', () => {
-    const res = generate.curriculumResources(2)
-    expect(res.length).toBe(2)
-    expect(res).toEqual(
-      expect.arrayContaining([
-        {
-          _id: expect.any(String),
-          description: expect.any(String),
-          featuredImage: { url: expect.any(String), alt: expect.any(String) },
-          slug: expect.any(String),
-          title: expect.any(String),
-        },
-        {
-          _id: expect.any(String),
-          description: expect.any(String),
-          featuredImage: { url: expect.any(String), alt: expect.any(String) },
-          slug: expect.any(String),
-          title: expect.any(String),
-        },
-      ])
-    )
-  })
-})
-
 describe('generate.lesson', () => {
   it('should return a correct lesson', () => {
     const res = generate.lesson()
@@ -120,6 +82,44 @@ describe('generate.liaisons', () => {
           name: expect.any(String),
           phoneNumber: expect.any(String),
           region: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
+describe('generate.resource', () => {
+  it('should return a correct resource', () => {
+    const res = generate.resource()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      description: expect.any(String),
+      featuredImage: { url: expect.any(String), alt: expect.any(String) },
+      slug: expect.any(String),
+      title: expect.any(String),
+    })
+  })
+})
+
+describe('generate.resources', () => {
+  it('should return multiple resources', () => {
+    const res = generate.resources(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          slug: expect.any(String),
+          title: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          slug: expect.any(String),
+          title: expect.any(String),
         },
       ])
     )

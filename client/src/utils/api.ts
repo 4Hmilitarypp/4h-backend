@@ -1,5 +1,5 @@
 import * as axios from 'axios'
-import { ICurriculumResource, ILesson, ILiaison, IResearch, IWebinar, Omit } from '../sharedTypes'
+import { IResource, ILesson, ILiaison, IResearch, IWebinar, Omit } from '../sharedTypes'
 
 let api: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
@@ -25,22 +25,22 @@ const research = {
   get: (): Promise<IResearch[]> => requests.get('/research'),
   update: (updates: IResearch): Promise<IResearch> => requests.put('/research', updates),
 }
-const curriculumResources = {
-  create: (data: Omit<ICurriculumResource, 'slug'>): Promise<ICurriculumResource> => requests.post('/curriculumResources', data),
-  delete: (id: string): Promise<string> => requests.delete(`/curriculumResources/${id}`),
-  get: (): Promise<ICurriculumResource[]> => requests.get('/curriculumResources'),
-  getById: (id: string): Promise<ICurriculumResource> => requests.get(`/curriculumResources/${id}`),
-  update: (updates: Omit<ICurriculumResource, 'slug'>): Promise<ICurriculumResource> => requests.put('/curriculumResources', updates),
+const resources = {
+  create: (data: Omit<IResource, 'slug'>): Promise<IResource> => requests.post('/resources', data),
+  delete: (id: string): Promise<string> => requests.delete(`/resources/${id}`),
+  get: (): Promise<IResource[]> => requests.get('/resources'),
+  getById: (id: string): Promise<IResource> => requests.get(`/resources/${id}`),
+  update: (updates: Omit<IResource, 'slug'>): Promise<IResource> => requests.put('/resources', updates),
 }
 
 const lessons = {
   create: (resourceId: string, data: ILesson): Promise<ILesson> =>
-    requests.post(`/curriculumResources/${resourceId}/lessons/`, data),
+    requests.post(`/resources/${resourceId}/lessons/`, data),
   delete: (resourceId: string, id: string): Promise<string> =>
-    requests.delete(`/curriculumResources/${resourceId}/lessons/${id}`),
-  get: (resourceId: string): Promise<ILesson[]> => requests.get(`/curriculumResources/${resourceId}/lessons/`),
+    requests.delete(`/resources/${resourceId}/lessons/${id}`),
+  get: (resourceId: string): Promise<ILesson[]> => requests.get(`/resources/${resourceId}/lessons/`),
   update: (resourceId: string, updates: ILesson): Promise<ILesson> =>
-    requests.put(`/curriculumResources/${resourceId}/lessons/`, updates),
+    requests.put(`/resources/${resourceId}/lessons/`, updates),
 }
 const webinars = {
   create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),
@@ -65,7 +65,7 @@ function init({
 }
 
 const restApi = {
-  curriculumResources,
+  resources,
   init,
   lessons,
   liaisons,

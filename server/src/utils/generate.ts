@@ -1,26 +1,8 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import {
-  ICurriculumResource,
-  ICurriculumResourceWithLessons,
-  ILesson,
-  ILiaison,
-  IResearch,
-  IWebinar,
-} from '../sharedTypes'
+import { ILesson, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar } from '../sharedTypes'
 
 const generate = {
-  curriculumResource: (overrides?: Partial<ICurriculumResource>, lesson?: ILesson): ICurriculumResourceWithLessons => ({
-    _id: generate.objectId(),
-    description: faker.lorem.paragraph(),
-    featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
-    lessons: lesson ? [lesson] : undefined,
-    slug: faker.lorem.word(),
-    title: faker.company.catchPhrase(),
-    ...overrides,
-  }),
-  curriculumResources: (length: number): ICurriculumResourceWithLessons[] =>
-    Array.from({ length }, () => generate.curriculumResource()),
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
     pdfUrl: faker.internet.url(),
@@ -49,6 +31,16 @@ const generate = {
     ...overrides,
   }),
   researches: (length: number): IResearch[] => Array.from({ length }, () => generate.research(100)),
+  resource: (overrides?: Partial<IResource>, lesson?: ILesson): IResourceWithLessons => ({
+    _id: generate.objectId(),
+    description: faker.lorem.paragraph(),
+    featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
+    lessons: lesson ? [lesson] : undefined,
+    slug: faker.lorem.word(),
+    title: faker.company.catchPhrase(),
+    ...overrides,
+  }),
+  resources: (length: number): IResourceWithLessons[] => Array.from({ length }, () => generate.resource()),
   webinar: (descriptionLength: number = 100, overrides: {} = {}): IWebinar => ({
     _id: generate.objectId(),
     category: faker.commerce.productAdjective(),

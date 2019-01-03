@@ -3,11 +3,11 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
-import { ICurriculumResource } from '../../../sharedTypes'
+import { IResource } from '../../../sharedTypes'
 import { IApiError } from '../../../types'
 import api from '../../../utils/api'
-import { CurriculumResourceContext } from '../CurriculumResources'
-import CurriculumResourceForm from './CurriculumResourceForm'
+import { ResourceContext } from '../Resources'
+import ResourceForm from './ResourceForm'
 import Lessons from './lessons/Lessons'
 
 const formatError = (err: IApiError) => err.response.data.message
@@ -16,15 +16,15 @@ interface IProps extends RouteComponentProps {
   _id?: string
 }
 
-const CurriculumResource: React.FC<IProps> = ({ _id }) => {
-  // the full curriculumResource
-  const [curriculumResource, setCurriculumResource] = React.useState<ICurriculumResource | undefined>(undefined)
+const Resource: React.FC<IProps> = ({ _id }) => {
+  // the full resource
+  const [resource, setResource] = React.useState<IResource | undefined>(undefined)
   const [curriculumFormRef, setCurriculumFormRef] = React.useState<React.RefObject<HTMLFormElement> | undefined>(
     undefined
   )
   const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const curriculumResourceContext = React.useContext(CurriculumResourceContext)
+  const resourceContext = React.useContext(ResourceContext)
   const flashContext = React.useContext(FlashContext)
 
   React.useEffect(
@@ -35,9 +35,9 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
         setAction('update')
       }
       if (action === 'update' && _id) {
-        api.curriculumResources
+        api.resources
           .getById(_id)
-          .then(r => setCurriculumResource(r))
+          .then(r => setResource(r))
           .catch(err => console.error(err))
       }
     },
@@ -50,11 +50,11 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   }
 
   const handleDeleteClicked = () => {
-    if (curriculumResource && timesDeleteClicked === 1) {
-      api.curriculumResources
-        .delete(curriculumResource._id as string)
+    if (resource && timesDeleteClicked === 1) {
+      api.resources
+        .delete(resource._id as string)
         .then(res => {
-          curriculumResourceContext.updateCurriculumResources({ _id: curriculumResource._id, action: 'delete' })
+          resourceContext.updateResources({ _id: resource._id, action: 'delete' })
           navigate('/curriculum-resources')
         })
         .catch((err: IApiError) => {
@@ -67,10 +67,8 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
 
   return (
     <div>
-      <CustomHeading>{`${
-        action === 'update' ? 'Updating a Curriculum Resource' : 'Create a new Curriculum Resource'
-      }`}</CustomHeading>
-      <CurriculumResourceForm action={action} curriculumResource={curriculumResource} setRef={setCurriculumFormRef} />
+      <CustomHeading>{`${action === 'update' ? 'Updating a Resource' : 'Create a new Resource'}`}</CustomHeading>
+      <ResourceForm action={action} resource={resource} setRef={setCurriculumFormRef} />
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
@@ -87,7 +85,7 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
               }
             }}
           >
-            {action === 'update' ? 'Update' : 'Create'} Curriculum Resource
+            {action === 'update' ? 'Update' : 'Create'} Resource
           </Button>
         </RightButtons>
       </Buttons>
@@ -96,7 +94,7 @@ const CurriculumResource: React.FC<IProps> = ({ _id }) => {
   )
 }
 
-export default CurriculumResource
+export default Resource
 
 const CustomHeading = styled(Heading)`
   font-size: 2.4rem;

@@ -5,7 +5,7 @@ import FlashContext, { useFlash } from './contexts/FlashContext'
 import Flash from './Flash'
 import Header from './Header'
 import Camps from './pages/Camps'
-import CurriculumResources from './pages/curriculumResources/CurriculumResources'
+import Resources from './pages/resources/Resources'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import Media from './pages/Media'
@@ -57,7 +57,7 @@ const App: React.FC<{}> = () => {
             <Camps path="/camps" />
             <Webinars path="/webinars" />
             <Researches path="/research" />
-            <CurriculumResources path="/curriculum-resources/*" />
+            <Resources path="/curriculum-resources/*" />
             <Media path="/media" />
             <NotFound default={true} />
           </Router>
