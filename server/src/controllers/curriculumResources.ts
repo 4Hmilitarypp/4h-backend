@@ -42,12 +42,17 @@ export const getCurriculumResourceBySlug: Controller = async (req, res) => {
 }
 
 export const updateCurriculumResource: Controller = async (req, res) => {
-  const { _id, lessons, slug, ...updates } = req.body
-  const curriculumResource = await CurriculumResource.findOneAndUpdate({ _id }, updates, {
-    context: 'query',
-    new: true,
-    runValidators: true,
-  })
+  // @ts-ignore
+  const { _id, lessons, slug, description, title, featuredImage } = req.body
+  const curriculumResource = await CurriculumResource.findOneAndUpdate(
+    { _id },
+    { description, title, featuredImage },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
   if (curriculumResource) {
     return res.status(200).json(omitVAndLessons(curriculumResource))
   }
