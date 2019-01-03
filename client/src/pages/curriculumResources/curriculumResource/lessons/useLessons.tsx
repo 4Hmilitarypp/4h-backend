@@ -3,6 +3,7 @@ import * as React from 'react'
 import FlashContext from '../../../../contexts/FlashContext'
 import { ILesson } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
+import { numericSort } from '../../../../utils/string'
 
 const useLessons = (resourceId?: string) => {
   const [lessons, setLessons] = React.useState<ILesson[] | undefined>(undefined)
@@ -10,7 +11,7 @@ const useLessons = (resourceId?: string) => {
     if (resourceId) {
       api.lessons
         .get(resourceId)
-        .then(r => setLessons(r))
+        .then(l => setLessons(l))
         .catch(err => console.error(err))
     }
   }, [])
@@ -32,7 +33,8 @@ const useLessons = (resourceId?: string) => {
         newLessons = map(lessons, r => (r._id === lesson._id ? lesson : r))
         flashContext.set({ message: 'Lesson Updated Successfully' })
       } else if (action === 'create' && lesson) {
-        newLessons = [lesson, ...lessons]
+        const unsorted = [lesson, ...lessons]
+        newLessons = numericSort(unsorted, 'title')
         flashContext.set({ message: 'Lesson Created Successfully' })
       } else if (action === 'delete') {
         newLessons = filter(lessons, r => r._id !== _id)

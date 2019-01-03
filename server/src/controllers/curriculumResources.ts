@@ -20,7 +20,9 @@ export const createCurriculumResource: Controller = async (req, res) => {
 }
 
 export const getCurriculumResources: Controller = async (req, res) => {
-  const curriculumResources = await CurriculumResource.find().select('-__v -lessons')
+  const curriculumResources = await CurriculumResource.find()
+    .select('-__v -lessons')
+    .sort('title')
   return res.json(curriculumResources)
 }
 
@@ -83,7 +85,9 @@ export const createLesson: Controller = async (req, res) => {
 }
 
 export const getLessons: Controller = async (req, res) => {
-  const curriculumResource = await CurriculumResource.findById(req.params.resourceId).select('-__v')
+  const curriculumResource = await CurriculumResource.findById(req.params.resourceId)
+    .select('lessons')
+    .sort('lessons.$.title')
   if (curriculumResource) {
     const { lessons } = curriculumResource as ICurriculumResourceDocument
     return res.json(lessons)

@@ -26,7 +26,9 @@ const CurriculumResourceForm: React.FC<IProps> = ({ action, curriculumResource, 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
     const { description, title, featuredImageAlt, featuredImageUrl } = e.currentTarget.elements
-    const featuredImage = { alt: featuredImageAlt.value, url: featuredImageUrl.value }
+    const featuredImage = featuredImageUrl.value
+      ? { alt: featuredImageAlt.value, url: featuredImageUrl.value }
+      : undefined
     const updateCurriculumResource = {
       _id: curriculumResource ? curriculumResource._id : undefined,
       description: description.value,

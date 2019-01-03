@@ -38,6 +38,7 @@ const Lessons: React.FC<{ resourceId: string }> = ({ resourceId }) => {
         })}
         <LessonModal open={modalOpen} setOpen={setModalOpen} action="create" />
       </LessonContext.Provider>
+      <BottomPadding />
     </Wrapper>
   )
 }
@@ -46,7 +47,6 @@ export default Lessons
 const Wrapper = styled.div`
   margin-top: 3.2rem;
   background: ${props => props.theme.primaryLight};
-  padding-bottom: 3.2rem;
 `
 const TableHeader = styled.div`
   display: flex;
@@ -73,4 +73,9 @@ const CreateButton = styled.button`
     cursor: pointer;
     opacity: 0.8;
   }
+`
+const BottomPadding = styled.div`
+  height: 3.2rem;
+  width: 100%;
+  background: ${props => props.theme.primaryBackground};
 `

@@ -3,6 +3,7 @@ import * as React from 'react'
 import FlashContext from '../../../contexts/FlashContext'
 import { ICurriculumResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
+import { numericSort } from '../../../utils/string'
 
 const useCurriculumResources = () => {
   const [curriculumResources, setCurriculumResources] = React.useState<ICurriculumResource[] | undefined>(undefined)
@@ -32,7 +33,8 @@ const useCurriculumResources = () => {
         )
         flashContext.set({ message: 'Curriculum Resource Updated Successfully' })
       } else if (action === 'create' && curriculumResource) {
-        newCurriculumResources = [curriculumResource, ...curriculumResources]
+        const unsorted = [curriculumResource, ...curriculumResources]
+        newCurriculumResources = numericSort(unsorted, 'title')
         flashContext.set({ message: 'Curriculum Resource Created Successfully' })
       } else if (action === 'delete') {
         newCurriculumResources = filter(curriculumResources, r => r._id !== _id)
