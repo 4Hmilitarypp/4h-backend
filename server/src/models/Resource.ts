@@ -10,7 +10,7 @@ export interface IResourceDocument extends Omit<IResource, '_id'>, Document {
 const featuredImageSchema = new mongoose.Schema({
   _id: { auto: false },
   alt: {
-    required: 'image description is required',
+    default: 'resource cover',
     type: String,
   },
   url: {

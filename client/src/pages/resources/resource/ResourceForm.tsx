@@ -26,9 +26,12 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, setRef }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
     const { description, title, featuredImageAlt, featuredImageUrl } = e.currentTarget.elements
-    const featuredImage = featuredImageUrl.value
-      ? { alt: featuredImageAlt.value, url: featuredImageUrl.value }
-      : undefined
+    const imageUrl = featuredImageUrl.value
+    const imageAlt = featuredImageAlt.value || undefined
+    let featuredImage
+    if (imageUrl) {
+      featuredImage = { url: imageUrl, alt: imageAlt }
+    }
     const updateResource = {
       _id: resource ? resource._id : undefined,
       description: description.value,

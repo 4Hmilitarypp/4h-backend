@@ -7,8 +7,8 @@ import { IResource } from '../../../sharedTypes'
 import { IApiError } from '../../../types'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
-import ResourceForm from './ResourceForm'
 import Lessons from './lessons/Lessons'
+import ResourceForm from './ResourceForm'
 
 const formatError = (err: IApiError) => err.response.data.message
 
