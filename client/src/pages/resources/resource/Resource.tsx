@@ -9,15 +9,12 @@ import {
   OutlineButton,
   RightButtons,
 } from '../../../components/Elements'
-import FlashContext from '../../../contexts/FlashContext'
+import useErrorHandler from '../../../hooks/useErrorHandler'
 import { IResource } from '../../../sharedTypes'
-import { IApiError } from '../../../types'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
 import Lessons from './lessons/Lessons'
 import ResourceForm from './ResourceForm'
-
-const formatError = (err: IApiError) => err.response.data.message
 
 interface IProps extends RouteComponentProps {
   _id?: string
@@ -29,7 +26,7 @@ const Resource: React.FC<IProps> = ({ _id = '' }) => {
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
 
   const resourceContext = React.useContext(ResourceContext)
-  const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
 
   React.useEffect(
     () => {
@@ -57,9 +54,7 @@ const Resource: React.FC<IProps> = ({ _id = '' }) => {
           resourceContext.updateResources({ _id: resource._id, action: 'delete' })
           navigate('/curriculum-resources')
         })
-        .catch((err: IApiError) => {
-          flashContext.set({ message: formatError(err), isError: true })
-        })
+        .catch(handleError)
     } else {
       setTimesDeleteClicked(1)
     }

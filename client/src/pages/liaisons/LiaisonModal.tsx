@@ -2,9 +2,9 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button } from '../../components/Elements'
 import Modal from '../../components/Modal'
-import FlashContext from '../../contexts/FlashContext'
+import useErrorHandler from '../../hooks/useErrorHandler'
 import { ILiaison } from '../../sharedTypes'
-import { IApiError, IForm } from '../../types'
+import { IForm } from '../../types'
 import api from '../../utils/api'
 import LiaisonForm from './LiaisonForm'
 import { LiaisonsContext } from './Liaisons'
@@ -16,13 +16,11 @@ interface IProps {
   action: 'update' | 'create'
 }
 
-const formatError = (err: IApiError) => err.response.data.message
-
 const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const liaisonContext = React.useContext(LiaisonsContext)
 
-  const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -43,7 +41,7 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
           liaisonContext.updateLiaisons({ liaison: newLiaison, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
+        .catch(handleError)
     } else if (action === 'create') {
       api.liaisons
         .create(updateLiaison)
@@ -51,7 +49,7 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
           liaisonContext.updateLiaisons({ liaison: newLiaison, action })
           setOpen(false)
         })
-        .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
+        .catch(handleError)
     }
   }
 
@@ -64,12 +62,8 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
     if (liaison && timesDeleteClicked === 1) {
       api.liaisons
         .delete(liaison._id as string)
-        .then(res => {
-          liaisonContext.updateLiaisons({ _id: liaison._id, action: 'delete' })
-        })
-        .catch((err: IApiError) => {
-          flashContext.set({ message: formatError(err), isError: true })
-        })
+        .then(() => liaisonContext.updateLiaisons({ _id: liaison._id, action: 'delete' }))
+        .catch(handleError)
     } else {
       setTimesDeleteClicked(1)
     }

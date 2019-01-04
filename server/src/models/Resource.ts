@@ -21,7 +21,7 @@ const featuredImageSchema = new mongoose.Schema({
 })
 
 const linkSchema = new mongoose.Schema({
-  type: String,
+  type: { type: String, enum: ['doc', 'pdf', 'external', 'ppt'] },
   url: { trim: true, type: String },
 })
 

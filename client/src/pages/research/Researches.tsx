@@ -4,6 +4,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../components/Elements'
 import FlashContext from '../../contexts/FlashContext'
+import useErrorHandler from '../../hooks/useErrorHandler'
 import { IResearch } from '../../sharedTypes'
 import api from '../../utils/api'
 import Research from './Research'
@@ -24,7 +25,10 @@ export const ResearchContext = React.createContext<IResearchContext>(undefined a
 const Researches: React.FC<RouteComponentProps> = () => {
   const [researches, setResearches] = React.useState<IResearch[] | undefined>(undefined)
   const [modalOpen, setModalOpen] = React.useState(false)
+
   const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
+
   const updateResearches = ({
     _id,
     action,
@@ -54,7 +58,7 @@ const Researches: React.FC<RouteComponentProps> = () => {
     api.research
       .get()
       .then(r => setResearches(r))
-      .catch(err => console.error(err))
+      .catch(handleError)
   }, [])
 
   return (

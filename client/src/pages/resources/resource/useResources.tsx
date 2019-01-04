@@ -1,17 +1,19 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../../contexts/FlashContext'
+import useErrorHandler from '../../../hooks/useErrorHandler'
 import { IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 import { numericSort } from '../../../utils/string'
 
 const useResources = () => {
   const [resources, setResources] = React.useState<IResource[]>([])
+  const { handleError } = useErrorHandler()
   React.useEffect(() => {
     api.resources
       .get()
       .then(r => setResources(r))
-      .catch(err => console.error(err))
+      .catch(handleError)
   }, [])
 
   const flashContext = React.useContext(FlashContext)

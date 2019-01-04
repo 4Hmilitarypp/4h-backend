@@ -1,18 +1,20 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../../../contexts/FlashContext'
+import useErrorHandler from '../../../../hooks/useErrorHandler'
 import { ILesson } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
 import { numericSort } from '../../../../utils/string'
 
 const useLessons = (resourceId?: string) => {
   const [lessons, setLessons] = React.useState<ILesson[]>([])
+  const { handleError } = useErrorHandler()
   React.useEffect(() => {
     if (resourceId) {
       api.lessons
         .get(resourceId)
         .then(l => setLessons(l))
-        .catch(err => console.error(err))
+        .catch(handleError)
     }
   }, [])
 

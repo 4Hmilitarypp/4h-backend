@@ -1,13 +1,11 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { CreateButton, InputGroup, ModalForm } from '../../../../components/Elements'
-import FlashContext from '../../../../contexts/FlashContext'
+import useErrorHandler from '../../../../hooks/useErrorHandler'
 import { ILesson, ILessonLink, LessonLinkType } from '../../../../sharedTypes'
-import { IApiError, IForm } from '../../../../types'
+import { IForm } from '../../../../types'
 import api from '../../../../utils/api'
 import { LessonContext } from './Lessons'
-
-const formatError = (err: IApiError) => err.response.data.message
 
 interface IProps {
   action: 'create' | 'update'
@@ -49,7 +47,7 @@ const setNumberOfNewLinks = (lesson?: ILesson) => {
 
 const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
   const lessonContext = React.useContext(LessonContext)
-  const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
   const [numberLinks, setNumberLinks] = React.useState(setNumberOfNewLinks(lesson))
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
@@ -70,7 +68,7 @@ const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
         lessonContext.updateLessons({ lesson: newLesson, action })
         setOpen(false)
       })
-      .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
+      .catch(handleError)
   }
 
   const createLinkInput = () => {

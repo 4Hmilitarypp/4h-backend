@@ -47,11 +47,13 @@ export interface IWebinar {
   url: string
 }
 
+export type ResearchType = 'doc' | 'pdf' | 'external'
+
 export interface IResearch {
   _id?: string
   description?: string
   title: string
-  type: 'doc' | 'pdf' | 'link'
+  type: ResearchType
   url: string
 }
 

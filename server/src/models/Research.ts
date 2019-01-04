@@ -12,7 +12,7 @@ const researchSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  type: { required: 'type is required', type: String, enum: ['doc', 'pdf', 'link'] },
+  type: { type: String, enum: ['doc', 'pdf', 'external'] },
   url: {
     required: 'url is required',
     type: String,

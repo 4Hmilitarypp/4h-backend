@@ -9,9 +9,8 @@ import {
   RightButtons,
 } from '../../../../components/Elements'
 import Modal from '../../../../components/Modal'
-import FlashContext from '../../../../contexts/FlashContext'
+import useErrorHandler from '../../../../hooks/useErrorHandler'
 import { ILesson } from '../../../../sharedTypes'
-import { IApiError } from '../../../../types'
 import api from '../../../../utils/api'
 import LessonForm from './LessonForm'
 import { LessonContext } from './Lessons'
@@ -23,12 +22,10 @@ interface IProps {
   action: 'update' | 'create'
 }
 
-const formatError = (err: IApiError) => err.response.data.message
-
 const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const lessonContext = React.useContext(LessonContext)
-  const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
 
   const handleCancel = () => {
     setOpen(false)
@@ -39,12 +36,8 @@ const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
     if (lesson && timesDeleteClicked === 1) {
       api.lessons
         .delete(lessonContext.resourceId, lesson._id as string)
-        .then(res => {
-          lessonContext.updateLessons({ _id: lesson._id, action: 'delete' })
-        })
-        .catch((err: IApiError) => {
-          flashContext.set({ message: formatError(err), isError: true })
-        })
+        .then(() => lessonContext.updateLessons({ _id: lesson._id, action: 'delete' }))
+        .catch(handleError)
     } else {
       setTimesDeleteClicked(1)
     }

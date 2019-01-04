@@ -4,6 +4,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Heading } from '../../components/Elements'
 import FlashContext from '../../contexts/FlashContext'
+import useErrorHandler from '../../hooks/useErrorHandler'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
@@ -26,6 +27,7 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
   const [modalOpen, setModalOpen] = React.useState(false)
 
   const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
 
   const updateLiaisons = ({
     _id,
@@ -56,7 +58,7 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
     api.liaisons
       .get()
       .then(l => setLiaisons(l))
-      .catch(err => console.error(err))
+      .catch(handleError)
   }, [])
 
   return (

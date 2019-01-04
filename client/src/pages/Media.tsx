@@ -2,17 +2,19 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Heading } from '../components/Elements'
+import useErrorHandler from '../hooks/useErrorHandler'
 import { ILiaison } from '../sharedTypes'
 import api from '../utils/api'
 
 const Liaisons: React.FC<RouteComponentProps> = () => {
   const [liaisons, setLiaisons] = React.useState<ILiaison[] | undefined>(undefined)
+  const { handleError } = useErrorHandler()
 
   React.useEffect(() => {
     api.liaisons
       .get()
       .then(l => setLiaisons(l))
-      .catch(err => console.error(err))
+      .catch(handleError)
   }, [])
   return (
     <LiaisonsContainer>

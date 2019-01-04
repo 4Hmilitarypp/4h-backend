@@ -2,13 +2,11 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { InputGroup } from '../../../components/Elements'
-import FlashContext from '../../../contexts/FlashContext'
+import useErrorHandler from '../../../hooks/useErrorHandler'
 import { IResource } from '../../../sharedTypes'
-import { IApiError, IForm } from '../../../types'
+import { IForm } from '../../../types'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
-
-const formatError = (err: IApiError) => (err.response ? err.response.data.message : err.toString())
 
 interface IProps {
   action: 'create' | 'update'
@@ -16,7 +14,7 @@ interface IProps {
 }
 
 const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
-  const flashContext = React.useContext(FlashContext)
+  const { handleError } = useErrorHandler()
   const resourceContext = React.useContext(ResourceContext)
   const formRef = React.useRef<HTMLFormElement>(null)
 
@@ -45,7 +43,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
           formRef.current.reset()
         }
       })
-      .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
+      .catch(handleError)
   }
 
   return (
