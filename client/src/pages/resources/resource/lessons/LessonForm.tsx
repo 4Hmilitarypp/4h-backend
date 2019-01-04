@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { InputGroup } from '../../../../components/Elements'
 import FlashContext from '../../../../contexts/FlashContext'
-import { ILesson } from '../../../../sharedTypes'
+import { ILesson, ILessonLink } from '../../../../sharedTypes'
 import { IApiError, IForm } from '../../../../types'
 import api from '../../../../utils/api'
 import { LessonContext } from './Lessons'
@@ -15,20 +15,45 @@ interface IProps {
   setOpen: (isOpen: boolean) => void
 }
 
+const convertToLessonLinks = (elems: any, inputId: string, length: number) => {
+  const links: ILessonLink[] = []
+  ;[...Array(length)].forEach((_, i) => {
+    const link = elems[`${inputId}${i}`]
+    const url = link.value || undefined
+    if (!url) {
+      return
+    }
+    let type: 'ppt' | 'pdf' | 'doc' | 'external'
+    if (url.includes('.doc')) {
+      type = 'doc'
+    } else if (url.includes('.pdf')) {
+      type = 'pdf'
+    } else if (url.includes('.ppt')) {
+      type = 'ppt'
+    } else {
+      type = 'external'
+    }
+    links.push({ url, type })
+  })
+  return links
+}
+
 const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => {
   const lessonContext = React.useContext(LessonContext)
   const flashContext = React.useContext(FlashContext)
+  const [numberLinks, setNumberLinks] = React.useState(0)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { category, docUrl, externalUrl, pdfUrl, pptUrl, title } = e.currentTarget.elements
+    const { category, title } = e.currentTarget.elements
+    const otherInputs = e.currentTarget.elements
+    const updatedLinks = lesson ? convertToLessonLinks(otherInputs, 'link', lesson.links.length) : []
+    const createdLinks = convertToLessonLinks(otherInputs, 'newLink', numberLinks)
+
     const updateLesson = {
       _id: lesson ? lesson._id : undefined,
       category: category ? category.value : undefined,
-      docUrl: docUrl ? docUrl.value : undefined,
-      externalUrl: externalUrl ? externalUrl.value : undefined,
-      pdfUrl: pdfUrl ? pdfUrl.value : undefined,
-      pptUrl: pptUrl ? pptUrl.value : undefined,
+      links: [...updatedLinks, ...createdLinks],
       title: title.value,
     }
     api.lessons[action](lessonContext.resourceId, updateLesson)
@@ -38,28 +63,35 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
       })
       .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
   }
+
+  const createLink = () => {
+    setNumberLinks(numberLinks + 1)
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
       <InputGroup>
         <label htmlFor="title">Lesson Title</label>
         <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} />
       </InputGroup>
-      <InputGroup>
-        <label htmlFor="pdfUrl">Url to Pdf for Lesson</label>
-        <input type="url" id="pdfUrl" defaultValue={lesson && lesson.pdfUrl} />
-      </InputGroup>
-      <InputGroup>
-        <label htmlFor="docUrl">Url to Word Document for Lesson</label>
-        <input type="url" id="docUrl" defaultValue={lesson && lesson.docUrl} />
-      </InputGroup>
-      <InputGroup>
-        <label htmlFor="pptUrl">Url to PowerPoint for Lesson</label>
-        <input type="url" id="pptUrl" defaultValue={lesson && lesson.pptUrl} />
-      </InputGroup>
-      <InputGroup>
-        <label htmlFor="externalUrl">Url to external website for Lesson</label>
-        <input type="url" id="externalUrl" defaultValue={lesson && lesson.externalUrl} />
-      </InputGroup>
+      {lesson &&
+        lesson.links.map((link, index) => {
+          return (
+            <InputGroup key={link.url}>
+              <label htmlFor={`link${index}`}>Lesson Resource</label>
+              <input type="url" id={`link${index}`} defaultValue={link.url} />
+            </InputGroup>
+          )
+        })}
+      <CreateButton type="button" onClick={createLink}>
+        + New Resource
+      </CreateButton>
+      {Array.from({ length: numberLinks }, (v, index) => (
+        <InputGroup key={`newLink${index}`}>
+          <label htmlFor={`newLink${index}`}>Add a new lesson resource</label>
+          <input type="url" id={`newLink${index}`} />
+        </InputGroup>
+      ))}
       {children}
     </Form>
   )
@@ -70,4 +102,17 @@ const Form = styled.form`
   padding: 1.2rem 2rem 0;
   display: flex;
   flex-direction: column;
+`
+const CreateButton = styled.button`
+  background: ${props => props.theme.primaryBackground};
+  border: none;
+  color: ${props => props.theme.primaryLink};
+  font-weight: 500;
+  padding: 0.8rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.4rem;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 `

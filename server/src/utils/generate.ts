@@ -5,8 +5,7 @@ import { ILesson, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar
 const generate = {
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
-    pdfUrl: faker.internet.url(),
-    pptUrl: faker.internet.url(),
+    links: [{ url: faker.internet.url(), type: 'pdf' }, { url: faker.internet.url(), type: 'doc' }],
     title: faker.company.catchPhrase(),
     ...overrides,
   }),

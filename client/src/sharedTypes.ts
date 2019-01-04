@@ -63,13 +63,15 @@ export interface IResource {
   title: string
 }
 
+export interface ILessonLink {
+  url: string
+  type: 'ppt' | 'pdf' | 'doc' | 'external'
+}
+
 export interface ILesson {
   _id?: string
   category?: string
-  docUrl?: string
-  externalUrl?: string
-  pdfUrl?: string
-  pptUrl?: string
+  links: ILessonLink[]
   title: string
 }
 

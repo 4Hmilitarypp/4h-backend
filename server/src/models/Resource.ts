@@ -19,12 +19,14 @@ const featuredImageSchema = new mongoose.Schema({
   },
 })
 
+const linkSchema = new mongoose.Schema({
+  type: String,
+  url: String,
+})
+
 const lessonSchema = new mongoose.Schema({
   category: String,
-  docUrl: String,
-  externalUrl: String,
-  pdfUrl: String,
-  pptUrl: String,
+  links: [linkSchema],
   title: {
     required: 'lesson title is required',
     type: String,
