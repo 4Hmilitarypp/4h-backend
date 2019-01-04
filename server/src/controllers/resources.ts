@@ -43,10 +43,10 @@ export const getResourceBySlug: Controller = async (req, res) => {
 
 export const updateResource: Controller = async (req, res) => {
   // @ts-ignore
-  const { _id, lessons, slug, description, title, featuredImage } = req.body
+  const { _id, lessons, slug, longDescription, shortDescription, title, featuredImage } = req.body
   const resource = await Resource.findOneAndUpdate(
     { _id },
-    { description, title, featuredImage },
+    { longDescription, shortDescription, title, featuredImage },
     {
       context: 'query',
       new: true,

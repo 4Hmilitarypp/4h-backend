@@ -1,6 +1,13 @@
 import * as React from 'react'
-import styled from 'styled-components/macro'
-import { Button } from '../../components/Elements'
+import {
+  Button,
+  ModalButtons,
+  DeleteButton,
+  ModalHeading,
+  HighSevDeleteButton,
+  RightButtons,
+  OutlineButton,
+} from '../../components/Elements'
 import Modal from '../../components/Modal'
 import FlashContext from '../../contexts/FlashContext'
 import { IResearch } from '../../sharedTypes'
@@ -75,65 +82,21 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
       <ModalHeading>{`${action === 'update' ? 'Updating a research item' : 'Create a new Research'}`}</ModalHeading>
-      <ResearchForm onSubmit={handleSubmit} research={research}>
-        <Buttons>
-          {action === 'update' &&
-            (timesDeleteClicked === 0 ? (
-              <DeleteButton type="button" onClick={handleDeleteClicked}>
-                Delete
-              </DeleteButton>
-            ) : (
-              <HighSevDeleteButton type="button" onClick={handleDeleteClicked}>
-                CONFIRM DELETE
-              </HighSevDeleteButton>
-            ))}
-          <RightButtons>
-            <OutlineButton type="button" onClick={handleCancel}>
-              Cancel
-            </OutlineButton>
-            <Button>{action === 'update' ? 'Update' : 'Create'} Research</Button>
-          </RightButtons>
-        </Buttons>
-      </ResearchForm>
+      <ResearchForm onSubmit={handleSubmit} research={research} />
+      <ModalButtons>
+        {action === 'update' &&
+          (timesDeleteClicked === 0 ? (
+            <DeleteButton onClick={handleDeleteClicked}>Delete</DeleteButton>
+          ) : (
+            <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
+          ))}
+        <RightButtons>
+          <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
+          <Button form="researchForm">{action === 'update' ? 'Update' : 'Create'} Research</Button>
+        </RightButtons>
+      </ModalButtons>
     </Modal>
   )
 }
 
 export default ResearchModal
-
-const ModalHeading = styled.h3`
-  color: ${props => props.theme.primaryText};
-  padding: 1.2rem 1.6rem 0;
-  text-align: center;
-`
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-top: 2rem;
-  align-items: center;
-`
-const DeleteButton = styled.button`
-  background: none;
-  border: none;
-  color: ${props => props.theme.warning};
-  font-weight: 500;
-  padding: 0;
-  margin-left: 1.2rem;
-  &:hover {
-    cursor: pointer;
-  }
-`
-const HighSevDeleteButton = styled(Button)`
-  background: ${props => props.theme.warning};
-  letter-spacing: 0.6px;
-`
-const RightButtons = styled.div`
-  margin-left: auto;
-`
-const OutlineButton = styled(Button)`
-  border: 2px solid ${props => props.theme.buttonBackground};
-  padding: 0.8rem 1.4rem;
-  background: none;
-  color: ${props => props.theme.buttonBackground};
-  margin-right: 1.6rem;
-`

@@ -8,24 +8,21 @@ import { IApiError, IForm } from '../../../types'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
 
-const formatError = (err: IApiError) => err.response.data.message
+const formatError = (err: IApiError) => (err.response ? err.response.data.message : err.toString())
 
 interface IProps {
   action: 'create' | 'update'
   resource?: IResource
-  setRef: (ref: React.RefObject<HTMLFormElement>) => void
 }
 
-const ResourceForm: React.FC<IProps> = ({ action, resource, setRef }) => {
-  const formRef = React.useRef<HTMLFormElement>(null)
+const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
   const flashContext = React.useContext(FlashContext)
   const resourceContext = React.useContext(ResourceContext)
-
-  React.useEffect(() => setRef(formRef), [formRef])
+  const formRef = React.useRef<HTMLFormElement>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { description, title, featuredImageAlt, featuredImageUrl } = e.currentTarget.elements
+    const { featuredImageAlt, featuredImageUrl, longDescription, shortDescription, title } = e.currentTarget.elements
     const imageUrl = featuredImageUrl.value
     const imageAlt = featuredImageAlt.value || undefined
     let featuredImage
@@ -34,20 +31,25 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, setRef }) => {
     }
     const updateResource = {
       _id: resource ? resource._id : undefined,
-      description: description.value,
       featuredImage,
+      longDescription: longDescription.value,
+      shortDescription: shortDescription.value,
       title: title.value,
     }
     api.resources[action](updateResource)
       .then(newResource => {
         resourceContext.updateResources({ resource: newResource, action })
         navigate(`/curriculum-resources/${newResource._id}`)
+        if (formRef.current) {
+          // reset the form so the actual returned data can be loaded
+          formRef.current.reset()
+        }
       })
       .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
   }
 
   return (
-    <Form onSubmit={handleSubmit} ref={formRef}>
+    <Form onSubmit={handleSubmit} id="resourceForm" ref={formRef}>
       <CustomInputGroup>
         <label htmlFor="title">Resource Title</label>
         <input type="text" id="title" defaultValue={(resource && resource.title) || ''} />
@@ -67,17 +69,34 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, setRef }) => {
           id="featuredImageAlt"
           defaultValue={(resource && resource.featuredImage && resource.featuredImage.alt) || ''}
         />
-        <CustomInputGroup>
-          <label htmlFor="description">Description</label>
-          {/* Had to do the following because the description was not showing up for some reason */}
-          {resource ? (
-            <>
-              <textarea id="description" defaultValue={resource.description} rows={5} />
-            </>
-          ) : (
-            <textarea id="description" rows={5} />
-          )}
-        </CustomInputGroup>
+      </CustomInputGroup>
+      <CustomInputGroup>
+        <label htmlFor="shortDescription">Short Description</label>
+        {/* Had to do the following because the shortDescription was not showing up for some reason */}
+        {resource ? (
+          <>
+            <textarea
+              id="shortDescription"
+              name="shortDescription"
+              defaultValue={resource.shortDescription}
+              rows={5}
+              maxLength={300}
+            />
+          </>
+        ) : (
+          <textarea id="shortDescription" name="shortDescription" rows={5} maxLength={300} />
+        )}
+      </CustomInputGroup>
+      <CustomInputGroup>
+        <label htmlFor="longDescription">Long Description</label>
+        {/* Had to do the following because the longDescription was not showing up for some reason */}
+        {resource ? (
+          <>
+            <textarea id="longDescription" name="longDescription" defaultValue={resource.longDescription} rows={5} />
+          </>
+        ) : (
+          <textarea id="longDescription" name="longDescription" rows={5} maxLength={300} />
+        )}
       </CustomInputGroup>
     </Form>
   )

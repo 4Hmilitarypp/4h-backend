@@ -12,7 +12,7 @@ const Lesson: React.FC<{ lesson: ILesson }> = ({ lesson }) => {
       <Wrapper onClick={() => setModalOpen(true)}>
         <Title>{lesson.title}</Title>
       </Wrapper>
-      <LessonModal open={modalOpen} setOpen={setModalOpen} lesson={lesson} action="update" />
+      {modalOpen && <LessonModal open={modalOpen} setOpen={setModalOpen} lesson={lesson} action="update" />}
     </>
   )
 }

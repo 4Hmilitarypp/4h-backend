@@ -2,5 +2,11 @@
   "eslint.enable": false,
   "search.exclude": {
     "**/dist/**/*": true
+  },
+  "workbench.colorCustomizations": {
+    "[Night Owl]": {
+      "titleBar.inactiveBackground": "#FFA500B0",
+      "titleBar.activeBackground": "#FFA500B0"
+    }
   }
 }

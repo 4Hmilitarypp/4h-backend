@@ -57,15 +57,18 @@ export interface IResearch {
 
 export interface IResource {
   _id?: string
-  description: string
   featuredImage?: IImage
+  longDescription: string
+  shortDescription: string
   slug: string
   title: string
 }
 
+export type LessonLinkType = 'ppt' | 'pdf' | 'doc' | 'external'
+
 export interface ILessonLink {
   url: string
-  type: 'ppt' | 'pdf' | 'doc' | 'external'
+  type: LessonLinkType
 }
 
 export interface ILesson {

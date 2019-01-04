@@ -1,7 +1,14 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, Heading } from '../../../components/Elements'
+import {
+  Button,
+  DeleteButton,
+  Heading,
+  HighSevDeleteButton,
+  OutlineButton,
+  RightButtons,
+} from '../../../components/Elements'
 import FlashContext from '../../../contexts/FlashContext'
 import { IResource } from '../../../sharedTypes'
 import { IApiError } from '../../../types'
@@ -16,34 +23,25 @@ interface IProps extends RouteComponentProps {
   _id?: string
 }
 
-const Resource: React.FC<IProps> = ({ _id }) => {
-  // the full resource
+const Resource: React.FC<IProps> = ({ _id = '' }) => {
   const [resource, setResource] = React.useState<IResource | undefined>(undefined)
-  const [curriculumFormRef, setCurriculumFormRef] = React.useState<React.RefObject<HTMLFormElement> | undefined>(
-    undefined
-  )
   const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
+
   const resourceContext = React.useContext(ResourceContext)
   const flashContext = React.useContext(FlashContext)
 
   React.useEffect(
     () => {
-      if (!_id) {
-        return
-      }
-      if (_id === 'new') {
-        setAction('create')
-        return
-      } else {
-        setAction('update')
-        api.resources
-          .getById(_id)
-          .then(r => setResource(r))
-          .catch(err => console.error(err))
+      if (_id !== 'new') {
+        if (action !== 'update') {
+          setAction('update')
+        }
+        const updatedResource = resourceContext.findById(_id)
+        setResource(updatedResource)
       }
     },
-    [_id]
+    [resourceContext, _id]
   )
 
   const handleCancel = () => {
@@ -55,7 +53,7 @@ const Resource: React.FC<IProps> = ({ _id }) => {
     if (resource && timesDeleteClicked === 1) {
       api.resources
         .delete(resource._id as string)
-        .then(res => {
+        .then(() => {
           resourceContext.updateResources({ _id: resource._id, action: 'delete' })
           navigate('/curriculum-resources')
         })
@@ -70,7 +68,7 @@ const Resource: React.FC<IProps> = ({ _id }) => {
   return (
     <div>
       <CustomHeading>{`${action === 'update' ? 'Updating a Resource' : 'Create a new Resource'}`}</CustomHeading>
-      <ResourceForm action={action} resource={resource} setRef={setCurriculumFormRef} />
+      <ResourceForm action={action} resource={resource} />
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
@@ -80,15 +78,7 @@ const Resource: React.FC<IProps> = ({ _id }) => {
           ))}
         <RightButtons>
           <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
-          <Button
-            onClick={() => {
-              if (curriculumFormRef && curriculumFormRef.current) {
-                curriculumFormRef.current.dispatchEvent(new Event('submit'))
-              }
-            }}
-          >
-            {action === 'update' ? 'Update' : 'Create'} Resource
-          </Button>
+          <Button form="resourceForm">{action === 'update' ? 'Update' : 'Create'} Resource</Button>
         </RightButtons>
       </Buttons>
       {_id && action === 'update' && <Lessons resourceId={_id} />}
@@ -104,31 +94,6 @@ const CustomHeading = styled(Heading)`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 2rem 1.4rem 2rem;
+  padding: 2rem 1.4rem;
   align-items: center;
-`
-const DeleteButton = styled.button`
-  background: none;
-  border: none;
-  color: ${props => props.theme.warning};
-  font-weight: 500;
-  padding: 0;
-  margin-left: 1.2rem;
-  &:hover {
-    cursor: pointer;
-  }
-`
-const HighSevDeleteButton = styled(Button)`
-  background: ${props => props.theme.warning};
-  letter-spacing: 0.6px;
-`
-const RightButtons = styled.div`
-  margin-left: auto;
-`
-const OutlineButton = styled(Button)`
-  border: 2px solid ${props => props.theme.primaryLink};
-  padding: 0.8rem 1.4rem;
-  background: none;
-  color: ${props => props.theme.primaryLink};
-  margin-right: 1.6rem;
 `

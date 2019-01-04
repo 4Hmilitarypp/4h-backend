@@ -130,3 +130,57 @@ export const EmbedWrapper = styled.div`
   width: 100%;
   background: hsl(206, 7%, 21%);
 `
+export const ModalForm = styled.form`
+  padding: 1.2rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+`
+export const ModalHeading = styled.h3`
+  color: ${props => props.theme.primaryText};
+  padding: 1.2rem 1.6rem 0;
+  text-align: center;
+`
+export const ModalButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 3.2rem 1.2rem 2rem;
+  align-items: center;
+`
+export const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: ${props => props.theme.warning};
+  font-weight: 500;
+  padding: 0;
+  margin-left: 1.2rem;
+  &:hover {
+    cursor: pointer;
+  }
+`
+export const HighSevDeleteButton = styled(Button)`
+  background: ${props => props.theme.warning};
+  letter-spacing: 0.6px;
+`
+export const RightButtons = styled.div`
+  margin-left: auto;
+`
+export const OutlineButton = styled(Button)`
+  border: 2px solid ${props => props.theme.primaryLink};
+  padding: 0.8rem 1.4rem;
+  background: none;
+  color: ${props => props.theme.primaryLink};
+  margin-right: 1.6rem;
+`
+export const CreateButton = styled.button`
+  background: ${props => props.theme.primaryBackground};
+  border: none;
+  color: ${props => props.theme.primaryLink};
+  font-weight: 500;
+  padding: 0.8rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.4rem;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`

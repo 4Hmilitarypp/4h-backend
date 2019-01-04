@@ -57,8 +57,9 @@ export interface IResearch {
 
 export interface IResource {
   _id?: string
-  description: string
   featuredImage?: IImage
+  longDescription: string
+  shortDescription: string
   slug: string
   title: string
 }

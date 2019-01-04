@@ -36,12 +36,17 @@ const lessonSchema = new mongoose.Schema({
 })
 
 const resource = new mongoose.Schema({
-  description: {
-    required: 'description is required',
-    type: String,
-  },
   featuredImage: featuredImageSchema,
   lessons: [lessonSchema],
+  longDescription: {
+    required: 'long description is required',
+    type: String,
+  },
+  shortDescription: {
+    maxlength: 300,
+    required: 'short description is required',
+    type: String,
+  },
   slug: String,
   title: {
     required: 'title is required',

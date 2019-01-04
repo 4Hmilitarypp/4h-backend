@@ -1,8 +1,8 @@
 import * as React from 'react'
-import styled from 'styled-components/macro'
-import { InputGroup } from '../../../../components/Elements'
+import styled from 'styled-components'
+import { CreateButton, InputGroup, ModalForm } from '../../../../components/Elements'
 import FlashContext from '../../../../contexts/FlashContext'
-import { ILesson, ILessonLink } from '../../../../sharedTypes'
+import { ILesson, ILessonLink, LessonLinkType } from '../../../../sharedTypes'
 import { IApiError, IForm } from '../../../../types'
 import api from '../../../../utils/api'
 import { LessonContext } from './Lessons'
@@ -17,13 +17,14 @@ interface IProps {
 
 const convertToLessonLinks = (elems: any, inputId: string, length: number) => {
   const links: ILessonLink[] = []
-  ;[...Array(length)].forEach((_, i) => {
+  for (let i = 0; i < length; i++) {
     const link = elems[`${inputId}${i}`]
     const url = link.value || undefined
     if (!url) {
-      return
+      break
     }
-    let type: 'ppt' | 'pdf' | 'doc' | 'external'
+
+    let type: LessonLinkType
     if (url.includes('.doc')) {
       type = 'doc'
     } else if (url.includes('.pdf')) {
@@ -34,10 +35,11 @@ const convertToLessonLinks = (elems: any, inputId: string, length: number) => {
       type = 'external'
     }
     links.push({ url, type })
-  })
+  }
   return links
 }
 
+// if it is a new lesson, 1 createResource input will appear, otherwise none will appear
 const setNumberOfNewLinks = (lesson?: ILesson) => {
   if (!lesson) {
     return 1
@@ -45,7 +47,7 @@ const setNumberOfNewLinks = (lesson?: ILesson) => {
   return lesson.links.length > 0 ? 0 : 1
 }
 
-const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => {
+const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
   const lessonContext = React.useContext(LessonContext)
   const flashContext = React.useContext(FlashContext)
   const [numberLinks, setNumberLinks] = React.useState(setNumberOfNewLinks(lesson))
@@ -71,12 +73,12 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
       .catch((err: IApiError) => flashContext.set({ message: formatError(err), isError: true }))
   }
 
-  const createLink = () => {
+  const createLinkInput = () => {
     setNumberLinks(numberLinks + 1)
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <ModalForm onSubmit={handleSubmit} id="lessonForm">
       <InputGroup>
         <label htmlFor="title">Lesson Title</label>
         <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} autoFocus={!lesson} />
@@ -96,31 +98,15 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
           <input type="url" id={`newLink${index}`} />
         </InputGroup>
       ))}
-      <CreateButton type="button" onClick={createLink}>
+      <CustomCreateButton type="button" onClick={createLinkInput}>
         + New Resource
-      </CreateButton>
-      {children}
-    </Form>
+      </CustomCreateButton>
+    </ModalForm>
   )
 }
 
 export default LessonForm
-const Form = styled.form`
-  padding: 1.2rem 2rem 0;
-  display: flex;
-  flex-direction: column;
-`
-const CreateButton = styled.button`
-  background: ${props => props.theme.primaryBackground};
-  border: none;
-  color: ${props => props.theme.primaryLink};
-  font-weight: 500;
-  padding: 0.8rem 1.2rem;
-  border-radius: 20px;
-  font-size: 1.4rem;
+
+const CustomCreateButton = styled(CreateButton)`
   align-self: center;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
 `

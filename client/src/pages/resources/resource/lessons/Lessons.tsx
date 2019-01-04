@@ -1,7 +1,7 @@
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Heading } from '../../../../components/Elements'
+import { CreateButton, Heading } from '../../../../components/Elements'
 import { ILesson } from '../../../../sharedTypes'
 import Lesson from './Lesson'
 import LessonModal from './LessonModal'
@@ -55,19 +55,6 @@ const TableHeader = styled.div`
 `
 const CustomHeading = styled(Heading)`
   font-size: 2.4rem;
-`
-const CreateButton = styled.button`
-  background: ${props => props.theme.primaryBackground};
-  border: none;
-  color: ${props => props.theme.primaryLink};
-  font-weight: 500;
-  padding: 0.8rem 1.2rem;
-  border-radius: 20px;
-  font-size: 1.4rem;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
 `
 const BottomPadding = styled.div`
   height: 3.2rem;
