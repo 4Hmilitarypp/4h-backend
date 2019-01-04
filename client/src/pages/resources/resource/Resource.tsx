@@ -29,12 +29,14 @@ const Resource: React.FC<IProps> = ({ _id }) => {
 
   React.useEffect(
     () => {
+      if (!_id) {
+        return
+      }
       if (_id === 'new') {
         setAction('create')
+        return
       } else {
         setAction('update')
-      }
-      if (action === 'update' && _id) {
         api.resources
           .getById(_id)
           .then(r => setResource(r))

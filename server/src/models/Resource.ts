@@ -15,13 +15,14 @@ const featuredImageSchema = new mongoose.Schema({
   },
   url: {
     required: 'image url is required',
+    trim: true,
     type: String,
   },
 })
 
 const linkSchema = new mongoose.Schema({
   type: String,
-  url: String,
+  url: { trim: true, type: String },
 })
 
 const lessonSchema = new mongoose.Schema({
@@ -29,6 +30,7 @@ const lessonSchema = new mongoose.Schema({
   links: [linkSchema],
   title: {
     required: 'lesson title is required',
+    trim: true,
     type: String,
   },
 })
@@ -43,6 +45,7 @@ const resource = new mongoose.Schema({
   slug: String,
   title: {
     required: 'title is required',
+    trim: true,
     type: String,
     unique: true,
   },

@@ -10,6 +10,21 @@ interface IProps {
 }
 
 const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }) => {
+  React.useEffect(
+    () => {
+      if (open) {
+        window.addEventListener('keydown', handleKeydown)
+      } else {
+        window.removeEventListener('keydown', handleKeydown)
+      }
+    },
+    [open]
+  )
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setOpen(false)
+    }
+  }
   return (
     <Portal>
       {open && (
