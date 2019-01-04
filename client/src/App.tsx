@@ -5,13 +5,13 @@ import FlashContext, { useFlash } from './contexts/FlashContext'
 import Flash from './Flash'
 import Header from './Header'
 import Camps from './pages/Camps'
-import Resources from './pages/resources/Resources'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import Media from './pages/Media'
 import NotFound from './pages/NotFound'
 import Partners from './pages/Partners'
 import Researches from './pages/research/Researches'
+import Resources from './pages/resources/Resources'
 import Webinars from './pages/Webinars'
 import Sidebar from './Sidebar'
 
@@ -76,7 +76,7 @@ const GlobalStyle = createGlobalStyle`
   }
   input,
   textarea, button {
-    font-family: Rubik, arial;
+    font-family: Rubik, arial, sans-serif;
   }
 `
 const AppWContainer = styled.div`

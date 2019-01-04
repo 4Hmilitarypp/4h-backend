@@ -28,7 +28,6 @@ const Lessons: React.FC<{ resourceId: string }> = ({ resourceId }) => {
   return (
     <Wrapper>
       <TableHeader>
-        <Spacer />
         <CustomHeading>Lessons</CustomHeading>
         <CreateButton onClick={() => setModalOpen(true)}>+ New Lesson</CreateButton>
       </TableHeader>
@@ -51,10 +50,8 @@ const Wrapper = styled.div`
 const TableHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   padding: 0 3.2rem;
-`
-const Spacer = styled.div`
-  width: 11.7rem;
 `
 const CustomHeading = styled(Heading)`
   font-size: 2.4rem;
@@ -64,11 +61,9 @@ const CreateButton = styled.button`
   border: none;
   color: ${props => props.theme.primaryLink};
   font-weight: 500;
-  margin-top: 1.6rem;
   padding: 0.8rem 1.2rem;
   border-radius: 20px;
   font-size: 1.4rem;
-  align-self: flex-start;
   &:hover {
     cursor: pointer;
     opacity: 0.8;
