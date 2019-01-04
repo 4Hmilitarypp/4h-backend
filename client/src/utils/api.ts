@@ -1,5 +1,5 @@
 import * as axios from 'axios'
-import { IResource, ILesson, ILiaison, IResearch, IWebinar, Omit } from '../sharedTypes'
+import { ILesson, ILiaison, IResearch, IResource, IWebinar, Omit } from '../sharedTypes'
 
 let api: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
@@ -65,11 +65,11 @@ function init({
 }
 
 const restApi = {
-  resources,
   init,
   lessons,
   liaisons,
   research,
+  resources,
   webinars,
 }
 

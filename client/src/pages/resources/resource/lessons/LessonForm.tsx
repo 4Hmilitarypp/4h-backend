@@ -38,10 +38,17 @@ const convertToLessonLinks = (elems: any, inputId: string, length: number) => {
   return links
 }
 
+const setNumberOfNewLinks = (lesson?: ILesson) => {
+  if (!lesson) {
+    return 1
+  }
+  return lesson.links.length > 0 ? 0 : 1
+}
+
 const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => {
   const lessonContext = React.useContext(LessonContext)
   const flashContext = React.useContext(FlashContext)
-  const [numberLinks, setNumberLinks] = React.useState(0)
+  const [numberLinks, setNumberLinks] = React.useState(setNumberOfNewLinks(lesson))
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -83,15 +90,15 @@ const LessonForm: React.FC<IProps> = ({ action, children, lesson, setOpen }) => 
             </InputGroup>
           )
         })}
-      <CreateButton type="button" onClick={createLink}>
-        + New Resource
-      </CreateButton>
       {Array.from({ length: numberLinks }, (v, index) => (
         <InputGroup key={`newLink${index}`}>
           <label htmlFor={`newLink${index}`}>Add a new lesson resource</label>
           <input type="url" id={`newLink${index}`} />
         </InputGroup>
       ))}
+      <CreateButton type="button" onClick={createLink}>
+        + New Resource
+      </CreateButton>
       {children}
     </Form>
   )
@@ -111,6 +118,7 @@ const CreateButton = styled.button`
   padding: 0.8rem 1.2rem;
   border-radius: 20px;
   font-size: 1.4rem;
+  align-self: center;
   &:hover {
     cursor: pointer;
     opacity: 0.8;

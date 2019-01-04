@@ -49,7 +49,7 @@ export const Button: any = styled.button`
   color: ${props => props.theme.white};
   background: ${props => props.theme.primaryLink};
   border: none;
-  padding: 1.2rem 1.6rem;
+  padding: 0.8rem 1.6rem;
   font-weight: 500;
   line-height: normal;
   ${elevation(3)};

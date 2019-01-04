@@ -10,7 +10,7 @@ const Header: React.FC<RouteComponentProps> = () => (
         View the Website
       </Button>
     </ExternalLink>
-    <Title>4-H Military Partnerships</Title>
+    <Title>4-HMPP CMS</Title>
     <User>
       <Name>Alex Wendte</Name>
       <Button>Logout</Button>
