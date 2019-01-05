@@ -51,7 +51,7 @@ export type ResearchType = 'doc' | 'pdf' | 'external'
 
 export interface IResearch {
   _id?: string
-  description?: string
+  description: string
   title: string
   type: ResearchType
   url: string

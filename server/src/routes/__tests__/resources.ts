@@ -65,8 +65,8 @@ describe('resources', () => {
 
     expect(res.status).toBe(201)
     expect(res.body).toEqual({ ...resource, _id: expect.any(String), slug: expect.any(String) })
-    const inDb = await Resource.find()
-    expect(formatDb(inDb[0])).toMatchObject({
+    const finalInDb = await Resource.findById(res.body._id)
+    expect(formatDb(finalInDb)).toMatchObject({
       ...resource,
       _id: res.body._id,
       lessons: expect.any(Array),
@@ -193,8 +193,9 @@ describe('lessons', () => {
     expect(res.status).toBe(201)
     expect(res.body).toEqual({ ...lesson, _id: expect.any(String) })
     expect(res.body._id).not.toBe(lesson._id)
-    const inDb = (await Resource.find()) as IResourceDocument[]
-    expect(formatDb(inDb[0].lessons[0])).toMatchObject({ ...lesson, _id: res.body._id })
+
+    const finalInDb = ((await Resource.findOne()) as IResourceDocument).toJSON()
+    expect({ ...finalInDb.lessons[0], _id: finalInDb.lessons[0]._id.toString() }).toMatchObject(res.body)
   })
 
   it('should return a 400 if a lesson is created without a title', async () => {
@@ -230,8 +231,8 @@ describe('lessons', () => {
 
     expect(res.status).toEqual(200)
     expect(res.body).toEqual(updateLesson)
-    const finalInDb = (await Resource.findOne()) as IResourceDocument
-    expect(formatDb(finalInDb.lessons[0])).toMatchObject(updateLesson)
+    const finalInDb = ((await Resource.findOne()) as IResourceDocument).toJSON()
+    expect({ ...finalInDb.lessons[0], _id: finalInDb.lessons[0]._id.toString() }).toMatchObject(updateLesson)
   })
 
   it('should return a 404 if not found', async () => {

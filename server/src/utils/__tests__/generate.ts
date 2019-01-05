@@ -5,8 +5,7 @@ describe('generate.lesson', () => {
     const res = generate.lesson()
     expect(res).toEqual({
       _id: expect.any(String),
-      pdfUrl: expect.any(String),
-      pptUrl: expect.any(String),
+      links: expect.arrayContaining([{ url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) }]),
       title: expect.any(String),
     })
   })
@@ -20,14 +19,16 @@ describe('generate.lessons', () => {
       expect.arrayContaining([
         {
           _id: expect.any(String),
-          pdfUrl: expect.any(String),
-          pptUrl: expect.any(String),
+          links: expect.arrayContaining([
+            { url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) },
+          ]),
           title: expect.any(String),
         },
         {
           _id: expect.any(String),
-          pdfUrl: expect.any(String),
-          pptUrl: expect.any(String),
+          links: expect.arrayContaining([
+            { url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) },
+          ]),
           title: expect.any(String),
         },
       ])
@@ -93,8 +94,10 @@ describe('generate.resource', () => {
     const res = generate.resource()
     expect(res).toEqual({
       _id: expect.any(String),
-      description: expect.any(String),
       featuredImage: { url: expect.any(String), alt: expect.any(String) },
+      lessons: undefined,
+      longDescription: expect.any(String),
+      shortDescription: expect.any(String),
       slug: expect.any(String),
       title: expect.any(String),
     })
@@ -109,15 +112,19 @@ describe('generate.resources', () => {
       expect.arrayContaining([
         {
           _id: expect.any(String),
-          description: expect.any(String),
           featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          lessons: undefined,
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
           slug: expect.any(String),
           title: expect.any(String),
         },
         {
           _id: expect.any(String),
-          description: expect.any(String),
           featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          lessons: undefined,
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
           slug: expect.any(String),
           title: expect.any(String),
         },
@@ -171,7 +178,7 @@ describe('generate.research', () => {
       _id: expect.any(String),
       description: expect.any(String),
       title: expect.any(String),
-      type: expect.stringMatching(/doc|pdf|link/),
+      type: expect.stringMatching(/doc|pdf|external/),
       url: expect.any(String),
     })
   })
@@ -187,14 +194,14 @@ describe('generate.researches', () => {
           _id: expect.any(String),
           description: expect.any(String),
           title: expect.any(String),
-          type: expect.stringMatching(/doc|pdf|link/),
+          type: expect.stringMatching(/doc|pdf|external/),
           url: expect.any(String),
         },
         {
           _id: expect.any(String),
           description: expect.any(String),
           title: expect.any(String),
-          type: expect.stringMatching(/doc|pdf|link/),
+          type: expect.stringMatching(/doc|pdf|external/),
           url: expect.any(String),
         },
       ])

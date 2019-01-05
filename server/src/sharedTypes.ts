@@ -46,12 +46,11 @@ export interface IWebinar {
   title: string
   url: string
 }
-
 export type ResearchType = 'doc' | 'pdf' | 'external'
 
 export interface IResearch {
   _id?: string
-  description?: string
+  description: string
   title: string
   type: ResearchType
   url: string
@@ -70,9 +69,11 @@ export interface IResourceWithLessons extends IResource {
   lessons?: ILesson[]
 }
 
-interface ILessonLink {
+export type ILessonType = 'ppt' | 'pdf' | 'doc' | 'external'
+
+export interface ILessonLink {
   url: string
-  type: 'ppt' | 'pdf' | 'doc' | 'external'
+  type: ILessonType
 }
 
 export interface ILesson {

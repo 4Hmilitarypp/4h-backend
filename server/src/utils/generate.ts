@@ -1,11 +1,14 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import { ILesson, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar } from '../sharedTypes'
+import { ILesson, ILessonType, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar } from '../sharedTypes'
 
 const generate = {
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
-    links: [{ url: faker.internet.url(), type: 'pdf' }, { url: faker.internet.url(), type: 'doc' }],
+    links: Array.from({ length: faker.random.number({ min: 1, max: 4 }) }, () => ({
+      type: new Array('doc', 'pdf', 'external', 'ppt')[faker.random.number({ min: 0, max: 3 })] as ILessonType,
+      url: faker.internet.url(),
+    })),
     title: faker.company.catchPhrase(),
     ...overrides,
   }),
