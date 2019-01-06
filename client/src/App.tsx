@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound'
 import Partners from './pages/Partners'
 import Researches from './pages/research/Researches'
 import Resources from './pages/resources/Resources'
-import Webinars from './pages/Webinars'
+import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
 
 export const theme = {

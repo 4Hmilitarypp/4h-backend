@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import Icon from '../components/Icon'
+import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from './Elements'
 import Portal from './Portal'
 
 interface IProps {
@@ -44,6 +45,34 @@ const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }
   )
 }
 
+interface IModalButtonsProps {
+  action: 'create' | 'update' | 'delete'
+  cancelHandler: () => void
+  deleteHandler: () => void
+  timesDeleteClicked: number
+}
+
+export const ModalButtons: React.FC<IModalButtonsProps> = ({
+  action,
+  cancelHandler,
+  deleteHandler,
+  timesDeleteClicked,
+}) => {
+  return (
+    <Buttons>
+      {action === 'update' &&
+        (timesDeleteClicked === 0 ? (
+          <DeleteButton onClick={deleteHandler}>Delete</DeleteButton>
+        ) : (
+          <HighSevDeleteButton onClick={deleteHandler}>CONFIRM DELETE</HighSevDeleteButton>
+        ))}
+      <RightButtons>
+        <OutlineButton onClick={cancelHandler}>Cancel</OutlineButton>
+        <Button form="researchForm">{action === 'update' ? 'Update' : 'Create'} Research</Button>
+      </RightButtons>
+    </Buttons>
+  )
+}
 export default Modal
 
 const ModalWrapper = styled.div`
@@ -88,4 +117,13 @@ const CloseButton = styled.button`
   width: 20px;
   height: 20px;
   cursor: pointer;
+`
+export const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 3.2rem 1.2rem 2rem;
+  align-items: center;
+`
+export const RightButtons = styled.div`
+  margin-left: auto;
 `

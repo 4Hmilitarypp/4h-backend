@@ -140,12 +140,6 @@ export const ModalHeading = styled.h3`
   padding: 1.2rem 1.6rem 0;
   text-align: center;
 `
-export const ModalButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 3.2rem 1.2rem 2rem;
-  align-items: center;
-`
 export const DeleteButton = styled.button`
   background: none;
   border: none;
@@ -160,9 +154,6 @@ export const DeleteButton = styled.button`
 export const HighSevDeleteButton = styled(Button)`
   background: ${props => props.theme.warning};
   letter-spacing: 0.6px;
-`
-export const RightButtons = styled.div`
-  margin-left: auto;
 `
 export const OutlineButton = styled(Button)`
   border: 2px solid ${props => props.theme.primaryLink};

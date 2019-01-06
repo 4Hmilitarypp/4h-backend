@@ -1,14 +1,7 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import {
-  Button,
-  DeleteButton,
-  Heading,
-  HighSevDeleteButton,
-  OutlineButton,
-  RightButtons,
-} from '../../../components/Elements'
+import { Button, DeleteButton, Heading, HighSevDeleteButton, OutlineButton } from '../../../components/Elements'
 import useErrorHandler from '../../../hooks/useErrorHandler'
 import { IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
@@ -91,4 +84,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   padding: 2rem 1.4rem;
   align-items: center;
+`
+const RightButtons = styled.div`
+  margin-left: auto;
 `

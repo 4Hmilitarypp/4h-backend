@@ -1,14 +1,6 @@
 import * as React from 'react'
-import {
-  Button,
-  DeleteButton,
-  HighSevDeleteButton,
-  ModalButtons,
-  ModalHeading,
-  OutlineButton,
-  RightButtons,
-} from '../../../../components/Elements'
-import Modal from '../../../../components/Modal'
+import { ModalHeading } from '../../../../components/Elements'
+import Modal, { ModalButtons } from '../../../../components/Modal'
 import useErrorHandler from '../../../../hooks/useErrorHandler'
 import { ILesson } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
@@ -47,18 +39,12 @@ const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
     <Modal open={open} setOpen={setOpen} closeButton={false}>
       <ModalHeading>{`${action === 'update' ? 'Updating a Lesson' : 'Create a new Lesson'}`}</ModalHeading>
       <LessonForm action={action} setOpen={setOpen} lesson={lesson} />
-      <ModalButtons>
-        {action === 'update' &&
-          (timesDeleteClicked === 0 ? (
-            <DeleteButton onClick={handleDeleteClicked}>Delete</DeleteButton>
-          ) : (
-            <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
-          ))}
-        <RightButtons>
-          <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
-          <Button form="lessonForm">{action === 'update' ? 'Update' : 'Create'} Lesson</Button>
-        </RightButtons>
-      </ModalButtons>
+      <ModalButtons
+        action={action}
+        cancelHandler={handleCancel}
+        deleteHandler={handleDeleteClicked}
+        timesDeleteClicked={timesDeleteClicked}
+      />
     </Modal>
   )
 }
