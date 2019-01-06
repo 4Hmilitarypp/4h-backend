@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import mongoose from 'mongoose'
 import slugify from 'slugify'
 import request from 'supertest'
@@ -23,24 +24,25 @@ describe('resources', () => {
 
     const res = await request(app).get('/api/resources')
     expect(res.status).toBe(200)
-    expect(res.body).toEqual([{ ...resource, _id: expect.any(String), slug: expect.any(String) }])
+    expect(res.body).toHaveLength(1)
+    expect(res.body[0]).toMatchObject({ ...resource, _id: expect.any(String), slug: expect.any(String) })
   })
 
   it('should return a 200 if getOne was successful and return lessons with the CR', async () => {
     const lesson = generate.lesson()
-    const resource = generate.resource({}, lesson)
+    const resource = generate.resource({ lessons: [lesson] })
     await new Resource(resource).save()
     const inDb = await Resource.find()
     expect(inDb).toHaveLength(1)
 
     const res = await request(app).get(`/api/resources/${inDb[0]._id}`)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ ...resource, _id: expect.any(String), slug: expect.any(String) })
+    expect(res.body).toMatchObject({ ...resource, _id: expect.any(String), slug: expect.any(String) })
   })
 
   it('should return a 200 if getOneBySlug was successful and return lessons with the CR', async () => {
     const lesson = generate.lesson()
-    const resource = generate.resource({}, lesson)
+    const resource = generate.resource({ lessons: [lesson] })
     await new Resource(resource).save()
     const inDb = (await Resource.find()) as IResourceDocument[]
     expect(inDb).toHaveLength(1)
@@ -50,7 +52,7 @@ describe('resources', () => {
 
     const res = await request(app).get(`/api/resources/slug/${slug}`)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ ...resource, _id: expect.any(String), slug: expect.any(String) })
+    expect(res.body).toMatchObject({ ...resource, _id: expect.any(String), slug: expect.any(String) })
   })
 
   /**
@@ -64,7 +66,7 @@ describe('resources', () => {
       .send(resource)
 
     expect(res.status).toBe(201)
-    expect(res.body).toEqual({ ...resource, _id: expect.any(String), slug: expect.any(String) })
+    expect(res.body).toMatchObject({ ...omit(resource, 'lessons'), _id: expect.any(String), slug: expect.any(String) })
     const finalInDb = await Resource.findById(res.body._id)
     expect(formatDb(finalInDb)).toMatchObject({
       ...resource,
@@ -85,7 +87,7 @@ describe('resources', () => {
       .send(resource)
 
     expect(res.status).toEqual(400)
-    expect(res.body).toEqual({ message: expect.any(String) })
+    expect(res.body).toMatchObject({ message: expect.any(String) })
     const finalInDb = await Resource.find()
     expect(finalInDb).toHaveLength(1)
   })
@@ -96,19 +98,24 @@ describe('resources', () => {
   it('should return a 200 if the update was successful and slug should still be title', async () => {
     const originalResource = generate.resource()
     const inDb = (await new Resource(originalResource).save()) as IResourceDocument
+    const existingId = inDb._id.toString()
 
     const updateResource = generate.resource({ title: 'updated title' })
-    updateResource._id = inDb._id.toString()
 
     const res = await request(app)
-      .put('/api/resources/')
+      .put(`/api/resources/${existingId}`)
       .send(updateResource)
 
     expect(res.status).toEqual(200)
-    expect(res.body).toEqual({ ...updateResource, slug: expect.any(String) })
-    const finalInDb = (await Resource.findById(res.body._id)) as IResourceDocument
+    expect(res.body).toMatchObject({
+      ...updateResource,
+      _id: existingId,
+      slug: slugify(updateResource.title),
+    })
+    const finalInDb = (await Resource.findById(existingId)) as IResourceDocument
     expect(formatDb(finalInDb)).toMatchObject({
       ...updateResource,
+      _id: existingId,
       lessons: expect.any(Array),
       slug: slugify(finalInDb.title),
     })
@@ -117,10 +124,11 @@ describe('resources', () => {
   it('should return a 404 if not found', async () => {
     const inDb = await Resource.find()
     expect(inDb).toHaveLength(0)
-    const updateResource = generate.resource({ _id: generate.objectId() })
+    const updateResource = generate.resource()
+    const fakeId = generate.objectId()
 
     const res = await request(app)
-      .put('/api/resources/')
+      .put(`/api/resources/${fakeId}`)
       .send(updateResource)
 
     expect(res.status).toEqual(404)
@@ -161,7 +169,7 @@ interface ISetupLessonArgs {
 
 describe('lessons', () => {
   const setupLesson = async (props: ISetupLessonArgs = {}) => {
-    const generatedResource = generate.resource({}, props.lesson)
+    const generatedResource = props.lesson ? generate.resource({ lessons: [props.lesson] }) : generate.resource()
     await new Resource(generatedResource).save()
     const resource = (await Resource.find())[0]
     const url = `/api/resources/${resource._id}/lessons`
@@ -176,7 +184,8 @@ describe('lessons', () => {
     const { url } = await setupLesson({ lesson })
     const res = await request(app).get(url)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual([{ ...lesson, _id: expect.any(String) }])
+    expect(res.body).toHaveLength(1)
+    expect(res.body[0]).toMatchObject({ ...lesson, _id: expect.any(String) })
   })
 
   /**
@@ -191,7 +200,7 @@ describe('lessons', () => {
       .send(lesson)
 
     expect(res.status).toBe(201)
-    expect(res.body).toEqual({ ...lesson, _id: expect.any(String) })
+    expect(res.body).toMatchObject({ ...lesson, _id: expect.any(String) })
     expect(res.body._id).not.toBe(lesson._id)
 
     const finalInDb = ((await Resource.findOne()) as IResourceDocument).toJSON()
@@ -209,7 +218,7 @@ describe('lessons', () => {
       .send(lesson)
 
     expect(res.status).toEqual(400)
-    expect(res.body).toEqual({ message: expect.any(String) })
+    expect(res.body).toMatchObject({ message: expect.any(String) })
     const finalInDb = (await Resource.findOne()) as IResourceDocument
     expect(finalInDb.lessons).toHaveLength(0)
   })
@@ -221,28 +230,29 @@ describe('lessons', () => {
     const lesson = generate.lesson()
     const { url } = await setupLesson({ lesson })
     const inDb = (await Resource.findOne()) as IResourceDocument
+    const existingId = (inDb.lessons[0]._id as any).toString()
 
     const updateLesson = generate.lesson({ title: 'updated title' })
-    updateLesson._id = (inDb.lessons[0] as any)._id.toString()
 
     const res = await request(app)
-      .put(url)
+      .put(`${url}/${existingId}`)
       .send(updateLesson)
 
     expect(res.status).toEqual(200)
-    expect(res.body).toEqual(updateLesson)
-    const finalInDb = ((await Resource.findOne()) as IResourceDocument).toJSON()
-    expect({ ...finalInDb.lessons[0], _id: finalInDb.lessons[0]._id.toString() }).toMatchObject(updateLesson)
+    expect(res.body).toMatchObject({ ...updateLesson, _id: existingId })
+    const finalInDb = (await Resource.findOne()) as IResourceDocument
+    expect({ ...formatDb(finalInDb.lessons[0]) }).toMatchObject({ ...updateLesson, _id: existingId })
   })
 
   it('should return a 404 if not found', async () => {
     const { url } = await setupLesson()
     const inDb = (await Resource.findOne()) as IResourceDocument
     expect(inDb.lessons).toHaveLength(0)
-    const updateLesson = generate.lesson({ _id: generate.objectId() })
+    const updateLesson = generate.lesson()
+    const fakeId = generate.objectId()
 
     const res = await request(app)
-      .put(url)
+      .put(`${url}/${fakeId}`)
       .send(updateLesson)
 
     expect(res.status).toEqual(404)
@@ -270,8 +280,9 @@ describe('lessons', () => {
     const { url } = await setupLesson()
     const inDb = (await Resource.findOne()) as IResourceDocument
     expect(inDb.lessons).toHaveLength(0)
+    const fakeId = generate.objectId()
 
-    const res = await request(app).delete(`${url}/${generate.objectId()}`)
+    const res = await request(app).delete(`${url}/${fakeId}`)
 
     expect(res.status).toEqual(404)
     expect(res.body).toEqual({})

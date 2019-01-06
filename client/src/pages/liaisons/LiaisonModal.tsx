@@ -36,7 +36,7 @@ const LiaisonModal: React.FC<IProps> = ({ open, setOpen, liaison, action }) => {
     }
     if (action === 'update') {
       api.liaisons
-        .update(updateLiaison)
+        .update(updateLiaison._id as string, updateLiaison)
         .then(newLiaison => {
           liaisonContext.updateLiaisons({ liaison: newLiaison, action })
           setOpen(false)

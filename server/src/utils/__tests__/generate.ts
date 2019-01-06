@@ -89,6 +89,56 @@ describe('generate.liaisons', () => {
   })
 })
 
+describe('generate.partner', () => {
+  it('should return a full partner', () => {
+    const res = generate.partner()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      annualReports: expect.any(Array),
+      featuredImages: expect.any(Array),
+      images: expect.any(Array),
+      longDescription: expect.any(String),
+      shortDescription: expect.any(String),
+      slug: expect.any(String),
+      title: expect.any(String),
+      videoReports: expect.any(Array),
+    })
+  })
+})
+
+describe('generate.partners', () => {
+  it('should return multiple partners', () => {
+    const res = generate.partners(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          annualReports: expect.any(Array),
+          featuredImages: expect.any(Array),
+          images: expect.any(Array),
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
+          slug: expect.any(String),
+          title: expect.any(String),
+          videoReports: expect.any(Array),
+        },
+        {
+          _id: expect.any(String),
+          annualReports: expect.any(Array),
+          featuredImages: expect.any(Array),
+          images: expect.any(Array),
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
+          slug: expect.any(String),
+          title: expect.any(String),
+          videoReports: expect.any(Array),
+        },
+      ])
+    )
+  })
+})
+
 describe('generate.resource', () => {
   it('should return a correct resource', () => {
     const res = generate.resource()

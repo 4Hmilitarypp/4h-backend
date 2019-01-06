@@ -8,7 +8,9 @@ const setupEducatorRoutes = (router: Router) => {
     .route('/')
     .get(catchErrors(educatorController.getResearch))
     .post(catchErrors(educatorController.createResearch))
+  router
+    .route('/:_id')
+    .delete(catchErrors(educatorController.deleteResearch))
     .put(catchErrors(educatorController.updateResearch))
-  router.route('/:id').delete(catchErrors(educatorController.deleteResearch))
 }
 export default setupEducatorRoutes

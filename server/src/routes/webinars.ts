@@ -8,7 +8,9 @@ const setupWebinarRoutes = (router: Router) => {
     .route('/')
     .get(catchErrors(webinarController.getWebinars))
     .post(catchErrors(webinarController.createWebinar))
+  router
+    .route('/:_id')
+    .delete(catchErrors(webinarController.deleteWebinar))
     .put(catchErrors(webinarController.updateWebinar))
-  router.route('/:id').delete(catchErrors(webinarController.deleteWebinar))
 }
 export default setupWebinarRoutes

@@ -40,7 +40,7 @@ const ResearchForm: React.FC<IProps> = ({ setOpen, research, action }) => {
     }
     if (action === 'update') {
       api.research
-        .update(updateResearch)
+        .update(updateResearch._id as string, updateResearch)
         .then(newResearch => {
           researchContext.updateResearches({ research: newResearch, action })
           setOpen(false)

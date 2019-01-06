@@ -7,8 +7,10 @@ const setupPartnerRoutes = (router: Router) => {
     .route('/')
     .get(catchErrors(partnerController.getPartners))
     .post(catchErrors(partnerController.createPartner))
+  router
+    .route('/:_id')
+    .delete(catchErrors(partnerController.deletePartner))
     .put(catchErrors(partnerController.updatePartner))
-  router.route('/:id').delete(catchErrors(partnerController.deletePartner))
 }
 
 export default setupPartnerRoutes

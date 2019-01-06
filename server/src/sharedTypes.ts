@@ -9,9 +9,9 @@ export interface ILiaison {
 }
 
 export interface IPartnerSection {
+  _id?: string
   title: string
   featuredImages: IImage[]
-  partnerSectionId: string
   shortDescription: string
   slug: string
 }

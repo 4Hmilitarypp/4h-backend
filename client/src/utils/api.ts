@@ -17,20 +17,21 @@ const liaisons = {
   create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
   delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
   get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
-  update: (updates: ILiaison): Promise<ILiaison> => requests.put('/liaisons', updates),
+  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons${id}`, updates),
 }
 const research = {
   create: (data: IResearch): Promise<IResearch> => requests.post('/research', data),
   delete: (id: string): Promise<string> => requests.delete(`/research/${id}`),
   get: (): Promise<IResearch[]> => requests.get('/research'),
-  update: (updates: IResearch): Promise<IResearch> => requests.put('/research', updates),
+  update: (id: string, updates: IResearch): Promise<IResearch> => requests.put(`/research/${id}`, updates),
 }
 const resources = {
   create: (data: Omit<IResource, 'slug'>): Promise<IResource> => requests.post('/resources', data),
   delete: (id: string): Promise<string> => requests.delete(`/resources/${id}`),
   get: (): Promise<IResource[]> => requests.get('/resources'),
   getById: (id: string): Promise<IResource> => requests.get(`/resources/${id}`),
-  update: (updates: Omit<IResource, 'slug'>): Promise<IResource> => requests.put('/resources', updates),
+  update: (id: string, updates: Omit<IResource, 'slug'>): Promise<IResource> =>
+    requests.put(`/resources/${id}`, updates),
 }
 
 const lessons = {
@@ -39,14 +40,14 @@ const lessons = {
   delete: (resourceId: string, id: string): Promise<string> =>
     requests.delete(`/resources/${resourceId}/lessons/${id}`),
   get: (resourceId: string): Promise<ILesson[]> => requests.get(`/resources/${resourceId}/lessons/`),
-  update: (resourceId: string, updates: ILesson): Promise<ILesson> =>
-    requests.put(`/resources/${resourceId}/lessons/`, updates),
+  update: (id: string, resourceId: string, updates: ILesson): Promise<ILesson> =>
+    requests.put(`/resources/${resourceId}/lessons/${id}`, updates),
 }
 const webinars = {
   create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),
   delete: (id: string): Promise<string> => requests.delete(`/webinars/${id}`),
   get: (): Promise<IWebinar[]> => requests.get('/webinars'),
-  update: (updates: IWebinar): Promise<IWebinar> => requests.put('/webinars', updates),
+  update: (id: string, updates: IWebinar): Promise<IWebinar> => requests.put(`/webinars${id}`, updates),
 }
 
 function init({

@@ -1,9 +1,9 @@
 import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
-import { ILesson, IResource, Omit } from '../sharedTypes'
+import { ILesson, IResourceWithLessons, Omit } from '../sharedTypes'
 
-export interface IResourceDocument extends Omit<IResource, '_id'>, Document {
+export interface IResourceDocument extends Omit<IResourceWithLessons, '_id'>, Document {
   lessons: ILesson[]
 }
 

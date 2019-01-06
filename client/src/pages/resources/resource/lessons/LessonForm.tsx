@@ -63,12 +63,23 @@ const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
       links: [...updatedLinks, ...createdLinks],
       title: title.value,
     }
-    api.lessons[action](lessonContext.resourceId, updateLesson)
-      .then(newLesson => {
-        lessonContext.updateLessons({ lesson: newLesson, action })
-        setOpen(false)
-      })
-      .catch(handleError)
+    if (action === 'create') {
+      api.lessons
+        .create(lessonContext.resourceId, updateLesson)
+        .then(newLesson => {
+          lessonContext.updateLessons({ lesson: newLesson, action })
+          setOpen(false)
+        })
+        .catch(handleError)
+    } else {
+      api.lessons
+        .update(updateLesson._id as string, lessonContext.resourceId, updateLesson)
+        .then(newLesson => {
+          lessonContext.updateLessons({ lesson: newLesson, action })
+          setOpen(false)
+        })
+        .catch(handleError)
+    }
   }
 
   const createLinkInput = () => {

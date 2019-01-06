@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import { ILesson, ILessonType, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar } from '../sharedTypes'
+import { ILesson, ILessonType, ILiaison, IPartner, IResearch, IResourceWithLessons, IWebinar } from '../sharedTypes'
 
 const generate = {
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
@@ -24,6 +24,19 @@ const generate = {
   }),
   liaisons: (length: number): ILiaison[] => Array.from({ length }, () => generate.liaison()),
   objectId: () => new ObjectId().toHexString(),
+  partner: (overrides?: Partial<IPartner>): IPartner => ({
+    _id: generate.objectId(),
+    annualReports: [{ title: faker.lorem.words(), url: faker.internet.url() }],
+    featuredImages: [{ url: faker.internet.url(), alt: faker.company.catchPhrase() }],
+    images: [{ url: faker.internet.url(), alt: faker.company.catchPhrase() }],
+    longDescription: faker.lorem.paragraph(),
+    shortDescription: faker.lorem.word(),
+    slug: faker.lorem.word(),
+    title: faker.lorem.word(),
+    videoReports: [{ title: faker.lorem.words(), url: faker.internet.url() }],
+    ...overrides,
+  }),
+  partners: (length: number): IPartner[] => Array.from({ length }, () => generate.partner()),
   research: (descriptionLength: number = 100, overrides: {} = {}): IResearch => ({
     _id: generate.objectId(),
     description: faker.lorem.words(descriptionLength),
@@ -33,10 +46,9 @@ const generate = {
     ...overrides,
   }),
   researches: (length: number): IResearch[] => Array.from({ length }, () => generate.research(100)),
-  resource: (overrides?: Partial<IResource>, lesson?: ILesson): IResourceWithLessons => ({
+  resource: (overrides?: Partial<IResourceWithLessons>): IResourceWithLessons => ({
     _id: generate.objectId(),
     featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
-    lessons: lesson ? [lesson] : undefined,
     longDescription: faker.lorem.paragraph(),
     shortDescription: faker.lorem.words(20),
     slug: faker.lorem.word(),

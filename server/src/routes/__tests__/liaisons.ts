@@ -19,7 +19,8 @@ it('should return a 200 if get was successful', async () => {
 
   const res = await request(app).get('/api/liaisons')
   expect(res.status).toBe(200)
-  expect(res.body).toEqual([{ ...liaison, _id: expect.any(String) }])
+  expect(res.body).toHaveLength(1)
+  expect(res.body[0]).toMatchObject({ ...liaison, _id: expect.any(String) })
 })
 
 /**
@@ -33,9 +34,9 @@ it('should return a 201 if created was successful', async () => {
     .send(liaison)
 
   expect(res.status).toBe(201)
-  expect(res.body).toEqual({ ...liaison, _id: expect.any(String) })
-  const inDb = await Liaison.find()
-  expect(formatDb(inDb[0])).toMatchObject({ ...liaison, _id: res.body._id })
+  expect(res.body).toMatchObject({ ...liaison, _id: expect.any(String) })
+  const inDb = await Liaison.findOne()
+  expect(formatDb(inDb)).toMatchObject({ ...liaison, _id: res.body._id })
 })
 
 it('should return a 400 if a liaison with a duplicate abbreviation is created', async () => {
@@ -49,7 +50,7 @@ it('should return a 400 if a liaison with a duplicate abbreviation is created', 
     .send(liaison)
 
   expect(res.status).toEqual(400)
-  expect(res.body).toEqual({ message: expect.any(String) })
+  expect(res.body).toMatchObject({ message: expect.any(String) })
   const finalInDb = await Liaison.find()
   expect(finalInDb).toHaveLength(1)
 })
@@ -60,48 +61,48 @@ it('should return a 400 if a liaison with a duplicate abbreviation is created', 
 it('should return a 200 if the update was successful', async () => {
   const originalLiaison = generate.liaison({ abbreviation: 'KSA' })
   const inDb = await new Liaison(originalLiaison).save()
+  const existingId = inDb._id.toString()
 
   const updateLiaison = generate.liaison({ abbreviation: 'KSB' })
-  updateLiaison._id = inDb._id.toString()
 
   const res = await request(app)
-    .put('/api/liaisons/')
+    .put(`/api/liaisons/${existingId}`)
     .send(updateLiaison)
 
   expect(res.status).toEqual(200)
-  expect(res.body).toEqual(updateLiaison)
-  const finalInDb = await Liaison.findById(res.body._id)
-  expect(formatDb(finalInDb)).toMatchObject(updateLiaison)
+  expect(res.body).toMatchObject({ ...updateLiaison, _id: existingId })
+  const finalInDb = await Liaison.findById(existingId)
+  expect(formatDb(finalInDb)).toMatchObject({ ...updateLiaison, _id: existingId })
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
   const originalLiaison = generate.liaison({ abbreviation: 'KSA' })
   const inDb = await new Liaison(originalLiaison).save()
+  const existingId = inDb._id.toString()
 
   const updateLiaison = generate.liaison({ abbreviation: 'KSA', email: 'hi@k' })
-  updateLiaison._id = inDb._id.toString()
 
   const res = await request(app)
-    .put('/api/liaisons/')
+    .put(`/api/liaisons/${existingId}`)
     .send(updateLiaison)
 
   expect(res.status).toEqual(400)
-  expect(res.body).toEqual({ message: expect.any(String) })
-  const finalInDb = await Liaison.findById(inDb._id)
-  expect(formatDb(finalInDb)).toMatchObject(originalLiaison)
+  expect(res.body).toMatchObject({ message: expect.any(String) })
+  const finalInDb = await Liaison.findById(existingId)
+  expect(formatDb(finalInDb)).toMatchObject({ ...originalLiaison, _id: existingId })
 })
 
 it('should return a 404 if not found', async () => {
   const inDb = await Liaison.find()
   expect(inDb).toHaveLength(0)
-  const updateLiaison = generate.liaison({ abbreviation: 'KSA', _id: generate.objectId() })
-
+  const updateLiaison = generate.liaison({ abbreviation: 'KSA' })
+  const fakeId = generate.objectId()
   const res = await request(app)
-    .put('/api/liaisons/')
+    .put(`/api/liaisons/${fakeId}`)
     .send(updateLiaison)
 
   expect(res.status).toEqual(404)
-  expect(res.body).toEqual({})
+  expect(res.body).toMatchObject({})
 })
 
 /**
@@ -116,7 +117,7 @@ it('should return a 204 if delete was successful', async () => {
   const res = await request(app).delete(`/api/liaisons/${created._id}`)
 
   expect(res.status).toEqual(204)
-  expect(res.body).toEqual({})
+  expect(res.body).toMatchObject({})
   const finalInDb = await Liaison.find()
   expect(finalInDb).toHaveLength(0)
 })
@@ -128,5 +129,5 @@ it('should return a 404 if not found', async () => {
   const res = await request(app).delete(`/api/liaisons/${generate.objectId()}`)
 
   expect(res.status).toEqual(404)
-  expect(res.body).toEqual({})
+  expect(res.body).toMatchObject({})
 })

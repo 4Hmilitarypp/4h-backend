@@ -34,16 +34,31 @@ const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
       shortDescription: shortDescription.value,
       title: title.value,
     }
-    api.resources[action](updateResource)
-      .then(newResource => {
-        resourceContext.updateResources({ resource: newResource, action })
-        navigate(`/curriculum-resources/${newResource._id}`)
-        if (formRef.current) {
-          // reset the form so the actual returned data can be loaded
-          formRef.current.reset()
-        }
-      })
-      .catch(handleError)
+    if (action === 'create') {
+      api.resources
+        .create(updateResource)
+        .then(newResource => {
+          resourceContext.updateResources({ resource: newResource, action })
+          navigate(`/curriculum-resources/${newResource._id}`)
+          if (formRef.current) {
+            // reset the form so the actual returned data can be loaded
+            formRef.current.reset()
+          }
+        })
+        .catch(handleError)
+    } else {
+      api.resources
+        .update(updateResource._id as string, updateResource)
+        .then(newResource => {
+          resourceContext.updateResources({ resource: newResource, action })
+          navigate(`/curriculum-resources/${newResource._id}`)
+          if (formRef.current) {
+            // reset the form so the actual returned data can be loaded
+            formRef.current.reset()
+          }
+        })
+        .catch(handleError)
+    }
   }
 
   return (

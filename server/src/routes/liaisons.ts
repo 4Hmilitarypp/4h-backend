@@ -8,7 +8,9 @@ const setupLiaisonRoutes = (router: Router) => {
     .route('/')
     .get(catchErrors(liaisonController.getLiaisons))
     .post(catchErrors(liaisonController.createLiaison))
+  router
+    .route('/:_id')
+    .delete(catchErrors(liaisonController.deleteLiaison))
     .put(catchErrors(liaisonController.updateLiaison))
-  router.route('/:id').delete(catchErrors(liaisonController.deleteLiaison))
 }
 export default setupLiaisonRoutes

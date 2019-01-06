@@ -9,16 +9,18 @@ const setupResourceRoutes = (router: Router) => {
     .route('/')
     .get(catchErrors(resourceController.getResources))
     .post(catchErrors(resourceController.createResource))
-    .put(catchErrors(resourceController.updateResource))
   router
-    .route('/:id')
+    .route('/:_id')
     .delete(catchErrors(resourceController.deleteResource))
     .get(catchErrors(resourceController.getResource))
+    .put(catchErrors(resourceController.updateResource))
   router
     .route('/:resourceId/lessons')
     .get(catchErrors(resourceController.getLessons))
     .post(catchErrors(resourceController.createLesson))
+  router
+    .route('/:resourceId/lessons/:_id')
+    .delete(catchErrors(resourceController.deleteLesson))
     .put(catchErrors(resourceController.updateLesson))
-  router.route('/:resourceId/lessons/:id').delete(catchErrors(resourceController.deleteLesson))
 }
 export default setupResourceRoutes
