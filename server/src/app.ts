@@ -18,7 +18,6 @@ const app = express()
 app.use(helmet())
 
 // allow cors so my site can communicate with my back-end.
-// ! Configure this in production so only correct people can access it
 const corsOptions = {
   origin: [process.env.FRONTEND_URL || '', process.env.NODE_ENV === 'dev' ? 'http://localhost:2323' : ''],
 }
@@ -53,12 +52,6 @@ app.use(
 // Passport JS is what we use to handle our logins
 app.use(passport.initialize())
 app.use(passport.session())
-
-/* // promisify some callback based APIs
-app.use((req, res, next) => {
-  req.login = promisify(req.login, req);
-  next();
-}); */
 
 // pass the app to our routes to set them up
 setupRoutes(app)

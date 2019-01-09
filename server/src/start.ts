@@ -7,7 +7,7 @@ dotenv.config({ path: '.env' })
 
 // Connect to our Database and handle any bad connections
 mongoose.connect(
-  process.env.DATABASE || '',
+  process.env.DATABASE_URL || '',
   { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }
 )
 mongoose.Promise = global.Promise // Tell Mongoose to use ES6 promises
