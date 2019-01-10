@@ -31,6 +31,8 @@ const connectToDb = async () => {
   }
 }
 
+beforeAll(() => (jasmine.DEFAULT_TIMEOUT_INTERVAL = 160000))
+
 beforeEach(async () => {
   if (mongoose.connection.readyState === 0) {
     await connectToDb()
