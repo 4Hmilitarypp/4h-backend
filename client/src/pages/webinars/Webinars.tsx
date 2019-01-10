@@ -23,7 +23,7 @@ interface IWebinarsContext {
 export const WebinarsContext = React.createContext<IWebinarsContext>(undefined as any)
 
 const Webinars: React.FC<RouteComponentProps> = () => {
-  const [webinars, setWebinars] = React.useState<IWebinar[] | undefined>(undefined)
+  const [webinars, setWebinars] = React.useState<IWebinar[]>([])
   const [modalOpen, setModalOpen] = React.useState(false)
 
   const flashContext = React.useContext(FlashContext)
@@ -68,8 +68,8 @@ const Webinars: React.FC<RouteComponentProps> = () => {
           <WebinarHeading>Webinars</WebinarHeading>
           <Button onClick={() => setModalOpen(true)}>+ Create a new Webinar</Button>
         </TableHeader>
-        {webinars && (
-          <ul>
+        {webinars.length > 0 && (
+          <ul data-testid="webinars">
             {map(webinars, w => (
               <Webinar key={w.title} webinar={w} />
             ))}

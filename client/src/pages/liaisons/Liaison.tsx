@@ -6,6 +6,7 @@ import LiaisonModal from './LiaisonModal'
 
 const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
   const [modalOpen, setModalOpen] = React.useState(false)
+
   return (
     <>
       <LiaisonWrapper onClick={() => setModalOpen(true)}>

@@ -58,7 +58,7 @@ setupRoutes(app)
 
 // Serve any static files
 app.use(express.static(path.resolve(__dirname, '../../client/build'), { maxAge: '30d' }))
-app.get('/*', (req, res) => {
+app.get('/*', (_, res) => {
   res.sendFile(path.join(__dirname, '../../client/build/index.html'), (err: Error) => {
     if (err) {
       res.status(500).send(err)

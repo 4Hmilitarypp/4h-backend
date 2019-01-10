@@ -69,7 +69,7 @@ const Researches: React.FC<RouteComponentProps> = () => {
           <Button onClick={() => setModalOpen(true)}>+ Create a new Research</Button>
         </TableHeader>
         {researches && (
-          <ul>
+          <ul data-testid="research">
             {map(researches, r => (
               <Research key={r.title} research={r} />
             ))}

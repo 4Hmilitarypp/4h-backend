@@ -1,7 +1,7 @@
 module.exports = {
   globals: {
     'ts-jest': {
-      tsConfig: './tsconfig.json',
+      tsConfig: '../tsconfig.json',
     },
   },
   preset: 'ts-jest',
@@ -12,8 +12,9 @@ module.exports = {
   globalTeardown: './jestSetup/teardown.js',
   setupTestFrameworkScriptFile: './jestSetup/mongoose.js',
 
+  coverageDirectory: '../coverage',
   coverageReporters: ['text', 'html'],
-  collectCoverageFrom: ['src/**/*.ts', '!src/types.ts', '!src/sharedTypes.ts', '!src/models/*.ts', '!src/start.ts'],
+  collectCoverageFrom: ['**/*.ts', '!types.ts', '!sharedTypes.ts', '!models/*.ts', '!start.ts'],
   coverageThreshold: {
     global: {
       statements: 85,

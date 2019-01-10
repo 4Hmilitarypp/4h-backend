@@ -7,10 +7,8 @@ const mongod = new MongodbMemoryServer.default({
   instance: {
     dbName: 'jest',
   },
-  binary: {
-    version: '4.0.4',
-  },
   autoStart: false,
+  debug: true,
 })
 
 module.exports = async () => {

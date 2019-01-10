@@ -69,7 +69,7 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
           <Button onClick={() => setModalOpen(true)}>+ Create a new Liaison</Button>
         </TableHeader>
         {liaisons && (
-          <ul>
+          <ul data-testid="liaisons">
             {map(liaisons, l => (
               <Liaison key={l.region} liaison={l} />
             ))}

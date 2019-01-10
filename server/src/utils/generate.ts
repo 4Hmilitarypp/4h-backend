@@ -18,7 +18,7 @@ const generate = {
     email: faker.internet.email(),
     image: faker.random.image(),
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: `${faker.phone.phoneNumberFormat(0)}`,
+    phoneNumber: `913-206-8228`,
     region: faker.address.state(),
     ...overrides,
   }),

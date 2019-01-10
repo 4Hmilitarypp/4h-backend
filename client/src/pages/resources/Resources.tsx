@@ -24,6 +24,7 @@ const Resources: React.FC<RouteComponentProps> = () => {
 
   return (
     <ResourceContext.Provider value={{ resources, updateResources, findById }}>
+      {resources.length > 0 && <div data-testid="resources" />}
       <Router>
         <ResourceTable path="/" />
         <Resource path="/:_id" />

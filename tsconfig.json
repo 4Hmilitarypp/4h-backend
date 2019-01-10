@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "es6",
+
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true
+  }
+}
