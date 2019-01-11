@@ -29,5 +29,6 @@ import app from './app'
 
 app.set('port', process.env.PORT || 7777)
 const server = app.listen(process.env.PORT, () => {
+  // tslint:disable-next-line
   console.log(`Express running → PORT ${(server.address() as AddressInfo).port}`)
 })

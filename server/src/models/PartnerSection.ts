@@ -13,7 +13,7 @@ partnerSectionSchema.pre('save', function(next) {
     next()
     return
   }
-  ;(<any>this).slug = slugify((<any>this).title)
+  ;(this as any).slug = slugify((this as any).title)
   next()
 })
 

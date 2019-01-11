@@ -9,7 +9,6 @@
   },
   "jest": {
     "coverageReporters": [
-      "text",
       "html"
     ],
     "collectCoverageFrom": [

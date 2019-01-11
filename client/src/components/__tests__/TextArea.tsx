@@ -1,6 +1,6 @@
-import TextArea from '../TextArea'
 import * as React from 'react'
 import { fireEvent, render } from 'react-testing-library'
+import TextArea from '../TextArea'
 
 interface IProps {
   value: string

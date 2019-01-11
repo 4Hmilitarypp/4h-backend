@@ -12,6 +12,5 @@ WORKDIR /app/
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN CI=true npm run client:coverage
 RUN npm run build
 CMD ["npm", "run", "production"]

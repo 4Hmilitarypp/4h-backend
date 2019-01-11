@@ -11,7 +11,6 @@ const mongod = new MongodbMemoryServer.default({
     version: '4.0.4',
   },
   autoStart: false,
-  debug: true,
 })
 
 module.exports = async () => {

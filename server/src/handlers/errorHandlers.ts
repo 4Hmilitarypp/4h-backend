@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { IApiError } from '../types'
-import { Controller, ErrorHandler, isCastError, isValidationError, Middleware } from '../types'
+import { Controller, ErrorHandler, IApiError, isCastError, isValidationError, Middleware } from '../types'
 /*
   Catch Errors Handler
 

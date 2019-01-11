@@ -13,7 +13,7 @@ module.exports = {
   setupTestFrameworkScriptFile: './jestSetup/mongoose.js',
 
   coverageDirectory: '../coverage',
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['html'],
   collectCoverageFrom: ['**/*.ts', '!types.ts', '!sharedTypes.ts', '!models/*.ts', '!start.ts'],
   coverageThreshold: {
     global: {
