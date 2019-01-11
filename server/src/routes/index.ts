@@ -28,9 +28,9 @@ const setupRoutes = (app: Express) => {
   app.use('/api/resources', resourcesRouter)
 
   // Docker check to tell whether the app is ready or not
-  app.get('/api/docker-check', (req, res) => {
-    res.send('app is ready')
-  })
+  app.get('/api/docker-check', (req, res) => res.send('app is ready'))
+
+  app.get('/robots.txt', (_, res) => res.sendFile('./build/robots.txt'))
 
   // if a call reaches here, the route is not found
   app.use('/api', () => {

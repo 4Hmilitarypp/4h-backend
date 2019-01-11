@@ -1,17 +1,12 @@
 import faker from 'faker'
-import { ILesson, ILessonType, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar } from '../sharedTypes'
-import { IContactUsEmail, ISignInForm } from '../types'
+import { ILesson, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar, LessonLinkType } from '../sharedTypes'
+import { ISignInForm } from '../types'
 
 const generate = {
-  contactUsEmail: (overrides?: Partial<IContactUsEmail>): IContactUsEmail => ({
-    email: faker.internet.email(),
-    message: faker.lorem.paragraph(),
-    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-  }),
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
     links: Array.from({ length: faker.random.number({ min: 1, max: 4 }) }, () => ({
-      type: new Array('doc', 'pdf', 'external', 'ppt')[faker.random.number({ min: 0, max: 3 })] as ILessonType,
+      type: new Array('doc', 'pdf', 'external', 'ppt')[faker.random.number({ min: 0, max: 3 })] as LessonLinkType,
       url: faker.internet.url(),
     })),
     title: faker.company.catchPhrase(),

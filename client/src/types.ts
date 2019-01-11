@@ -20,14 +20,6 @@ export interface ISignInForm {
   password: string
 }
 
-export interface IBackgroundCoords {
-  height: number
-  left: number
-  open: boolean
-  top: number
-  width: number
-}
-
 export interface IApiError {
   response: { data: { message: string }; status: number; statusText: string }
 }

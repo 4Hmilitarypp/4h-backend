@@ -9,11 +9,10 @@ export interface ILiaison {
 }
 
 export interface IPartnerSection {
-  title: string
   featuredImages: IImage[]
-  partnerSectionId: string
   shortDescription: string
   slug: string
+  title: string
 }
 
 export interface IImage {
@@ -27,7 +26,8 @@ export interface ILink {
   url: string
 }
 
-interface IReport {
+export interface IReport {
+  image: string
   title: string
   url: string
 }
@@ -66,6 +66,10 @@ export interface IResource {
   title: string
 }
 
+export interface IResourceWithLessons extends IResource {
+  lessons?: ILesson[]
+}
+
 export type LessonLinkType = 'ppt' | 'pdf' | 'doc' | 'external'
 
 export interface ILessonLink {
@@ -79,5 +83,4 @@ export interface ILesson {
   links: ILessonLink[]
   title: string
 }
-
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
