@@ -1,6 +1,7 @@
 import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
+
 import { ILesson, IResourceWithLessons, Omit } from '../sharedTypes'
 
 export interface IResourceDocument extends Omit<IResourceWithLessons, '_id'>, Document {
@@ -36,7 +37,7 @@ const lessonSchema = new mongoose.Schema({
   },
 })
 
-const resource = new mongoose.Schema({
+const ResourceSchema = new mongoose.Schema({
   featuredImage: featuredImageSchema,
   lessons: [lessonSchema],
   longDescription: {
@@ -57,9 +58,9 @@ const resource = new mongoose.Schema({
   },
 })
 
-resource.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
+ResourceSchema.plugin(uniqueValidator, { message: 'Error, expected value `{VALUE}` at `{PATH}` to be unique.' })
 
-resource.pre('save', function(this: IResourceDocument, next) {
+ResourceSchema.pre('save', function(this: IResourceDocument, next) {
   if (!this.isModified('title')) {
     next()
     return
@@ -68,7 +69,7 @@ resource.pre('save', function(this: IResourceDocument, next) {
   next()
 })
 
-resource.pre('findOneAndUpdate', function(next) {
+ResourceSchema.pre('findOneAndUpdate', function(next) {
   const title = this.getUpdate().title
   if (title) {
     ;(this as any)._update.slug = slugify(title)
@@ -79,4 +80,4 @@ resource.pre('findOneAndUpdate', function(next) {
   }
 })
 
-export default mongoose.model<IResourceDocument>('Resource', resource, 'resources')
+export default mongoose.model<IResourceDocument>('Resource', ResourceSchema, 'resources')

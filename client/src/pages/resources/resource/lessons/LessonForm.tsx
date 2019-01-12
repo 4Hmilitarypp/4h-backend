@@ -101,7 +101,7 @@ const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
             </InputGroup>
           )
         })}
-      {Array.from({ length: numberLinks }, (v, index) => (
+      {Array.from({ length: numberLinks }, (_, index) => (
         <InputGroup key={`newLink${index}`}>
           <label htmlFor={`newLink${index}`}>Add a new lesson resource</label>
           <input type="url" id={`newLink${index}`} />

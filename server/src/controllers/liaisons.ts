@@ -15,7 +15,7 @@ export const createLiaison: Controller = async (req, res) => {
   return res.status(201).json(liaison)
 }
 
-export const getLiaisons: Controller = async (req, res) => {
+export const getLiaisons: Controller = async (_, res) => {
   const liaisons = await Liaison.find()
   return res.json(liaisons)
 }

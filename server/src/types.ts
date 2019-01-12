@@ -7,7 +7,6 @@ export interface IApiError extends Error {
 }
 
 export type Controller = (req: Request, res: Response, next?: NextFunction) => Promise<Response>
-export type Middleware = (req: Request, res: Response, next: NextFunction) => void
 // export type CatchErrors = (req: Request, res: Response, next: NextFunction) => Promise<Response>
 export type ErrorHandler = (err: IApiError, req: Request, res: Response, next: NextFunction) => Response | void
 const hasNested = (err: any) => {

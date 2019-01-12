@@ -1,8 +1,26 @@
 import faker from 'faker'
 import { ObjectId } from 'mongodb'
-import { ILesson, ILiaison, IPartner, IResearch, IResourceWithLessons, IWebinar, LessonLinkType } from '../sharedTypes'
 
+import {
+  ILesson,
+  ILiaison,
+  ILoginForm,
+  IPartner,
+  IRegisterForm,
+  IResearch,
+  IResourceWithLessons,
+  IUser,
+  IWebinar,
+  LessonLinkType,
+} from '../sharedTypes'
 const generate = {
+  dbUser: (overrides?: Partial<IUser>): IUser => ({
+    email: faker.internet.email().toLowerCase(),
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    password: faker.internet.password(),
+    permissions: [],
+    ...overrides,
+  }),
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
     links: Array.from({ length: faker.random.number({ min: 1, max: 4 }) }, () => ({
@@ -23,6 +41,12 @@ const generate = {
     ...overrides,
   }),
   liaisons: (length: number): ILiaison[] => Array.from({ length }, () => generate.liaison()),
+
+  loginForm: (overrides?: Partial<ILoginForm>): ILoginForm => ({
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+    ...overrides,
+  }),
   objectId: () => new ObjectId().toHexString(),
   partner: (overrides?: Partial<IPartner>): IPartner => ({
     _id: generate.objectId(),
@@ -37,6 +61,16 @@ const generate = {
     ...overrides,
   }),
   partners: (length: number): IPartner[] => Array.from({ length }, () => generate.partner()),
+  registerForm: (overrides?: Partial<IRegisterForm>): IRegisterForm => {
+    const password = faker.internet.password()
+    return {
+      confirmPassword: password,
+      email: faker.internet.email(),
+      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      password,
+      ...overrides,
+    }
+  },
   research: (descriptionLength: number = 100, overrides: {} = {}): IResearch => ({
     _id: generate.objectId(),
     description: faker.lorem.words(descriptionLength),

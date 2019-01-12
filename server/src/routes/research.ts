@@ -1,16 +1,19 @@
 import { Router } from 'express'
-import * as educatorController from '../controllers/research'
+// @ts-ignore
+import guard from 'express-jwt-permissions'
 
+import * as educatorController from '../controllers/research'
 import { catchErrors } from '../handlers/errorHandlers'
+import auth from '../routes/auth'
 
 const setupEducatorRoutes = (router: Router) => {
   router
     .route('/')
-    .get(catchErrors(educatorController.getResearch))
-    .post(catchErrors(educatorController.createResearch))
+    .get(auth.optional, catchErrors(educatorController.getResearch))
+    .post(auth.required, guard().check('admin'), catchErrors(educatorController.createResearch))
   router
     .route('/:_id')
-    .delete(catchErrors(educatorController.deleteResearch))
-    .put(catchErrors(educatorController.updateResearch))
+    .delete(auth.required, guard().check('admin'), catchErrors(educatorController.deleteResearch))
+    .put(auth.required, guard().check('admin'), catchErrors(educatorController.updateResearch))
 }
 export default setupEducatorRoutes

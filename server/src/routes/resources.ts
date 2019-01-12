@@ -1,26 +1,29 @@
 import { Router } from 'express'
-import * as resourceController from '../controllers/resources'
+// @ts-ignore
+import guard from 'express-jwt-permissions'
 
+import * as resourceController from '../controllers/resources'
 import { catchErrors } from '../handlers/errorHandlers'
+import auth from '../routes/auth'
 
 const setupResourceRoutes = (router: Router) => {
   router.route('/slug/:slug').get(catchErrors(resourceController.getResourceBySlug))
   router
     .route('/')
-    .get(catchErrors(resourceController.getResources))
-    .post(catchErrors(resourceController.createResource))
+    .get(auth.optional, catchErrors(resourceController.getResources))
+    .post(auth.required, guard().check('admin'), catchErrors(resourceController.createResource))
   router
     .route('/:_id')
-    .delete(catchErrors(resourceController.deleteResource))
-    .get(catchErrors(resourceController.getResource))
-    .put(catchErrors(resourceController.updateResource))
+    .delete(auth.required, guard().check('admin'), catchErrors(resourceController.deleteResource))
+    .get(auth.optional, catchErrors(resourceController.getResource))
+    .put(auth.required, guard().check('admin'), catchErrors(resourceController.updateResource))
   router
     .route('/:resourceId/lessons')
-    .get(catchErrors(resourceController.getLessons))
-    .post(catchErrors(resourceController.createLesson))
+    .get(auth.optional, catchErrors(resourceController.getLessons))
+    .post(auth.required, guard().check('admin'), catchErrors(resourceController.createLesson))
   router
     .route('/:resourceId/lessons/:_id')
-    .delete(catchErrors(resourceController.deleteLesson))
-    .put(catchErrors(resourceController.updateLesson))
+    .delete(auth.required, guard().check('admin'), catchErrors(resourceController.deleteLesson))
+    .put(auth.required, guard().check('admin'), catchErrors(resourceController.updateLesson))
 }
 export default setupResourceRoutes

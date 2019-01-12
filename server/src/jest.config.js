@@ -11,6 +11,7 @@ module.exports = {
   globalSetup: './jestSetup/setup.js',
   globalTeardown: './jestSetup/teardown.js',
   setupTestFrameworkScriptFile: './jestSetup/mongoose.js',
+  verbose: false,
 
   coverageDirectory: '../coverage',
   coverageReporters: ['html'],

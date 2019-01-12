@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
-import { Controller, ErrorHandler, IApiError, isCastError, isValidationError, Middleware } from '../types'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
+
+import { Controller, ErrorHandler, IApiError, isCastError, isValidationError } from '../types'
 /*
   Catch Errors Handler
 
@@ -16,14 +17,14 @@ export const catchErrors = (fn: Controller) => (req: Request, res: Response, nex
 
   If we hit a route that is not found, we mark it as 404 and pass it along to the next error handler to display
 */
-export const routeNotFound: Middleware = (req, res, next) => {
+export const routeNotFound: RequestHandler = (_1, _2, next) => {
   const err: Partial<IApiError> = new Error()
   err.type = 'routeNotFound'
   err.status = 404
   return next(err)
 }
 
-export const itemNotFound: ErrorHandler = (err, req, res, next) => {
+export const itemNotFound: ErrorHandler = (err, _, res, next) => {
   if (err.type === 'itemNotFound') {
     return res.status(404).send()
   }
@@ -35,7 +36,7 @@ export const itemNotFound: ErrorHandler = (err, req, res, next) => {
 
   Detect if there are mongodb validation errors that we can nicely show via flash messages
 */
-export const validationErrors: ErrorHandler = (err, req, res, next) => {
+export const validationErrors: ErrorHandler = (err, _, res, next) => {
   if (!isValidationError(err)) {
     return next(err)
   }
@@ -46,7 +47,7 @@ export const validationErrors: ErrorHandler = (err, req, res, next) => {
   return res.status(400).send(error)
 }
 
-export const castErrors: ErrorHandler = (err, req, res, next) => {
+export const castErrors: ErrorHandler = (err, _, res, next) => {
   if (!isCastError(err)) {
     return next(err)
   }
@@ -56,12 +57,26 @@ export const castErrors: ErrorHandler = (err, req, res, next) => {
     .json({ message: `the passed in id: ${value} is formatted incorrectly and could not be found.` })
 }
 
+export const forbiddenError: ErrorHandler = (err: any, _, res, next) => {
+  if (err.code !== 'permission_denied') {
+    return next(err)
+  }
+  return res.status(403).send(err.message)
+}
+
+export const unauthorizedError: ErrorHandler = (err, _, res, next) => {
+  if (err.name !== 'UnauthorizedError') {
+    return next(err)
+  }
+  return res.status(401).send(err.message)
+}
+
 /*
   Development Error Handler
 
   In development we show good error messages so if we hit a syntax error or any other previously un-handled error, we can show good info on what happened
 */
-export const developmentErrors: ErrorHandler = (err, req, res, next) => {
+export const developmentErrors: ErrorHandler = (err, _, res) => {
   err.stack = err.stack || ''
   const errorDetails = {
     message: err.message,
@@ -69,14 +84,6 @@ export const developmentErrors: ErrorHandler = (err, req, res, next) => {
     status: err.status,
   }
   return res.status(err.status || 500).json(errorDetails)
-
-  /* res.format({
-    // Based on the `Accept` http header
-    'text/html': () => {
-      res.render('error', errorDetails)
-    }, // Form Submit, Reload the page
-    'application/json': () => res.json(errorDetails), // Ajax call, send JSON back
-  }) */
 }
 
 /*
@@ -84,7 +91,7 @@ export const developmentErrors: ErrorHandler = (err, req, res, next) => {
 
   No stacktraces are leaked to user
 */
-export const productionErrors: ErrorHandler = (err, req, res, next) => {
+export const productionErrors: ErrorHandler = (err, _, res) => {
   err.message = 'Unexpected Server Error'
   return res.status(err.status || 500).json(err)
 }

@@ -4,6 +4,7 @@ import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
 import setupResearchRoutes from './research'
 import setupResourceRoutes from './resources'
+import setupUserRoutes from './users'
 import setupWebinarRoutes from './webinars'
 
 const setupRoutes = (app: Express) => {
@@ -27,10 +28,12 @@ const setupRoutes = (app: Express) => {
   setupResourceRoutes(resourcesRouter)
   app.use('/api/resources', resourcesRouter)
 
-  // Docker check to tell whether the app is ready or not
-  app.get('/api/docker-check', (req, res) => res.send('app is ready'))
+  const userRouter = express.Router()
+  setupUserRoutes(userRouter)
+  app.use('/api/users', userRouter)
 
-  app.get('/robots.txt', (_, res) => res.sendFile('./build/robots.txt'))
+  // Docker check to tell whether the app is ready or not
+  app.get('/api/docker-check', (_, res) => res.send('app is ready'))
 
   // if a call reaches here, the route is not found
   app.use('/api', () => {

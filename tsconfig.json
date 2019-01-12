@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strict": true,
     "suppressImplicitAnyIndexErrors": true
   }

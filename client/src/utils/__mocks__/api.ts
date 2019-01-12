@@ -28,7 +28,7 @@ function reset() {
     reset,
     resources: Object.assign(mock.resources || {}, {
       get: jest.fn(() => Promise.resolve([])),
-      getBySlug: jest.fn((slug: string) => Promise.resolve({})),
+      getBySlug: jest.fn((_: string) => Promise.resolve({})),
     }),
     webinars: Object.assign(mock.webinars || {}, {
       get: jest.fn(() => Promise.resolve([])),

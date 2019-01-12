@@ -1,4 +1,7 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+import { IWebinar, Omit } from '../sharedTypes'
+
+export interface IWebinarDocument extends Omit<IWebinar, '_id'>, Document {}
 
 // @ts-ignore: validate causing whole schema to error
 const webinarSchema = new mongoose.Schema({
@@ -20,4 +23,4 @@ const webinarSchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.model('Webinar', webinarSchema)
+export default mongoose.model<IWebinarDocument>('Webinar', webinarSchema)

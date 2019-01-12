@@ -83,4 +83,21 @@ export interface ILesson {
   title: string
 }
 
+export interface ILoginForm {
+  email: string
+  password: string
+}
+
+export interface IRegisterForm extends ILoginForm {
+  name: string
+  confirmPassword: string
+}
+
+export interface IUser {
+  email: string
+  name: string
+  password: string
+  permissions: string[]
+}
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

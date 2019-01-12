@@ -1,12 +1,30 @@
 import mongoose from 'mongoose'
 import request from 'supertest'
+
 import app from '../../app'
+import { IUserDocument } from '../../models/User'
 import generate from '../../utils/generate'
 import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'partners'
 
 const Partner = mongoose.model('Partner')
+const User = mongoose.model<IUserDocument>('User')
+
+const getToken = (res: request.Response) => res.header['set-cookie'][0].split('token=')[1].split(';')[0]
+
+const setup = async () => {
+  const user = generate.dbUser({ permissions: ['admin'] })
+  const dbUser = new User(user)
+  await dbUser.setPassword(user.password)
+  await dbUser.save()
+  const res = await request(app)
+    .post('/api/users/login')
+    .send(user)
+  const cookie = res.header['set-cookie'][0] as string
+  const token = getToken(res) as string
+  return { token, cookie }
+}
 
 /**
  * GET
@@ -27,10 +45,12 @@ it('should return a 200 if get was successful', async () => {
  * POST
  */
 it('should return a 201 if created was successful', async () => {
+  const { cookie } = await setup()
   const partner = generate.partner()
 
   const res = await request(app)
     .post('/api/partners')
+    .set('cookie', cookie)
     .send(partner)
 
   expect(res.status).toBe(201)
@@ -40,9 +60,11 @@ it('should return a 201 if created was successful', async () => {
 })
 
 it('should return a 400 if a partner with a bad form is created', async () => {
+  const { cookie } = await setup()
   const partner = generate.partner({ title: '' })
   const res = await request(app)
     .post('/api/partners')
+    .set('cookie', cookie)
     .send(partner)
 
   expect(res.status).toEqual(400)
@@ -55,6 +77,7 @@ it('should return a 400 if a partner with a bad form is created', async () => {
  * PUT
  */
 it('should return a 200 if the update was successful', async () => {
+  const { cookie } = await setup()
   const originalPartner = generate.partner()
   const inDb = await new Partner(originalPartner).save()
   const existingId = inDb._id.toString()
@@ -63,6 +86,7 @@ it('should return a 200 if the update was successful', async () => {
 
   const res = await request(app)
     .put(`/api/partners/${existingId}`)
+    .set('cookie', cookie)
     .send(updatePartner)
 
   expect(res.status).toEqual(200)
@@ -72,6 +96,7 @@ it('should return a 200 if the update was successful', async () => {
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
+  const { cookie } = await setup()
   const originalPartner = generate.partner()
   const inDb = await new Partner(originalPartner).save()
   const existingId = inDb._id.toString()
@@ -80,6 +105,7 @@ it('should return a 400 if any of the fields are messed up', async () => {
 
   const res = await request(app)
     .put(`/api/partners/${existingId}`)
+    .set('cookie', cookie)
     .send(updatePartner)
 
   expect(res.status).toEqual(400)
@@ -89,6 +115,7 @@ it('should return a 400 if any of the fields are messed up', async () => {
 })
 
 it('should return a 404 if not found', async () => {
+  const { cookie } = await setup()
   const inDb = await Partner.find()
   expect(inDb).toHaveLength(0)
   const updatePartner = generate.partner()
@@ -96,6 +123,7 @@ it('should return a 404 if not found', async () => {
 
   const res = await request(app)
     .put(`/api/partners/${fakeId}`)
+    .set('cookie', cookie)
     .send(updatePartner)
 
   expect(res.status).toEqual(404)
@@ -106,12 +134,15 @@ it('should return a 404 if not found', async () => {
  * DELETE
  */
 it('should return a 204 if delete was successful', async () => {
+  const { cookie } = await setup()
   const partner = generate.partner()
   const created = await new Partner(partner).save()
   const inDb = await Partner.find()
   expect(inDb).toHaveLength(1)
 
-  const res = await request(app).delete(`/api/partners/${created._id}`)
+  const res = await request(app)
+    .delete(`/api/partners/${created._id}`)
+    .set('cookie', cookie)
 
   expect(res.status).toEqual(204)
   expect(res.body).toMatchObject({})
@@ -120,11 +151,14 @@ it('should return a 204 if delete was successful', async () => {
 })
 
 it('should return a 404 if not found', async () => {
+  const { cookie } = await setup()
   const inDb = await Partner.find()
   expect(inDb).toHaveLength(0)
   const fakeId = generate.objectId()
 
-  const res = await request(app).delete(`/api/partners/${fakeId}`)
+  const res = await request(app)
+    .delete(`/api/partners/${fakeId}`)
+    .set('cookie', cookie)
 
   expect(res.status).toEqual(404)
   expect(res.body).toMatchObject({})

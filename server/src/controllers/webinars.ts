@@ -14,7 +14,7 @@ export const createWebinar: Controller = async (req, res) => {
   return res.status(201).json(webinar)
 }
 
-export const getWebinars: Controller = async (req, res) => {
+export const getWebinars: Controller = async (_, res) => {
   const webinars = await Webinar.find()
   return res.json(webinars)
 }

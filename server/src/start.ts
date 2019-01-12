@@ -22,7 +22,11 @@ import './models/Partner'
 import './models/PartnerSection'
 import './models/Research'
 import './models/Resource'
+import './models/User'
 import './models/Webinar'
+
+// must be below models
+import './config/passport'
 
 // bring in the app
 import app from './app'

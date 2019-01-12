@@ -1,16 +1,13 @@
 /* eslint-disable no-console */
-// TODO import RedisStore from 'connect-redis'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
-import session from 'express-session'
-import expressValidator from 'express-validator'
 import helmet from 'helmet'
-import passport from 'passport'
 import path from 'path'
+
 import * as errorHandlers from './handlers/errorHandlers'
 import setupRoutes from './routes'
 
-// TODO RedisStore(session)
 // initialize the application and create the routes
 const app = express()
 
@@ -19,7 +16,7 @@ app.use(helmet())
 
 // allow cors so my site can communicate with my back-end.
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL || '', process.env.NODE_ENV === 'dev' ? 'http://localhost:2323' : ''],
+  origin: [process.env.FRONTEND_URL || '', process.env.NODE_ENV === 'development' ? 'http://localhost:2323' : ''],
 }
 app.use(cors(corsOptions))
 
@@ -27,31 +24,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
-app.use(expressValidator())
-
-// TODO const store = new (RedisStore as any)({ host: 'localhost', pass: process.env.REDIS_PASSWORD || 'secret', port: 6379 })
-
-// Sessions allow us to store data on visitors from request to request
-// This keeps users logged in and allows us to send flash messages
-app.use(
-  session({
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 2,
-      sameSite: true,
-      secure: process.env.NODE_ENV === 'prod',
-    },
-    name: 'sid',
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.SESSION_SECRET || 'secret',
-    // store,
-  })
-)
-
-// Passport JS is what we use to handle our logins
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(cookieParser())
 
 // pass the app to our routes to set them up
 setupRoutes(app)
@@ -78,8 +51,13 @@ app.use(errorHandlers.validationErrors)
 // check if errors are mongoDB cast errors
 app.use(errorHandlers.castErrors)
 
+// forbiddenError needs to come before unauthorizedError because forbidden is a type of unauthorizedError
+app.use(errorHandlers.forbiddenError)
+
+app.use(errorHandlers.unauthorizedError)
+
 // Programmer error handling in dev
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV === 'development') {
   /* Development Error Handler - Prints stack trace */
   app.use(errorHandlers.developmentErrors)
 }

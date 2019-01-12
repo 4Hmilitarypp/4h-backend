@@ -1,4 +1,7 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+import { IPartner, Omit } from '../sharedTypes'
+
+export interface IPartnerDocument extends Omit<IPartner, '_id'>, Document {}
 
 const partnerSchema = new mongoose.Schema({
   annualReports: { type: Array },
@@ -12,4 +15,4 @@ const partnerSchema = new mongoose.Schema({
   videoReports: Array,
 })
 
-export default mongoose.model('Partner', partnerSchema)
+export default mongoose.model<IPartnerDocument>('Partner', partnerSchema)

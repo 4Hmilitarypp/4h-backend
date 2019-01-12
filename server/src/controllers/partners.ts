@@ -1,9 +1,11 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
+
+import { IPartnerDocument } from '../models/Partner'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
-const Partner = mongoose.model('Partner')
+const Partner = mongoose.model<IPartnerDocument>('Partner')
 const Archive = mongoose.model('Archive')
 
 const cleanPartner = (obj: any) =>
@@ -35,7 +37,7 @@ export const createPartner: Controller = async (req, res) => {
   return res.status(201).json(partner)
 }
 
-export const getPartners: Controller = async (req, res) => {
+export const getPartners: Controller = async (_, res) => {
   const partners = await Partner.find()
   return res.json(partners)
 }

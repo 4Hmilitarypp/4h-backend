@@ -1,13 +1,8 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "module": "commonjs",
     "outDir": "dist"
-    /*     "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    } */
   },
   "include": ["src"]
-  // "include": ["src/**/*", "jest.config.ts"]
 }

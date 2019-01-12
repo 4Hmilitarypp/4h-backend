@@ -10,7 +10,7 @@ const cleanResourceWithLessons = (obj: any) =>
 const cleanResourceWithId = (obj: any) =>
   pick(obj, ['_id', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
 
-const Resource = mongoose.model('Resource')
+const Resource = mongoose.model<IResourceDocument>('Resource')
 const Archive = mongoose.model('Archive')
 
 export const createResource: Controller = async (req, res) => {
@@ -18,7 +18,7 @@ export const createResource: Controller = async (req, res) => {
   return res.status(201).json(cleanResourceWithId(resource))
 }
 
-export const getResources: Controller = async (req, res) => {
+export const getResources: Controller = async (_, res) => {
   const resources = await Resource.find()
     .select('-lessons')
     .sort('title')
@@ -93,7 +93,7 @@ export const getLessons: Controller = async (req, res) => {
     .select('lessons')
     .sort('lessons.$.title')
   if (resource) {
-    const { lessons } = resource as IResourceDocument
+    const { lessons } = resource
     return res.json(lessons)
   }
   throw notFoundError
@@ -108,13 +108,13 @@ const findLessonById = (id: string, lessons?: any) => {
 
 export const updateLesson: Controller = async (req, res) => {
   const { resourceId, _id } = req.params
-  const resource = (await Resource.findOneAndUpdate(
+  const resource = await Resource.findOneAndUpdate(
     { _id: resourceId, 'lessons._id': _id },
     {
       $set: { 'lessons.$': { ...cleanLesson(req.body), _id } },
     },
     { new: true }
-  )) as IResourceDocument
+  )
   if (resource) {
     const updatedLesson = findLessonById(_id, resource.lessons)
     return res.status(200).json(updatedLesson)
@@ -124,9 +124,9 @@ export const updateLesson: Controller = async (req, res) => {
 
 export const deleteLesson: Controller = async (req, res) => {
   const { resourceId, _id } = req.params
-  const updatedResource = (await Resource.findByIdAndUpdate(resourceId, {
+  const updatedResource = await Resource.findByIdAndUpdate(resourceId, {
     $pull: { lessons: { _id } },
-  })) as IResourceDocument
+  })
   if (updatedResource) {
     const deletedLesson = findLessonById(_id, updatedResource.lessons)
     if (deletedLesson) {

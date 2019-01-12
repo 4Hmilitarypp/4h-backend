@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+
+dotenv.config({ path: '../.env' })
 
 // Load models since we will not be instantiating our express server.
 require('../../dist/models/Archive')
@@ -8,6 +11,9 @@ require('../../dist/models/Partner')
 require('../../dist/models/PartnerSection')
 require('../../dist/models/Research')
 require('../../dist/models/Webinar')
+require('../../dist/models/User')
+
+require('../config/passport')
 
 mongoose.Promise = Promise
 
@@ -31,7 +37,7 @@ const connectToDb = async () => {
   }
 }
 
-beforeAll(() => (jasmine.DEFAULT_TIMEOUT_INTERVAL = 160000))
+beforeAll(() => dotenv.config({ path: '../.env' }))
 
 beforeEach(async () => {
   if (mongoose.connection.readyState === 0) {

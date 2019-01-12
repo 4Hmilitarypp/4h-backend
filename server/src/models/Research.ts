@@ -1,5 +1,9 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
+
+import { IResearch, Omit } from '../sharedTypes'
+
+export interface IResearchDocument extends Omit<IResearch, '_id'>, Document {}
 
 // @ts-ignore: validate causing whole schema to error
 const researchSchema = new mongoose.Schema({
@@ -21,4 +25,4 @@ const researchSchema = new mongoose.Schema({
 
 researchSchema.plugin(uniqueValidator)
 
-export default mongoose.model('Research', researchSchema)
+export default mongoose.model<IResearchDocument>('Research', researchSchema)

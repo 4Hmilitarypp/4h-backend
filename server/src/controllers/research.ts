@@ -1,5 +1,6 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
+
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
@@ -14,7 +15,7 @@ export const createResearch: Controller = async (req, res) => {
   return res.status(201).json(research)
 }
 
-export const getResearch: Controller = async (req, res) => {
+export const getResearch: Controller = async (_, res) => {
   const research = await Research.find()
   return res.json(research)
 }

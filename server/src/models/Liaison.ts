@@ -1,6 +1,11 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import validator from 'validator'
+
+import { ILiaison, Omit } from '../sharedTypes'
+
+export interface ILiaisonDocument extends Omit<ILiaison, '_id'>, Document {}
+
 // @ts-ignore: validate causing whole schema to error
 const liaisonSchema = new mongoose.Schema({
   abbreviation: {
@@ -24,4 +29,4 @@ const liaisonSchema = new mongoose.Schema({
 
 liaisonSchema.plugin(uniqueValidator)
 
-export default mongoose.model('Liaison', liaisonSchema)
+export default mongoose.model<ILiaisonDocument>('Liaison', liaisonSchema)
