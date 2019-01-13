@@ -20,6 +20,10 @@ passport.use(
           gmail_remove_subaddress: false,
         })
         const user = await Users.findOne({ email: cleanEmail })
+        if (user) {
+          const res = await user.validatePassword(password)
+          console.log(res)
+        }
         const isValid = user && (await user.validatePassword(password))
         if (isValid) {
           return done(null, user)

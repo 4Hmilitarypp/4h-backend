@@ -1,8 +1,14 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
+import { promisify } from 'util'
 import { IUser } from '../sharedTypes'
+
+// bcryptjs uses callbacks, and so I turn them into promises withe node's promisify util
+const bcryptSalt = promisify(bcrypt.genSalt)
+const bcryptHash = promisify(bcrypt.hash)
+const bcryptCompare = promisify(bcrypt.compare)
 
 export interface IUserDocument extends IUser, Document {
   setPassword: (password: string) => Promise<void>
@@ -31,11 +37,13 @@ const UsersSchema = new mongoose.Schema({
 })
 
 UsersSchema.methods.setPassword = async function(this: IUserDocument, password: string) {
-  this.password = await bcrypt.hash(password, 10)
+  const salt = await bcryptSalt()
+  // @ts-ignore
+  this.password = (await bcryptHash(password, salt)) as string
 }
 
 UsersSchema.methods.validatePassword = async function(this: IUserDocument, password: string) {
-  const isValid = await bcrypt.compare(password, this.password)
+  const isValid = await bcryptCompare(password, this.password)
   return isValid
 }
 

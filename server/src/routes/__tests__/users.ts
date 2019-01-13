@@ -1,7 +1,8 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import request from 'supertest'
+import { promisify } from 'util'
 
 import app from '../../app'
 import { IUserDocument } from '../../models/User'
@@ -13,6 +14,7 @@ process.env.TEST_SUITE = 'users'
 const User = mongoose.model<IUserDocument>('User')
 
 const getToken = (res: request.Response) => res.header['set-cookie'][0].split('token=')[1].split(';')[0]
+const bcryptCompare = promisify(bcrypt.compare)
 
 const setup = async () => {
   const registerForm = generate.registerForm()
@@ -44,8 +46,10 @@ it('/register: should return a valid cookie and store the user in the database c
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
-    password: bcrypt.hash(registerForm.password, 10),
+    password: expect.any(String),
   })
+  const isValid = await bcryptCompare(registerForm.password, (inDb as IUserDocument).password)
+  expect(isValid).toBe(true)
 })
 
 it('/login: should log the existing user in and set a response cookie', async () => {

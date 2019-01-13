@@ -60,9 +60,8 @@ This website was developed by Alex Wendte [alex@wendte.tech](#mailto:alex@wendte
 ### Server
 
 - Digital Ocean droplet with Dokku installed
-- If you are having troubles with npm installing bcrypt, follow the instruction here: https://www.gatsbyjs.org/docs/gatsby-on-windows/
-  - This will allow you to install node-gyp which you need. Ultimately I had to run `npm config set python "C:\Users\<user>\AppData\Local\Programs\Python\Python27\python2.7.exe"` in order to get this to work
-- You also need to run npm i -g typescript nodemon in order to run and compile the server
+- You need to run npm i -g typescript nodemon to install typescript and nodemon globally in order to run and compile the server
+
 ### Database
 
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
