@@ -1,3 +1,7 @@
+export interface IApiError {
+  response: { data: { message: string }; status: number; statusText: string }
+}
+
 export interface ILiaison {
   _id?: string
   abbreviation?: string | null
@@ -83,4 +87,22 @@ export interface ILesson {
   links: ILessonLink[]
   title: string
 }
+
+export interface ILoginForm {
+  email: string
+  password: string
+}
+
+export interface IRegisterForm extends ILoginForm {
+  name: string
+  confirmPassword: string
+}
+
+export interface IUser {
+  _id: string
+  email: string
+  name: string
+  permissions: string[]
+}
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

@@ -94,6 +94,7 @@ export interface IRegisterForm extends ILoginForm {
 }
 
 export interface IUser {
+  _id: string
   email: string
   name: string
   password: string

@@ -1,16 +1,17 @@
 import { Router } from 'express'
 import * as webinarController from '../controllers/webinars'
+import auth from '../routes/auth'
 
 import { catchErrors } from '../handlers/errorHandlers'
 
 const setupWebinarRoutes = (router: Router) => {
   router
     .route('/')
-    .get(catchErrors(webinarController.getWebinars))
-    .post(catchErrors(webinarController.createWebinar))
+    .get(auth.optional, catchErrors(webinarController.getWebinars))
+    .post(auth.required, catchErrors(webinarController.createWebinar))
   router
     .route('/:_id')
-    .delete(catchErrors(webinarController.deleteWebinar))
-    .put(catchErrors(webinarController.updateWebinar))
+    .delete(auth.required, catchErrors(webinarController.deleteWebinar))
+    .put(auth.required, catchErrors(webinarController.updateWebinar))
 }
 export default setupWebinarRoutes

@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const WebinarForm: React.FC<IProps> = ({ onSubmit, webinar, children }) => (
-  <Form onSubmit={onSubmit}>
+  <Form onSubmit={onSubmit} id="webinarForm">
     <InputGroup>
       <label htmlFor="title">Title</label>
       <input type="text" id="title" defaultValue={(webinar && webinar.title) || ''} />

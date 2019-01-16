@@ -33,9 +33,12 @@ it('/register: should return a valid cookie and store the user in the database c
     .send(registerForm)
 
   expect(res.status).toBe(201)
-  expect({ email: registerForm.email.toLowerCase(), name: registerForm.name, _id: expect.any(String) }).toMatchObject(
-    res.body
-  )
+  expect(res.body).toMatchObject({
+    _id: expect.any(String),
+    email: registerForm.email.toLowerCase(),
+    name: registerForm.name,
+    permissions: [],
+  })
   expect(res.header['set-cookie']).toEqual([expect.stringContaining('token=')])
   const token = getToken(res)
   const deserialized = await (jwt.verify(token, process.env.JWT_SECRET || '') as any)
@@ -68,6 +71,7 @@ it('/login: should log the existing user in and set a response cookie', async ()
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
+    permissions: [],
   })
 })
 
@@ -96,5 +100,6 @@ it('/me: should return the current user', async () => {
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
+    permissions: [],
   })
 })

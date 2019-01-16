@@ -43,6 +43,8 @@ const ResearchModal: React.FC<IProps> = ({ open, setOpen, research, action }) =>
         action={action}
         cancelHandler={handleCancel}
         deleteHandler={handleDeleteClicked}
+        formId="researchForm"
+        itemName="Research"
         timesDeleteClicked={timesDeleteClicked}
       />
     </Modal>

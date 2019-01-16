@@ -15,6 +15,7 @@ import {
 } from '../sharedTypes'
 const generate = {
   dbUser: (overrides?: Partial<IUser>): IUser => ({
+    _id: generate.objectId(),
     email: faker.internet.email().toLowerCase(),
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     password: faker.internet.password(),

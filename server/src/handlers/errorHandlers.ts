@@ -1,6 +1,6 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
-import { Controller, ErrorHandler, IApiError, isCastError, isValidationError } from '../types'
+import { Controller, ErrorHandler, isCastError, isValidationError } from '../types'
 /*
   Catch Errors Handler
 
@@ -17,16 +17,16 @@ export const catchErrors = (fn: Controller) => (req: Request, res: Response, nex
 
   If we hit a route that is not found, we mark it as 404 and pass it along to the next error handler to display
 */
-export const routeNotFound: RequestHandler = (_1, _2, next) => {
-  const err: Partial<IApiError> = new Error()
-  err.type = 'routeNotFound'
-  err.status = 404
+export const routeNotFound: ErrorHandler = (err, _, res, next) => {
+  if (err.type === 'routeNotFound') {
+    return res.status(404).json({ message: 'the requested url was not found' })
+  }
   return next(err)
 }
 
 export const itemNotFound: ErrorHandler = (err, _, res, next) => {
   if (err.type === 'itemNotFound') {
-    return res.status(404).send()
+    return res.status(404).json({ message: 'the requested item was not found' })
   }
   return next(err)
 }
@@ -44,7 +44,7 @@ export const validationErrors: ErrorHandler = (err, _, res, next) => {
   const errorKeys = Object.keys(err.errors)
   errorKeys.forEach(key => errorMessages.push(err.errors[key].message))
   const error = { message: `Failed to save data: ${errorMessages.join(' | ').replace('..', '.')}` }
-  return res.status(400).send(error)
+  return res.status(400).json(error)
 }
 
 export const castErrors: ErrorHandler = (err, _, res, next) => {
@@ -61,14 +61,14 @@ export const forbiddenError: ErrorHandler = (err: any, _, res, next) => {
   if (err.code !== 'permission_denied') {
     return next(err)
   }
-  return res.status(403).send(err.message)
+  return res.status(403).json({ message: err.message })
 }
 
 export const unauthorizedError: ErrorHandler = (err, _, res, next) => {
   if (err.name !== 'UnauthorizedError') {
     return next(err)
   }
-  return res.status(401).send(err.message)
+  return res.status(401).json({ message: err.message })
 }
 
 /*

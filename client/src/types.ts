@@ -20,10 +20,6 @@ export interface ISignInForm {
   password: string
 }
 
-export interface IApiError {
-  response: { data: { message: string }; status: number; statusText: string }
-}
-
 /**
  * Styles
  */

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FlashContext from '../contexts/FlashContext'
-import { IApiError } from '../types'
+import { IApiError } from '../sharedTypes'
 
 export const formatError = (err: IApiError) => err.response.data.message
 

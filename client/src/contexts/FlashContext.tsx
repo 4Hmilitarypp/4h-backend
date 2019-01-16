@@ -18,7 +18,7 @@ export const useFlash = () => {
   const initialState = { message: '', isError: false }
   const [flashState, setFlashState] = React.useState<{ message: string; isError: boolean }>(initialState)
   const mySetFlashState = ({ message, isError = false }: ISetFlashStateArgs) => setFlashState({ message, isError })
-  const resetFlashState = () => setFlashState({ message: '', isError: false })
+  const resetFlashState = () => setFlashState(initialState)
 
   React.useEffect(
     () => {

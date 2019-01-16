@@ -158,7 +158,7 @@ describe('resources', () => {
       .send(updateResource)
 
     expect(res.status).toEqual(404)
-    expect(res.body).toEqual({})
+    expect(res.body).toEqual({ message: 'the requested url was not found' })
   })
 
   /**
@@ -191,7 +191,7 @@ describe('resources', () => {
       .set('cookie', cookie)
 
     expect(res.status).toEqual(404)
-    expect(res.body).toEqual({})
+    expect(res.body).toEqual({ message: 'the requested url was not found' })
   })
 })
 
@@ -296,7 +296,7 @@ describe('lessons', () => {
       .send(updateLesson)
 
     expect(res.status).toEqual(404)
-    expect(res.body).toEqual({})
+    expect(res.body).toEqual({ message: 'the requested url was not found' })
   })
 
   /**
@@ -331,6 +331,6 @@ describe('lessons', () => {
       .set('cookie', cookie)
 
     expect(res.status).toEqual(404)
-    expect(res.body).toEqual({})
+    expect(res.body).toEqual({ message: 'the requested url was not found' })
   })
 })

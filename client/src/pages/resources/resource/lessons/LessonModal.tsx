@@ -43,6 +43,8 @@ const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
         action={action}
         cancelHandler={handleCancel}
         deleteHandler={handleDeleteClicked}
+        formId="lessonForm"
+        itemName="Lesson"
         timesDeleteClicked={timesDeleteClicked}
       />
     </Modal>

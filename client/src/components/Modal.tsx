@@ -49,6 +49,8 @@ interface IModalButtonsProps {
   action: 'create' | 'update' | 'delete'
   cancelHandler: () => void
   deleteHandler: () => void
+  formId: string
+  itemName: string
   timesDeleteClicked: number
 }
 
@@ -56,6 +58,8 @@ export const ModalButtons: React.FC<IModalButtonsProps> = ({
   action,
   cancelHandler,
   deleteHandler,
+  formId,
+  itemName,
   timesDeleteClicked,
 }) => {
   return (
@@ -68,7 +72,9 @@ export const ModalButtons: React.FC<IModalButtonsProps> = ({
         ))}
       <RightButtons>
         <OutlineButton onClick={cancelHandler}>Cancel</OutlineButton>
-        <Button form="researchForm">{action === 'update' ? 'Update' : 'Create'} Research</Button>
+        <Button form={formId}>
+          {action === 'update' ? 'Update' : 'Create'} {itemName}
+        </Button>
       </RightButtons>
     </Buttons>
   )

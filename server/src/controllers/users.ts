@@ -7,7 +7,7 @@ import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
 
 const cleanRegister = (obj: any) => pick(obj, ['email', 'password', 'confirmPassword', 'name'])
-const createSafeUser = (obj: any) => pick(obj, ['_id', 'email', 'name'])
+const createSafeUser = (obj: any) => pick(obj, ['_id', 'email', 'name', 'permissions'])
 
 const User = mongoose.model<IUserDocument>('User')
 

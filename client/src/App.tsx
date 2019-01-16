@@ -2,6 +2,7 @@ import { Router } from '@reach/router'
 import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
 import FlashContext, { useFlash } from './contexts/FlashContext'
+import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
 import Camps from './pages/Camps'
@@ -38,31 +39,34 @@ export const theme = {
 
 const App: React.FC<{}> = () => {
   const { flashState, resetFlashState, setFlashState } = useFlash()
+  const { userState, login, logout } = useUser()
   return (
     <ThemeProvider theme={theme}>
-      <AppWContainer data-testid="app">
-        <GlobalStyle />
-        <HeaderContainer>
-          <Header path="/*" />
-        </HeaderContainer>
-        <SidebarContainer>
-          <Sidebar path="/*" />
-        </SidebarContainer>
-        <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
-          <Flash />
-          <Router primary={false}>
-            <Home path="/" />
-            <Liaisons path="/liaisons" />
-            <Partners path="/partners" />
-            <Camps path="/camps" />
-            <Webinars path="/webinars" />
-            <Researches path="/research" />
-            <Resources path="/curriculum-resources/*" />
-            <Media path="/media" />
-            <NotFound default={true} />
-          </Router>
-        </FlashContext.Provider>
-      </AppWContainer>
+      <AppContainer data-testid="app">
+        <UserContext.Provider value={{ userState, login, logout }}>
+          <GlobalStyle />
+          <HeaderContainer>
+            <Header path="/*" />
+          </HeaderContainer>
+          <SidebarContainer>
+            <Sidebar path="/*" />
+          </SidebarContainer>
+          <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
+            <Flash />
+            <Router primary={false}>
+              <Home path="/" />
+              <Liaisons path="/liaisons" />
+              <Partners path="/partners" />
+              <Camps path="/camps" />
+              <Webinars path="/webinars" />
+              <Researches path="/research" />
+              <Resources path="/curriculum-resources/*" />
+              <Media path="/media" />
+              <NotFound default={true} />
+            </Router>
+          </FlashContext.Provider>
+        </UserContext.Provider>
+      </AppContainer>
     </ThemeProvider>
   )
 }
@@ -79,7 +83,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: Rubik, arial, sans-serif;
   }
 `
-const AppWContainer = styled.div`
+const AppContainer = styled.div`
   display: grid;
   grid-template-rows: 6.4rem 1fr;
   grid-template-columns: 24rem 1fr;

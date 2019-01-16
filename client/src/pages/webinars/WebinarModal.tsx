@@ -68,17 +68,16 @@ const WebinarModal: React.FC<IProps> = ({ open, setOpen, webinar, action }) => {
 
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
-      <ModalHeading>{`${
-        action === 'update' ? `Updating ${webinar && webinar.title}` : 'Create a new Webinar'
-      }`}</ModalHeading>
-      <WebinarForm onSubmit={handleSubmit} webinar={webinar}>
-        <ModalButtons
-          action={action}
-          cancelHandler={handleCancel}
-          deleteHandler={handleDeleteClicked}
-          timesDeleteClicked={timesDeleteClicked}
-        />
-      </WebinarForm>
+      <ModalHeading>{`${action === 'update' ? 'Updating a Webinar' : 'Create a new Webinar'}`}</ModalHeading>
+      <WebinarForm onSubmit={handleSubmit} webinar={webinar} />
+      <ModalButtons
+        action={action}
+        cancelHandler={handleCancel}
+        deleteHandler={handleDeleteClicked}
+        itemName="Webinar"
+        timesDeleteClicked={timesDeleteClicked}
+        formId="webinarForm"
+      />
     </Modal>
   )
 }
