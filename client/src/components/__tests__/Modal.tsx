@@ -37,12 +37,12 @@ it('should show children if on is true', () => {
 it('the modal should close when the close button is clicked', () => {
   const { fakeChildrenText, getByTestId, getByText, queryByText } = setup({ open: true })
   expect(getByText(fakeChildrenText)).toBeDefined()
-  fireEvent.click(getByTestId('close-button'))
+  fireEvent.click(getByTestId(/close-button/i))
   expect(queryByText(fakeChildrenText)).toBeNull()
 })
 it('the modal should close when the background is clicked', () => {
   const { fakeChildrenText, getByTestId, getByText, queryByText } = setup({ open: true })
   expect(getByText(fakeChildrenText)).toBeDefined()
-  fireEvent.click(getByTestId('background'))
+  fireEvent.click(getByTestId(/background/i))
   expect(queryByText(fakeChildrenText)).toBeNull()
 })

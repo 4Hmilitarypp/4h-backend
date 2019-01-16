@@ -1,29 +1,27 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { TSetModalState } from '../../components/table/useTable'
 import { ILiaison } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
-import LiaisonModal from './LiaisonModal'
 
-const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
-  const [modalOpen, setModalOpen] = React.useState(false)
-
-  return (
-    <>
-      <LiaisonWrapper onClick={() => setModalOpen(true)}>
-        <NameAndLocation>
-          <Name>{liaison.name}</Name>
-          <Location>{`${liaison.region} (${liaison.abbreviation || 'None'})`}</Location>
-        </NameAndLocation>
-        <Contact>
-          <Item>{liaison.email}</Item>
-          <Item>{liaison.phoneNumber}</Item>
-        </Contact>
-        <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
-      </LiaisonWrapper>
-      <LiaisonModal open={modalOpen} setOpen={setModalOpen} liaison={liaison} action="update" />
-    </>
-  )
+interface IProps {
+  item: ILiaison
+  setModalState: TSetModalState<ILiaison>
 }
+
+const Liaison: React.FC<IProps> = ({ item: liaison, setModalState }) => (
+  <LiaisonWrapper onClick={() => setModalState({ action: 'update', item: liaison })}>
+    <NameAndLocation>
+      <Name>{liaison.name}</Name>
+      <Location>{`${liaison.region} (${liaison.abbreviation || 'None'})`}</Location>
+    </NameAndLocation>
+    <Contact>
+      <Item>{liaison.email}</Item>
+      <Item>{liaison.phoneNumber}</Item>
+    </Contact>
+    <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
+  </LiaisonWrapper>
+)
 
 export default Liaison
 

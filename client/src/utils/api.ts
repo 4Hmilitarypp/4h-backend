@@ -3,6 +3,7 @@ import {
   ILesson,
   ILiaison,
   ILoginForm,
+  IPartner,
   IRegisterForm,
   IResearch,
   IResource,
@@ -16,8 +17,8 @@ const envBaseURL = process.env.REACT_APP_API_URL
 
 const getData = (res: { data: object }) => res.data
 
-const auth = {
-  login: (form: ILoginForm): Promise<IUser> => requests.post('/auth/login', form),
+const users = {
+  login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
   logout: (): Promise<string> => requests.post('/api/users/logout', {}),
   me: (): Promise<IUser> => requests.get('/api/users/me'),
   register: (form: IRegisterForm): Promise<IUser> => requests.post('/api/users/register', form),
@@ -38,6 +39,13 @@ const liaisons = {
   delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
   get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
   update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons${id}`, updates),
+}
+
+const partners = {
+  create: (data: IPartner): Promise<IPartner> => requests.post('/partners', data),
+  delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
+  get: (): Promise<IPartner[]> => requests.get('/partners'),
+  update: (id: string, updates: IPartner): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
 }
 
 const requests = {
@@ -79,19 +87,20 @@ function init({
     baseURL,
     ...axiosOptions,
     headers: {
-      authorization: token ? `Bearer ${token}` : undefined,
+      usersorization: token ? `Bearer ${token}` : undefined,
       ...axiosOptions.headers,
     },
   })
 }
 
 const restApi = {
-  auth,
   init,
   lessons,
   liaisons,
+  partners,
   research,
   resources,
+  users,
   webinars,
 }
 

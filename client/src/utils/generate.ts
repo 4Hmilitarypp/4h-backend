@@ -1,6 +1,14 @@
 import faker from 'faker'
-import { ILesson, ILiaison, IResearch, IResource, IResourceWithLessons, IWebinar, LessonLinkType } from '../sharedTypes'
-import { ISignInForm } from '../types'
+import {
+  ILesson,
+  ILiaison,
+  ILoginForm,
+  IResearch,
+  IResource,
+  IResourceWithLessons,
+  IWebinar,
+  LessonLinkType,
+} from '../sharedTypes'
 
 const generate = {
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
@@ -43,7 +51,7 @@ const generate = {
     ...overrides,
   }),
   resources: (length: number): IResourceWithLessons[] => Array.from({ length }, () => generate.resource()),
-  signInForm: (): ISignInForm => ({ email: faker.internet.email(), password: faker.internet.password() }),
+  signInForm: (): ILoginForm => ({ email: faker.internet.email(), password: faker.internet.password() }),
   webinar: (descriptionLength: number): IWebinar => ({
     category: faker.commerce.productAdjective(),
     description: faker.lorem.words(descriptionLength),

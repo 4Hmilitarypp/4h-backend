@@ -10,7 +10,7 @@ import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import Media from './pages/Media'
 import NotFound from './pages/NotFound'
-import Partners from './pages/Partners'
+import Partners from './pages/partners/Partners'
 import Researches from './pages/research/Researches'
 import Resources from './pages/resources/Resources'
 import Webinars from './pages/webinars/Webinars'
@@ -39,20 +39,20 @@ export const theme = {
 
 const App: React.FC<{}> = () => {
   const { flashState, resetFlashState, setFlashState } = useFlash()
-  const { userState, login, logout } = useUser()
+  const { user, login, logout } = useUser()
   return (
     <ThemeProvider theme={theme}>
       <AppContainer data-testid="app">
-        <UserContext.Provider value={{ userState, login, logout }}>
-          <GlobalStyle />
-          <HeaderContainer>
-            <Header path="/*" />
-          </HeaderContainer>
-          <SidebarContainer>
-            <Sidebar path="/*" />
-          </SidebarContainer>
-          <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
-            <Flash />
+        <GlobalStyle />
+        <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
+          <Flash />
+          <UserContext.Provider value={{ user, login, logout }}>
+            <HeaderContainer>
+              <Header path="/*" />
+            </HeaderContainer>
+            <SidebarContainer>
+              <Sidebar path="/*" />
+            </SidebarContainer>
             <Router primary={false}>
               <Home path="/" />
               <Liaisons path="/liaisons" />
@@ -64,8 +64,8 @@ const App: React.FC<{}> = () => {
               <Media path="/media" />
               <NotFound default={true} />
             </Router>
-          </FlashContext.Provider>
-        </UserContext.Provider>
+          </UserContext.Provider>
+        </FlashContext.Provider>
       </AppContainer>
     </ThemeProvider>
   )

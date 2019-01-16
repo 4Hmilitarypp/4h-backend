@@ -46,7 +46,7 @@ const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }
 }
 
 interface IModalButtonsProps {
-  action: 'create' | 'update' | 'delete'
+  action: 'create' | 'update' | 'delete' | 'close'
   cancelHandler: () => void
   deleteHandler: () => void
   formId: string

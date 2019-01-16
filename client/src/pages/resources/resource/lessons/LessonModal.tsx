@@ -1,34 +1,37 @@
 import * as React from 'react'
 import { ModalHeading } from '../../../../components/Elements'
 import Modal, { ModalButtons } from '../../../../components/Modal'
-import useErrorHandler from '../../../../hooks/useErrorHandler'
-import { ILesson } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
 import LessonForm from './LessonForm'
-import { LessonContext } from './Lessons'
+import { IModalController } from './useLessons'
 
-interface IProps {
-  lesson?: ILesson
-  open: boolean
-  setOpen: (isOpen: boolean) => void
-  action: 'update' | 'create'
-}
+const LessonModal: React.FC<{ controller: IModalController }> = ({ controller }) => {
+  const { state, reset, handleError, updateLessons } = controller
 
-const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
-  const lessonContext = React.useContext(LessonContext)
-  const { handleError } = useErrorHandler()
+  const [open, setOpen] = React.useState(false)
+
+  React.useLayoutEffect(
+    () => {
+      if (state.action === 'update' || state.action === 'create') {
+        setOpen(true)
+      }
+      if (state.action === 'close') {
+        setOpen(false)
+      }
+    },
+    [state.action]
+  )
 
   const handleCancel = () => {
-    setOpen(false)
+    reset()
     setTimesDeleteClicked(0)
   }
-
   const handleDeleteClicked = () => {
-    if (lesson && timesDeleteClicked === 1) {
+    if (state.lesson && timesDeleteClicked === 1) {
       api.lessons
-        .delete(lessonContext.resourceId, lesson._id as string)
-        .then(() => lessonContext.updateLessons({ _id: lesson._id, action: 'delete' }))
+        .delete(state.resourceId, state.lesson._id as string)
+        .then(() => updateLessons({ _id: state.lesson ? state.lesson._id : '', action: 'delete' }))
         .catch(handleError)
     } else {
       setTimesDeleteClicked(1)
@@ -37,10 +40,10 @@ const LessonModal: React.FC<IProps> = ({ open, setOpen, lesson, action }) => {
 
   return (
     <Modal open={open} setOpen={setOpen} closeButton={false}>
-      <ModalHeading>{`${action === 'update' ? 'Updating a Lesson' : 'Create a new Lesson'}`}</ModalHeading>
-      <LessonForm action={action} setOpen={setOpen} lesson={lesson} />
+      <ModalHeading>{`${state.action === 'update' ? 'Updating a Lesson' : 'Create a new Lesson'}`}</ModalHeading>
+      <LessonForm modalController={controller} />
       <ModalButtons
-        action={action}
+        action={state.action}
         cancelHandler={handleCancel}
         deleteHandler={handleDeleteClicked}
         formId="lessonForm"

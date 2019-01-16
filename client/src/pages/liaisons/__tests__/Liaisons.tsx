@@ -20,7 +20,7 @@ const setup = async (propOverrides?: IProps) => {
   const utils = render(<Liaisons {...props} />)
   flushEffects()
 
-  await waitForElement(() => utils.getByTestId('liaisons'))
+  await waitForElement(() => utils.getByTestId(/Liaisons/i))
 
   return {
     ...utils,

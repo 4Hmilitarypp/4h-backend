@@ -1,16 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { IForm } from '../../../../clientTypes'
 import { CreateButton, InputGroup, ModalForm } from '../../../../components/Elements'
-import useErrorHandler from '../../../../hooks/useErrorHandler'
 import { ILesson, ILessonLink, LessonLinkType } from '../../../../sharedTypes'
-import { IForm } from '../../../../types'
 import api from '../../../../utils/api'
-import { LessonContext } from './Lessons'
+import { IModalController } from './useLessons'
 
 interface IProps {
-  action: 'create' | 'update'
-  lesson?: ILesson
-  setOpen: (isOpen: boolean) => void
+  modalController: IModalController
 }
 
 const convertToLessonLinks = (elems: any, inputId: string, length: number) => {
@@ -45,9 +42,10 @@ const setNumberOfNewLinks = (lesson?: ILesson) => {
   return lesson.links.length > 0 ? 0 : 1
 }
 
-const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
-  const lessonContext = React.useContext(LessonContext)
-  const { handleError } = useErrorHandler()
+const LessonForm: React.FC<IProps> = ({ modalController }) => {
+  const { handleError, reset: resetModalState, updateLessons } = modalController
+  const { lesson, action } = modalController.state
+
   const [numberLinks, setNumberLinks] = React.useState(setNumberOfNewLinks(lesson))
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
@@ -65,18 +63,18 @@ const LessonForm: React.FC<IProps> = ({ action, lesson, setOpen }) => {
     }
     if (action === 'create') {
       api.lessons
-        .create(lessonContext.resourceId, updateLesson)
+        .create(modalController.state.resourceId, updateLesson)
         .then(newLesson => {
-          lessonContext.updateLessons({ lesson: newLesson, action })
-          setOpen(false)
+          updateLessons({ lesson: newLesson, action })
+          resetModalState()
         })
         .catch(handleError)
     } else {
       api.lessons
-        .update(updateLesson._id as string, lessonContext.resourceId, updateLesson)
+        .update(updateLesson._id as string, modalController.state.resourceId, updateLesson)
         .then(newLesson => {
-          lessonContext.updateLessons({ lesson: newLesson, action })
-          setOpen(false)
+          updateLessons({ lesson: newLesson, action })
+          resetModalState()
         })
         .catch(handleError)
     }

@@ -1,16 +1,9 @@
 import * as React from 'react'
+import { IForm } from '../../clientTypes'
 import { InputGroup, ModalForm } from '../../components/Elements'
-import useErrorHandler from '../../hooks/useErrorHandler'
+import { IModalController } from '../../components/table/useTable'
 import { IResearch, ResearchType } from '../../sharedTypes'
-import { IForm } from '../../types'
 import api from '../../utils/api'
-import { ResearchContext } from './Researches'
-
-interface IProps {
-  action: 'update' | 'create'
-  setOpen: (open: boolean) => void
-  research?: IResearch
-}
 
 const getType = (url: string) => {
   let type: ResearchType
@@ -24,9 +17,13 @@ const getType = (url: string) => {
   return type
 }
 
-const ResearchForm: React.FC<IProps> = ({ setOpen, research, action }) => {
-  const researchContext = React.useContext(ResearchContext)
-  const { handleError } = useErrorHandler()
+interface IProps {
+  modalController: IModalController<IResearch>
+}
+
+const ResearchForm: React.FC<IProps> = ({ modalController }) => {
+  const { handleError, reset: resetModalState, updateItems } = modalController
+  const { item: research, action } = modalController.state
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -42,22 +39,22 @@ const ResearchForm: React.FC<IProps> = ({ setOpen, research, action }) => {
       api.research
         .update(updateResearch._id as string, updateResearch)
         .then(newResearch => {
-          researchContext.updateResearches({ research: newResearch, action })
-          setOpen(false)
+          updateItems({ item: newResearch, action })
+          resetModalState()
         })
         .catch(handleError)
     } else if (action === 'create') {
       api.research
         .create(updateResearch)
         .then(newResearch => {
-          researchContext.updateResearches({ research: newResearch, action })
-          setOpen(false)
+          updateItems({ item: newResearch, action })
+          resetModalState()
         })
         .catch(handleError)
     }
   }
   return (
-    <ModalForm onSubmit={handleSubmit} id="researchForm">
+    <ModalForm onSubmit={handleSubmit} id="ResearchForm">
       <InputGroup>
         <label htmlFor="title">Research Title</label>
         <input type="text" id="title" defaultValue={(research && research.title) || ''} required={true} />

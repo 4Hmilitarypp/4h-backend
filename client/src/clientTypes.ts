@@ -7,19 +7,6 @@ export interface IHashProps {
   location: any
 }
 
-export interface IUser {
-  email?: string
-  name: string
-  password: string
-  token: string
-  username: string
-}
-
-export interface ISignInForm {
-  email: string
-  password: string
-}
-
 /**
  * Styles
  */
@@ -40,9 +27,3 @@ export interface IForm {
     }
   }
 }
-
-/**
- * Types
- */
-
-export type FormInputEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

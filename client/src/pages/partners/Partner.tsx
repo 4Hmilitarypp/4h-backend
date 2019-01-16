@@ -1,21 +1,21 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { TSetModalState } from '../../components/table/useTable'
-import { IWebinar } from '../../sharedTypes'
+import { IPartner } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  item: IWebinar
-  setModalState: TSetModalState<IWebinar>
+  item: IPartner
+  setModalState: TSetModalState<IPartner>
 }
 
-const Webinar: React.FC<IProps> = ({ item: webinar, setModalState }) => (
-  <Wrapper onClick={() => setModalState({ action: 'update', item: webinar })}>
-    <Title>{webinar.title}</Title>
+const Partner: React.FC<IProps> = ({ item: partner, setModalState }) => (
+  <Wrapper onClick={() => setModalState({ action: 'update', item: partner })}>
+    <Title>{partner.title}</Title>
   </Wrapper>
 )
 
-export default Webinar
+export default Partner
 
 const Wrapper = styled.div`
   padding: 2rem;

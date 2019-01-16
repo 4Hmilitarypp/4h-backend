@@ -19,14 +19,14 @@ export const catchErrors = (fn: Controller) => (req: Request, res: Response, nex
 */
 export const routeNotFound: ErrorHandler = (err, _, res, next) => {
   if (err.type === 'routeNotFound') {
-    return res.status(404).json({ message: 'the requested url was not found' })
+    return res.status(404).json({ message: 'The requested url was not found' })
   }
   return next(err)
 }
 
 export const itemNotFound: ErrorHandler = (err, _, res, next) => {
   if (err.type === 'itemNotFound') {
-    return res.status(404).json({ message: 'the requested item was not found' })
+    return res.status(404).json({ message: 'The requested item was not found' })
   }
   return next(err)
 }

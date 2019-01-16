@@ -2,21 +2,33 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button } from './components/Elements'
+import SignInModal from './components/SignInModal'
+import { useUser } from './contexts/UserContext'
 
-const Header: React.FC<RouteComponentProps> = () => (
-  <HeaderWrapper>
-    <ExternalLink>
-      <Button as="a" href="https://4-hmpp-test.now.sh">
-        View the Website
-      </Button>
-    </ExternalLink>
-    <Title>4-HMPP CMS</Title>
-    <User>
-      <Name>Alex Wendte</Name>
-      <Button>Logout</Button>
-    </User>
-  </HeaderWrapper>
-)
+const Header: React.FC<RouteComponentProps> = () => {
+  const { user } = useUser()
+
+  return (
+    <HeaderWrapper>
+      <ExternalLink>
+        <Button as="a" href="https://4-hmpp-test.now.sh">
+          View the Website
+        </Button>
+      </ExternalLink>
+      <Title>4-HMPP CMS</Title>
+      {user ? (
+        <User>
+          <Name>{user.name}</Name>
+          <Button>Logout</Button>
+        </User>
+      ) : (
+        <SignInModal>
+          <Button>Login</Button>
+        </SignInModal>
+      )}
+    </HeaderWrapper>
+  )
+}
 export default Header
 
 const HeaderWrapper = styled.header`

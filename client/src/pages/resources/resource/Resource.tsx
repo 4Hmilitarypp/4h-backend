@@ -2,8 +2,7 @@ import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, DeleteButton, Heading, HighSevDeleteButton, OutlineButton } from '../../../components/Elements'
-import useErrorHandler from '../../../hooks/useErrorHandler'
-import { IResource } from '../../../sharedTypes'
+import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
 import Lessons from './lessons/Lessons'
@@ -11,19 +10,20 @@ import ResourceForm from './ResourceForm'
 
 interface IProps extends RouteComponentProps {
   _id?: string
+  handleError: (err: IApiError) => void
 }
 
-const Resource: React.FC<IProps> = ({ _id = '' }) => {
+const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
   const [resource, setResource] = React.useState<IResource | undefined>(undefined)
   const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
 
   const resourceContext = React.useContext(ResourceContext)
-  const { handleError } = useErrorHandler()
 
   React.useEffect(
     () => {
       if (_id !== 'new') {
+        // If the action is not already update set it to be update
         if (action !== 'update') {
           setAction('update')
         }
@@ -56,7 +56,12 @@ const Resource: React.FC<IProps> = ({ _id = '' }) => {
   return (
     <div>
       <CustomHeading>{`${action === 'update' ? 'Updating a Resource' : 'Create a new Resource'}`}</CustomHeading>
-      <ResourceForm action={action} resource={resource} />
+      <ResourceForm
+        action={action}
+        handleError={handleError}
+        resource={resource}
+        updateResources={resourceContext.updateResources}
+      />
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
@@ -66,10 +71,10 @@ const Resource: React.FC<IProps> = ({ _id = '' }) => {
           ))}
         <RightButtons>
           <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
-          <Button form="resourceForm">{action === 'update' ? 'Update' : 'Create'} Resource</Button>
+          <Button form="ResourceForm">{action === 'update' ? 'Update' : 'Create'} Resource</Button>
         </RightButtons>
       </Buttons>
-      {_id && action === 'update' && <Lessons resourceId={_id} />}
+      {_id && action === 'update' && <Lessons resourceId={_id} handleError={handleError} />}
     </div>
   )
 }

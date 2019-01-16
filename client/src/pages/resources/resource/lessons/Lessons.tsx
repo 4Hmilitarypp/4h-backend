@@ -2,41 +2,31 @@ import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { CreateButton, Heading } from '../../../../components/Elements'
-import { ILesson } from '../../../../sharedTypes'
+import { IApiError } from '../../../../sharedTypes'
 import Lesson from './Lesson'
 import LessonModal from './LessonModal'
 import useLessons from './useLessons'
 
-interface ILessonContext {
-  lessons: ILesson[] | undefined
+interface IProps {
   resourceId: string
-  updateLessons: (
-    args: {
-      _id?: string
-      action: 'create' | 'update' | 'delete'
-      lesson?: ILesson
-    }
-  ) => void
+  handleError: (err: IApiError) => void
 }
-export const LessonContext = React.createContext<ILessonContext>(undefined as any)
 
-const Lessons: React.FC<{ resourceId: string }> = ({ resourceId }) => {
-  const { lessons, updateLessons } = useLessons(resourceId)
-
-  const [modalOpen, setModalOpen] = React.useState(false)
+const Lessons: React.FC<IProps> = ({ resourceId, handleError }) => {
+  const { modalController, lessons } = useLessons(handleError, resourceId)
 
   return (
     <Wrapper>
       <TableHeader>
         <CustomHeading>Lessons</CustomHeading>
-        <CreateButton onClick={() => setModalOpen(true)}>+ New Lesson</CreateButton>
+        <CreateButton onClick={() => modalController.set({ action: 'create', resourceId })}>+ New Lesson</CreateButton>
       </TableHeader>
-      <LessonContext.Provider value={{ lessons, updateLessons, resourceId }}>
+      <div>
         {map(lessons, l => {
-          return <Lesson lesson={l} key={l._id} />
+          return <Lesson lesson={l} key={l._id} resourceId={resourceId} setModalState={modalController.set} />
         })}
-        <LessonModal open={modalOpen} setOpen={setModalOpen} action="create" />
-      </LessonContext.Provider>
+      </div>
+      <LessonModal controller={modalController} />
       <BottomPadding />
     </Wrapper>
   )

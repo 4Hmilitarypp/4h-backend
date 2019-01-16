@@ -1,20 +1,19 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { TSetModalState } from '../../components/table/useTable'
 import { IResearch } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
-import ResearchModal from './ResearchModal'
 
-const Research: React.FC<{ research: IResearch }> = ({ research }) => {
-  const [modalOpen, setModalOpen] = React.useState(false)
-  return (
-    <>
-      <ResearchWrapper onClick={() => setModalOpen(true)}>
-        <Title>{research.title}</Title>
-      </ResearchWrapper>
-      <ResearchModal open={modalOpen} setOpen={setModalOpen} research={research} action="update" />
-    </>
-  )
+interface IProps {
+  item: IResearch
+  setModalState: TSetModalState<IResearch>
 }
+
+const Research: React.FC<IProps> = ({ item: research, setModalState }) => (
+  <ResearchWrapper onClick={() => setModalState({ action: 'update', item: research })}>
+    <Title>{research.title}</Title>
+  </ResearchWrapper>
+)
 
 export default Research
 

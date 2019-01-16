@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { flushEffects, render } from 'react-testing-library'
-import { useFlash, useHash } from '../hooks'
+import useHash from '../useHash'
 
 let nativeScrollIntoView: any
 
@@ -21,20 +21,6 @@ const setup = () => {
     mockScrollIntoView,
   }
 }
-
-describe('useFlash', () => {
-  it('should timeout after the set time', async () => {
-    const TestElement = () => {
-      const { submitted } = useFlash({ initialSubmitted: true, timeoutLength: 50 })
-      return <p>{submitted ? 'true' : 'false'}</p>
-    }
-    const { getByText } = render(<TestElement />)
-    expect(getByText('true')).toBeDefined()
-    flushEffects() // Flush Effect to run "didMount"
-    jest.runAllTimers()
-    expect(getByText('false')).toBeDefined()
-  })
-})
 
 describe('useHash', () => {
   it('should route when the hash is the same', async () => {

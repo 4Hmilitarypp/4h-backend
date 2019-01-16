@@ -1,14 +1,37 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../../../contexts/FlashContext'
-import useErrorHandler from '../../../../hooks/useErrorHandler'
-import { ILesson } from '../../../../sharedTypes'
+import { IApiError, ILesson } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
 import { numericSort } from '../../../../utils/string'
 
-const useLessons = (resourceId?: string) => {
+export type IUpdateLessons = (
+  { _id, action, lesson }: { _id?: string; action: 'create' | 'update' | 'delete' | 'close'; lesson?: ILesson }
+) => void
+
+export type TSetModalState = ({ action, lesson, resourceId }: IModalState) => void
+
+export interface IModalState {
+  action: 'create' | 'update' | 'close'
+  lesson?: ILesson
+  resourceId: string
+}
+
+export interface IModalController {
+  handleError: (err: IApiError) => void
+  reset: () => void
+  set: TSetModalState
+  state: IModalState
+  updateLessons: IUpdateLessons
+}
+
+const useLessons = (handleError: (err: IApiError) => void, resourceId?: string) => {
   const [lessons, setLessons] = React.useState<ILesson[]>([])
-  const { handleError } = useErrorHandler()
+  const flashContext = React.useContext(FlashContext)
+
+  const initialModalState = { lesson: undefined, action: 'close' as 'close', resourceId: '' }
+  const [modalState, setModalState] = React.useState<IModalState>(initialModalState)
+
   React.useEffect(() => {
     if (resourceId) {
       api.lessons
@@ -18,20 +41,10 @@ const useLessons = (resourceId?: string) => {
     }
   }, [])
 
-  const flashContext = React.useContext(FlashContext)
-
-  const updateLessons = ({
-    _id,
-    action,
-    lesson,
-  }: {
-    _id?: string
-    action: 'create' | 'update' | 'delete'
-    lesson?: ILesson
-  }) => {
+  const updateLessons: IUpdateLessons = ({ _id, action, lesson }) => {
     let newLessons: ILesson[] = []
     if (action === 'update' && lesson) {
-      newLessons = map(lessons, r => (r._id === lesson._id ? lesson : r))
+      newLessons = map(lessons, l => (l._id === lesson._id ? lesson : l))
       flashContext.set({ message: 'Lesson Updated Successfully' })
     } else if (action === 'create' && lesson) {
       const unsorted = [lesson, ...lessons]
@@ -43,7 +56,16 @@ const useLessons = (resourceId?: string) => {
       setLessons(newLessons)
     }
   }
-  return { lessons, updateLessons }
+
+  const modalController: IModalController = {
+    handleError,
+    reset: () => setModalState(initialModalState),
+    set: setModalState,
+    state: modalState,
+    updateLessons,
+  }
+
+  return { lessons, modalController }
 }
 
 export default useLessons

@@ -1,9 +1,10 @@
 // import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { IForm } from '../clientTypes'
+import { useUser } from '../contexts/UserContext'
 import useErrorHandler from '../hooks/useErrorHandler'
-import { IApiError } from '../sharedTypes'
-import { FormInputEvent, IForm } from '../types'
+import { IApiError, IUser } from '../sharedTypes'
 import api from '../utils/api'
 import { Button, InputGroup } from './Elements'
 import Modal from './Modal'
@@ -16,19 +17,22 @@ const SignInModal: React.FC<IProps> = ({ children, initialOpen = false }) => {
   const { handleError } = useErrorHandler()
   const [open, setOpen] = React.useState<boolean>(initialOpen)
   const [password, setPassword] = React.useState<string>('')
+  const { login } = useUser()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
+
     const { email: submittedEmail, password: submittedPassword } = e.currentTarget.elements
-    api.auth
+
+    api.users
       .login({
         email: submittedEmail.value,
         password: submittedPassword.value,
       })
-      .then(() => {
+      .then((user: IUser) => {
         setPassword('')
+        login(user)
         setOpen(false)
-        // navigate('/')
       })
       .catch((err: IApiError) => {
         setPassword('')
@@ -36,7 +40,7 @@ const SignInModal: React.FC<IProps> = ({ children, initialOpen = false }) => {
       })
   }
 
-  const handlePasswordChange = (e: FormInputEvent) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setPassword(e.target.value)
   }

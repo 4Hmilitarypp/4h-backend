@@ -1,10 +1,22 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
-import FlashContext from '../../../contexts/FlashContext'
-import useErrorHandler from '../../../hooks/useErrorHandler'
-import { IResource } from '../../../sharedTypes'
-import api from '../../../utils/api'
-import { numericSort } from '../../../utils/string'
+import FlashContext from '../../contexts/FlashContext'
+import useErrorHandler from '../../hooks/useErrorHandler'
+import { IResource } from '../../sharedTypes'
+import api from '../../utils/api'
+import { numericSort } from '../../utils/string'
+
+export type TUpdateResources = (
+  {
+    _id,
+    action,
+    resource,
+  }: {
+    _id?: string
+    action: 'create' | 'update' | 'delete'
+    resource?: IResource
+  }
+) => void
 
 const useResources = () => {
   const [resources, setResources] = React.useState<IResource[]>([])
@@ -18,15 +30,7 @@ const useResources = () => {
 
   const flashContext = React.useContext(FlashContext)
 
-  const updateResources = ({
-    _id,
-    action,
-    resource,
-  }: {
-    _id?: string
-    action: 'create' | 'update' | 'delete'
-    resource?: IResource
-  }) => {
+  const updateResources: TUpdateResources = ({ _id, action, resource }) => {
     let newResources: IResource[] = []
     if (action === 'update' && resource) {
       newResources = map(resources, r => (r._id === resource._id ? resource : r))
@@ -41,6 +45,6 @@ const useResources = () => {
     }
     setResources(newResources)
   }
-  return { resources, updateResources }
+  return { handleError, resources, updateResources }
 }
 export default useResources

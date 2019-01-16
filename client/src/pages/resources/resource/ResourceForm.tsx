@@ -1,21 +1,20 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { IForm } from '../../../clientTypes'
 import { InputGroup } from '../../../components/Elements'
-import useErrorHandler from '../../../hooks/useErrorHandler'
-import { IResource } from '../../../sharedTypes'
-import { IForm } from '../../../types'
+import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
-import { ResourceContext } from '../Resources'
+import { TUpdateResources } from '../useResources'
 
 interface IProps {
   action: 'create' | 'update'
+  handleError: (err: IApiError) => void
   resource?: IResource
+  updateResources: TUpdateResources
 }
 
-const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
-  const { handleError } = useErrorHandler()
-  const resourceContext = React.useContext(ResourceContext)
+const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateResources }) => {
   const formRef = React.useRef<HTMLFormElement>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
@@ -38,7 +37,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
       api.resources
         .create(updateResource)
         .then(newResource => {
-          resourceContext.updateResources({ resource: newResource, action })
+          updateResources({ resource: newResource, action })
           navigate(`/curriculum-resources/${newResource._id}`)
           if (formRef.current) {
             // reset the form so the actual returned data can be loaded
@@ -50,7 +49,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
       api.resources
         .update(updateResource._id as string, updateResource)
         .then(newResource => {
-          resourceContext.updateResources({ resource: newResource, action })
+          updateResources({ resource: newResource, action })
           navigate(`/curriculum-resources/${newResource._id}`)
           if (formRef.current) {
             // reset the form so the actual returned data can be loaded
@@ -62,7 +61,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource }) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit} id="resourceForm" ref={formRef}>
+    <Form onSubmit={handleSubmit} id="ResourceForm" ref={formRef}>
       <CustomInputGroup>
         <label htmlFor="title">Resource Title</label>
         <input type="text" id="title" defaultValue={(resource && resource.title) || ''} />

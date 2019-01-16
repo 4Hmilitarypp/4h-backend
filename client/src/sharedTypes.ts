@@ -1,5 +1,6 @@
 export interface IApiError {
   response: { data: { message: string }; status: number; statusText: string }
+  status: number
 }
 
 export interface ILiaison {
@@ -10,13 +11,6 @@ export interface ILiaison {
   name?: string | null
   phoneNumber?: string | null
   region: string
-}
-
-export interface IPartnerSection {
-  featuredImages: IImage[]
-  shortDescription: string
-  slug: string
-  title: string
 }
 
 export interface IImage {
@@ -34,6 +28,14 @@ export interface IReport {
   image: string
   title: string
   url: string
+}
+
+export interface IPartnerSection {
+  _id?: string
+  featuredImages: IImage[]
+  shortDescription: string
+  slug: string
+  title: string
 }
 
 export interface IPartner extends IPartnerSection {

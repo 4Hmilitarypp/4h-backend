@@ -1,94 +1,33 @@
 import { RouteComponentProps } from '@reach/router'
-import { filter, map } from 'lodash'
+import { map } from 'lodash'
 import * as React from 'react'
-import styled from 'styled-components/macro'
-import { Button, Heading } from '../../components/Elements'
-import FlashContext from '../../contexts/FlashContext'
-import useErrorHandler from '../../hooks/useErrorHandler'
+import Table from '../../components/table/Table'
+import TableModal from '../../components/table/TableModal'
+import useTable from '../../components/table/useTable'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
-import LiaisonModal from './LiaisonModal'
+import LiaisonForm from './LiaisonForm'
 
-interface ILiaisonsContext {
-  liaisons: ILiaison[] | undefined
-  updateLiaisons: (
-    args: {
-      _id?: string
-      action: 'create' | 'update' | 'delete'
-      liaison?: ILiaison
-    }
-  ) => void
-}
-export const LiaisonsContext = React.createContext<ILiaisonsContext>(undefined as any)
-
-const Liaisons: React.FC<RouteComponentProps> = () => {
-  const [liaisons, setLiaisons] = React.useState<ILiaison[] | undefined>(undefined)
-  const [modalOpen, setModalOpen] = React.useState(false)
-
-  const flashContext = React.useContext(FlashContext)
-  const { handleError } = useErrorHandler()
-
-  const updateLiaisons = ({
-    _id,
-    action,
-    liaison,
-  }: {
-    _id?: string
-    action: 'create' | 'update' | 'delete'
-    liaison?: ILiaison
-  }) => {
-    if (liaisons) {
-      let newLiaisons: ILiaison[] = []
-      if (action === 'update' && liaison) {
-        newLiaisons = map(liaisons, l => (l._id === liaison._id ? liaison : l))
-        flashContext.set({ message: 'Liaison Updated Successfully' })
-      } else if (action === 'create' && liaison) {
-        newLiaisons = [liaison, ...liaisons]
-        flashContext.set({ message: 'Liaison Created Successfully' })
-      } else if (action === 'delete') {
-        newLiaisons = filter(liaisons, l => l._id !== _id)
-        flashContext.set({ message: 'Liaison Deleted Successfully' })
-      }
-      setLiaisons(newLiaisons)
-    }
-  }
-
-  React.useEffect(() => {
-    api.liaisons
-      .get()
-      .then(l => setLiaisons(l))
-      .catch(handleError)
-  }, [])
+const Liaisons2: React.FC<RouteComponentProps> = () => {
+  const { modalController, items } = useTable<ILiaison>('Liaison', api.liaisons)
 
   return (
-    <LiaisonsContainer>
-      <LiaisonsContext.Provider value={{ liaisons, updateLiaisons }}>
-        <TableHeader>
-          <LiaisonHeading>Liaisons</LiaisonHeading>
-          <Button onClick={() => setModalOpen(true)}>+ Create a new Liaison</Button>
-        </TableHeader>
-        {liaisons && (
-          <ul data-testid="liaisons">
-            {map(liaisons, l => (
-              <Liaison key={l.region} liaison={l} />
+    <>
+      <Table itemTitle="Liaison" modalController={modalController}>
+        {items && (
+          <div data-testid="Liaisons">
+            {map(items, item => (
+              <Liaison key={item.region} item={item} setModalState={modalController.set} />
             ))}
-          </ul>
+          </div>
         )}
-        <LiaisonModal open={modalOpen} setOpen={setModalOpen} action="create" />
-      </LiaisonsContext.Provider>
-    </LiaisonsContainer>
+      </Table>
+      <TableModal controller={modalController} itemTitle={'Liaison'}>
+        <LiaisonForm modalController={modalController} />
+      </TableModal>
+    </>
   )
 }
-export default Liaisons
 
-const LiaisonsContainer = styled.div``
-const TableHeader = styled.div`
-  padding: 0rem 4rem 1.6rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-`
-const LiaisonHeading = styled(Heading)`
-  padding: 4rem 0 0;
-`
+export default Liaisons2

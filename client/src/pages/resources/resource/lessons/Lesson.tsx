@@ -2,20 +2,19 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { ILesson } from '../../../../sharedTypes'
 import { hoveredRow } from '../../../../utils/mixins'
-import LessonModal from './LessonModal'
+import { TSetModalState } from './useLessons'
 
-const Lesson: React.FC<{ lesson: ILesson }> = ({ lesson }) => {
-  const [modalOpen, setModalOpen] = React.useState(false)
-
-  return (
-    <>
-      <Wrapper onClick={() => setModalOpen(true)}>
-        <Title>{lesson.title}</Title>
-      </Wrapper>
-      {modalOpen && <LessonModal open={modalOpen} setOpen={setModalOpen} lesson={lesson} action="update" />}
-    </>
-  )
+interface IProps {
+  lesson: ILesson
+  resourceId: string
+  setModalState: TSetModalState
 }
+
+const Lesson: React.FC<IProps> = ({ lesson, setModalState, resourceId }) => (
+  <Wrapper onClick={() => setModalState({ action: 'update', lesson, resourceId })}>
+    <Title>{lesson.title}</Title>
+  </Wrapper>
+)
 
 export default Lesson
 
@@ -23,7 +22,7 @@ const Wrapper = styled.div`
   padding: 2rem;
   position: relative;
   ${hoveredRow()};
-  &:nth-child(2n) {
+  &:nth-child(2n - 1) {
     background: ${props => props.theme.white};
   }
 `
