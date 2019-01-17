@@ -88,7 +88,7 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
     <ModalForm onSubmit={handleSubmit} id="lessonForm">
       <InputGroup>
         <label htmlFor="title">Lesson Title</label>
-        <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} autoFocus={!lesson} />
+        <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} autoFocus={true} />
       </InputGroup>
       {lesson &&
         lesson.links.map((link, index) => {

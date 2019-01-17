@@ -1,6 +1,5 @@
 export interface IApiError {
   response: { data: { message: string }; status: number; statusText: string }
-  status: number
 }
 
 export interface ILiaison {

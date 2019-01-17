@@ -28,7 +28,11 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
           setAction('update')
         }
         const updatedResource = resourceContext.findById(_id)
-        setResource(updatedResource)
+        if (updatedResource) {
+          setResource(updatedResource)
+        } else {
+          navigate('/curriculum-resources')
+        }
       }
     },
     [resourceContext, _id]

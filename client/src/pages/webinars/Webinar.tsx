@@ -5,11 +5,11 @@ import { IWebinar } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  item: IWebinar
+  webinar: IWebinar
   setModalState: TSetModalState<IWebinar>
 }
 
-const Webinar: React.FC<IProps> = ({ item: webinar, setModalState }) => (
+const Webinar: React.FC<IProps> = ({ webinar, setModalState }) => (
   <Wrapper onClick={() => setModalState({ action: 'update', item: webinar })}>
     <Title>{webinar.title}</Title>
   </Wrapper>

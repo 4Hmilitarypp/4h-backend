@@ -19,9 +19,9 @@ const getData = (res: { data: object }) => res.data
 
 const users = {
   login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
-  logout: (): Promise<string> => requests.post('/api/users/logout', {}),
-  me: (): Promise<IUser> => requests.get('/api/users/me'),
-  register: (form: IRegisterForm): Promise<IUser> => requests.post('/api/users/register', form),
+  logout: (): Promise<string> => requests.post('/users/logout', {}),
+  me: (): Promise<IUser> => requests.get('/users/me'),
+  register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
 }
 
 const lessons = {

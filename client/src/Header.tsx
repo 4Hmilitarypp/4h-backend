@@ -1,31 +1,42 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button } from './components/Elements'
+import { Button, Link } from './components/Elements'
 import SignInModal from './components/SignInModal'
-import { useUser } from './contexts/UserContext'
+import UserContext from './contexts/UserContext'
+import useErrorHandler from './hooks/useErrorHandler'
+import { IApiError } from './sharedTypes'
 
 const Header: React.FC<RouteComponentProps> = () => {
-  const { user } = useUser()
+  const userContext = React.useContext(UserContext)
+  const handleError = useErrorHandler()
+
+  const handleLogoutClicked = () => {
+    userContext.logout().catch((err: IApiError) => {
+      handleError(err)
+    })
+  }
 
   return (
     <HeaderWrapper>
       <ExternalLink>
-        <Button as="a" href="https://4-hmpp-test.now.sh">
+        <CustomLink as="a" href="https://4h.wendte.tech">
           View the Website
-        </Button>
+        </CustomLink>
       </ExternalLink>
       <Title>4-HMPP CMS</Title>
-      {user ? (
-        <User>
-          <Name>{user.name}</Name>
-          <Button>Logout</Button>
-        </User>
-      ) : (
-        <SignInModal>
-          <Button>Login</Button>
-        </SignInModal>
-      )}
+      <User>
+        {userContext.user ? (
+          <>
+            <Name>{userContext.user.name}</Name>
+            <CustomButton onClick={handleLogoutClicked}>Logout</CustomButton>
+          </>
+        ) : (
+          <SignInModal>
+            <CustomButton>Login</CustomButton>
+          </SignInModal>
+        )}
+      </User>
     </HeaderWrapper>
   )
 }
@@ -34,7 +45,7 @@ export default Header
 const HeaderWrapper = styled.header`
   background: ${props => props.theme.primary};
   color: ${props => props.theme.white};
-  padding: 1.1rem 1.2rem;
+  padding: 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,20 +54,26 @@ const HeaderWrapper = styled.header`
   z-index: 1000;
 `
 const ExternalLink = styled.div`
-  width: 24rem;
-  padding-left: 2rem;
+  width: 26rem;
+  padding-left: 2.4rem;
+`
+const CustomLink = styled(Link)`
+  color: ${props => props.theme.white};
 `
 const Title = styled.h1`
   font-size: 2.4rem;
 `
 const User = styled.div`
-  width: 24rem;
-  padding-right: 2rem;
+  padding-right: 2.4rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 `
 const Name = styled.span`
-  padding-right: 2rem;
+  padding-right: 2.4rem;
   font-size: 1.8rem;
+`
+const CustomButton = styled(Button)`
+  color: ${props => props.theme.primary};
+  background: ${props => props.theme.white};
 `

@@ -5,10 +5,8 @@ import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
-import Camps from './pages/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
-import Media from './pages/Media'
 import NotFound from './pages/NotFound'
 import Partners from './pages/partners/Partners'
 import Researches from './pages/research/Researches'
@@ -18,7 +16,6 @@ import Sidebar from './Sidebar'
 
 export const theme = {
   lightGrey: 'hsl(150, 20%, 40%)',
-  offWhite: 'hsl(150, 40%, 96%)',
   primary: 'hsl(150, 50%, 40%)',
   primaryBackground: 'hsl(150,39%,96%)',
   primaryBlack: 'hsl(150, 20%, 20%)',
@@ -44,9 +41,9 @@ const App: React.FC<{}> = () => {
     <ThemeProvider theme={theme}>
       <AppContainer data-testid="app">
         <GlobalStyle />
-        <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
-          <Flash />
-          <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, login, logout }}>
+          <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
+            <Flash />
             <HeaderContainer>
               <Header path="/*" />
             </HeaderContainer>
@@ -57,15 +54,13 @@ const App: React.FC<{}> = () => {
               <Home path="/" />
               <Liaisons path="/liaisons" />
               <Partners path="/partners" />
-              <Camps path="/camps" />
               <Webinars path="/webinars" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
-              <Media path="/media" />
               <NotFound default={true} />
             </Router>
-          </UserContext.Provider>
-        </FlashContext.Provider>
+          </FlashContext.Provider>
+        </UserContext.Provider>
       </AppContainer>
     </ThemeProvider>
   )
@@ -85,7 +80,7 @@ const GlobalStyle = createGlobalStyle`
 `
 const AppContainer = styled.div`
   display: grid;
-  grid-template-rows: 6.4rem 1fr;
+  grid-template-rows: 6.04rem 1fr;
   grid-template-columns: 24rem 1fr;
   height: 100%;
   width: 100%;

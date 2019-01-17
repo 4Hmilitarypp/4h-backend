@@ -20,7 +20,7 @@ export type TUpdateResources = (
 
 const useResources = () => {
   const [resources, setResources] = React.useState<IResource[]>([])
-  const { handleError } = useErrorHandler()
+  const handleError = useErrorHandler()
   React.useEffect(() => {
     api.resources
       .get()

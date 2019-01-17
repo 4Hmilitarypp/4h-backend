@@ -20,7 +20,7 @@ const LessonModal: React.FC<{ controller: IModalController }> = ({ controller })
         setOpen(false)
       }
     },
-    [state.action]
+    [state]
   )
 
   const handleCancel = () => {

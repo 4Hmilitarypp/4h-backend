@@ -5,11 +5,11 @@ import { IPartner } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  item: IPartner
+  partner: IPartner
   setModalState: TSetModalState<IPartner>
 }
 
-const Partner: React.FC<IProps> = ({ item: partner, setModalState }) => (
+const Partner: React.FC<IProps> = ({ partner, setModalState }) => (
   <Wrapper onClick={() => setModalState({ action: 'update', item: partner })}>
     <Title>{partner.title}</Title>
   </Wrapper>

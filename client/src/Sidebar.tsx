@@ -16,9 +16,6 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           <SideBarLink to="/liaisons" className={path.includes('/liaisons') ? 'active' : ''}>
             Liaisons
           </SideBarLink>
-          <SideBarLink to="/camps" className={path.includes('/camps') ? 'active' : ''}>
-            Camps
-          </SideBarLink>
         </Links>
       </LinkGroup>
       <LinkGroup>

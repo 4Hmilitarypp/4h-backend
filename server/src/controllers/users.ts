@@ -75,10 +75,16 @@ export const logout: Controller = async (_, res) => {
 
 // GET current user
 export const me: Controller = async (req, res) => {
-  const user = await User.findById(req.user._id)
-  if (!user) {
-    return res.sendStatus(404)
-  } else {
-    return res.json(createSafeUser(user))
+  if (req.user) {
+    const user = await User.findById(req.user._id)
+    if (!user) {
+      return res.sendStatus(404)
+    } else {
+      return res.json(createSafeUser(user))
+    }
+  }
+  // there is no user in the request, so there is no valid token, so just send an empty body
+  else {
+    return res.send()
   }
 }

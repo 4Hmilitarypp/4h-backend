@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { render } from 'react-testing-library'
+import UserContext from '../contexts/UserContext'
 import Header from '../Header'
 
 interface IProps {
@@ -7,9 +8,18 @@ interface IProps {
 }
 
 const setup = (propOverrides?: IProps) => {
+  const user = undefined
+  const login = (_: any) => Promise.resolve()
+  const logout = () => Promise.resolve()
   const props = Object.assign({}, propOverrides)
 
-  const utils = render(<Header {...props} />)
+  const utils = render(
+    <>
+      <UserContext.Provider value={{ user, login, logout }}>
+        <Header {...props} />
+      </UserContext.Provider>
+    </>
+  )
   return {
     ...utils,
   }

@@ -10,20 +10,20 @@ import Research from './Research'
 import ResearchesForm from './ResearchForm'
 
 const Researches: React.FC<RouteComponentProps> = () => {
-  const { modalController, items } = useTable<IResearch>('Research', api.research)
+  const { modalController, items: researches } = useTable<IResearch>('Research', api.research)
 
   return (
     <>
-      <Table itemTitle="Research" modalController={modalController}>
-        {items && (
+      <Table itemTitle="Research" itemTitlePlural="Researches" modalController={modalController}>
+        {researches && (
           <div data-testid="Researches">
-            {map(items, item => (
-              <Research key={item.title} item={item} setModalState={modalController.set} />
+            {map(researches, research => (
+              <Research key={research.title} research={research} setModalState={modalController.set} />
             ))}
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle={'Research'}>
+      <TableModal controller={modalController} itemTitle="Research">
         <ResearchesForm modalController={modalController} />
       </TableModal>
     </>

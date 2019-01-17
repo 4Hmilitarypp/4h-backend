@@ -5,11 +5,11 @@ import { IResearch } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  item: IResearch
+  research: IResearch
   setModalState: TSetModalState<IResearch>
 }
 
-const Research: React.FC<IProps> = ({ item: research, setModalState }) => (
+const Research: React.FC<IProps> = ({ research, setModalState }) => (
   <ResearchWrapper onClick={() => setModalState({ action: 'update', item: research })}>
     <Title>{research.title}</Title>
   </ResearchWrapper>

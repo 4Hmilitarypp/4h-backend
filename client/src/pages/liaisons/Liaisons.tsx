@@ -9,25 +9,25 @@ import api from '../../utils/api'
 import Liaison from './Liaison'
 import LiaisonForm from './LiaisonForm'
 
-const Liaisons2: React.FC<RouteComponentProps> = () => {
-  const { modalController, items } = useTable<ILiaison>('Liaison', api.liaisons)
+const Liaisons: React.FC<RouteComponentProps> = () => {
+  const { modalController, items: liaisons } = useTable<ILiaison>('Liaison', api.liaisons)
 
   return (
     <>
-      <Table itemTitle="Liaison" modalController={modalController}>
-        {items && (
+      <Table itemTitle="Liaison" itemTitlePlural="Liaisons" modalController={modalController}>
+        {liaisons && (
           <div data-testid="Liaisons">
-            {map(items, item => (
-              <Liaison key={item.region} item={item} setModalState={modalController.set} />
+            {map(liaisons, liaison => (
+              <Liaison key={liaison.region + liaison.email} liaison={liaison} setModalState={modalController.set} />
             ))}
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle={'Liaison'}>
+      <TableModal controller={modalController} itemTitle="Liaison">
         <LiaisonForm modalController={modalController} />
       </TableModal>
     </>
   )
 }
 
-export default Liaisons2
+export default Liaisons

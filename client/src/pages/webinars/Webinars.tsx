@@ -10,20 +10,20 @@ import Webinar from './Webinar'
 import WebinarsForm from './WebinarForm'
 
 const Webinars: React.FC<RouteComponentProps> = () => {
-  const { modalController, items } = useTable<IWebinar>('Webinar', api.webinars)
+  const { modalController, items: webinars } = useTable<IWebinar>('Webinar', api.webinars)
 
   return (
     <>
-      <Table itemTitle="Webinar" modalController={modalController}>
-        {items && (
+      <Table itemTitle="Webinar" itemTitlePlural="Webinars" modalController={modalController}>
+        {webinars && (
           <div data-testid="Webinars">
-            {map(items, item => (
-              <Webinar key={item.title} item={item} setModalState={modalController.set} />
+            {map(webinars, webinar => (
+              <Webinar key={webinar.title} webinar={webinar} setModalState={modalController.set} />
             ))}
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle={'Webinar'}>
+      <TableModal controller={modalController} itemTitle="Webinar">
         <WebinarsForm modalController={modalController} />
       </TableModal>
     </>

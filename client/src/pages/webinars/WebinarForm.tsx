@@ -48,7 +48,7 @@ const Webinar2Form: React.FC<IProps> = ({ modalController }) => {
     <Form onSubmit={handleSubmit} id="WebinarForm">
       <InputGroup>
         <label htmlFor="title">Title</label>
-        <input type="text" id="title" defaultValue={(webinar && webinar.title) || ''} />
+        <input type="text" id="title" defaultValue={(webinar && webinar.title) || ''} autoFocus={true} />
       </InputGroup>
       <InputGroup>
         <label htmlFor="category">Category</label>
@@ -60,7 +60,7 @@ const Webinar2Form: React.FC<IProps> = ({ modalController }) => {
       </InputGroup>
       <InputGroup>
         <label htmlFor="description">Description</label>
-        <textarea id="description" defaultValue={(webinar && webinar.description) || ''} rows={5} />
+        <textarea id="description" defaultValue={(webinar && webinar.description) || ''} cols={100} rows={5} />
       </InputGroup>
     </Form>
   )

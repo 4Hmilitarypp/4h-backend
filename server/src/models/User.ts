@@ -19,11 +19,13 @@ export interface IUserDocument extends Omit<IUser, '_id'>, Document {
 const UsersSchema = new mongoose.Schema({
   email: {
     required: 'email is required',
+    trim: true,
     type: String,
     unique: true,
   },
   name: {
     required: 'name is required',
+    trim: true,
     type: String,
   },
   password: {

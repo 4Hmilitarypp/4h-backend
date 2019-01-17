@@ -57,7 +57,13 @@ const ResearchForm: React.FC<IProps> = ({ modalController }) => {
     <ModalForm onSubmit={handleSubmit} id="ResearchForm">
       <InputGroup>
         <label htmlFor="title">Research Title</label>
-        <input type="text" id="title" defaultValue={(research && research.title) || ''} required={true} />
+        <input
+          type="text"
+          id="title"
+          defaultValue={(research && research.title) || ''}
+          required={true}
+          autoFocus={true}
+        />
       </InputGroup>
       <InputGroup>
         <label htmlFor="url">Url to Research</label>
@@ -65,7 +71,7 @@ const ResearchForm: React.FC<IProps> = ({ modalController }) => {
       </InputGroup>
       <InputGroup>
         <label htmlFor="description">Description</label>
-        <textarea id="description" defaultValue={(research && research.description) || ''} rows={5} />
+        <textarea id="description" defaultValue={(research && research.description) || ''} cols={100} rows={5} />
       </InputGroup>
     </ModalForm>
   )

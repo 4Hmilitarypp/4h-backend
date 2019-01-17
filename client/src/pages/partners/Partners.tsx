@@ -10,20 +10,20 @@ import Partner from './Partner'
 import PartnersForm from './PartnerForm'
 
 const Partners: React.FC<RouteComponentProps> = () => {
-  const { modalController, items } = useTable<IPartner>('Partner', api.partners)
+  const { modalController, items: partners } = useTable<IPartner>('Partner', api.partners)
 
   return (
     <>
-      <Table itemTitle="Partner" modalController={modalController}>
-        {items && (
+      <Table itemTitle="Partner" itemTitlePlural="Partners" modalController={modalController}>
+        {partners && (
           <div data-testid="Partners">
-            {map(items, item => (
-              <Partner key={item.title} item={item} setModalState={modalController.set} />
+            {map(partners, partner => (
+              <Partner key={partner.title} partner={partner} setModalState={modalController.set} />
             ))}
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle={'Partner'}>
+      <TableModal controller={modalController} itemTitle="Partner">
         <PartnersForm modalController={modalController} />
       </TableModal>
     </>

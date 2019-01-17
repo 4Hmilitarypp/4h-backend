@@ -2,10 +2,9 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../clientTypes'
-import { useUser } from '../contexts/UserContext'
+import UserContext from '../contexts/UserContext'
 import useErrorHandler from '../hooks/useErrorHandler'
-import { IApiError, IUser } from '../sharedTypes'
-import api from '../utils/api'
+import { IApiError } from '../sharedTypes'
 import { Button, InputGroup } from './Elements'
 import Modal from './Modal'
 
@@ -14,29 +13,24 @@ interface IProps {
 }
 
 const SignInModal: React.FC<IProps> = ({ children, initialOpen = false }) => {
-  const { handleError } = useErrorHandler()
+  const handleError = useErrorHandler()
   const [open, setOpen] = React.useState<boolean>(initialOpen)
   const [password, setPassword] = React.useState<string>('')
-  const { login } = useUser()
+  const userContext = React.useContext(UserContext)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
     const { email: submittedEmail, password: submittedPassword } = e.currentTarget.elements
 
-    api.users
+    userContext
       .login({
         email: submittedEmail.value,
         password: submittedPassword.value,
       })
-      .then((user: IUser) => {
-        setPassword('')
-        login(user)
-        setOpen(false)
-      })
       .catch((err: IApiError) => {
         setPassword('')
-        handleError(err)
+        handleError(err, 'login')
       })
   }
 
@@ -55,7 +49,7 @@ const SignInModal: React.FC<IProps> = ({ children, initialOpen = false }) => {
         <Form onSubmit={handleSubmit}>
           <InputGroup>
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" required={true} placeholder="brianna.smith@example.com" />
+            <input type="email" id="email" required={true} autoFocus={true} placeholder="brianna.smith@example.com" />
           </InputGroup>
           <InputGroup>
             <label htmlFor="password">Password</label>

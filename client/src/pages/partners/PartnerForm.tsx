@@ -52,7 +52,7 @@ const Partner2Form: React.FC<IProps> = ({ modalController }) => {
     <Form onSubmit={handleSubmit} id="PartnerForm">
       <InputGroup>
         <label htmlFor="title">Title</label>
-        <input type="text" id="title" defaultValue={(partner && partner.title) || ''} />
+        <input type="text" id="title" defaultValue={(partner && partner.title) || ''} autoFocus={true} />
       </InputGroup>
       <InputGroup>
         <label htmlFor="slug">Url To Partner</label>
@@ -60,11 +60,16 @@ const Partner2Form: React.FC<IProps> = ({ modalController }) => {
       </InputGroup>
       <InputGroup>
         <label htmlFor="shortDescription">Short Description</label>
-        <textarea id="shortDescription" defaultValue={(partner && partner.shortDescription) || ''} rows={5} />
+        <textarea
+          id="shortDescription"
+          defaultValue={(partner && partner.shortDescription) || ''}
+          cols={100}
+          rows={5}
+        />
       </InputGroup>
       <InputGroup>
         <label htmlFor="longDescription">Long Description</label>
-        <textarea id="longDescription" defaultValue={(partner && partner.longDescription) || ''} rows={5} />
+        <textarea id="longDescription" defaultValue={(partner && partner.longDescription) || ''} cols={100} rows={5} />
       </InputGroup>
     </Form>
   )

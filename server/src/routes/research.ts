@@ -1,7 +1,7 @@
-import { Router } from 'express'
 // @ts-ignore
 import guard from 'express-jwt-permissions'
 
+import { Router } from 'express'
 import * as educatorController from '../controllers/research'
 import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'

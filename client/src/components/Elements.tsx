@@ -3,8 +3,6 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { elevation, transition } from '../utils/mixins'
 
-// TODO Refactor this to use an Input and a label and return actual components.
-
 export const InputGroup = styled.div`
   margin: 0 0.4rem 1.2rem;
   flex-grow: 1;
@@ -162,14 +160,15 @@ export const OutlineButton = styled(Button)`
   color: ${props => props.theme.primaryLink};
   margin-right: 1.6rem;
 `
-export const CreateButton = styled.button`
-  background: ${props => props.theme.primaryBackground};
+export const CreateButton: any = styled.button`
+  background: ${props => props.theme.primary};
   border: none;
-  color: ${props => props.theme.primaryLink};
+  color: ${props => props.theme.white};
   font-weight: 500;
   padding: 0.8rem 1.2rem;
   border-radius: 20px;
   font-size: 1.4rem;
+  line-height: normal;
   &:hover {
     cursor: pointer;
     opacity: 0.8;

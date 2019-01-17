@@ -2,7 +2,7 @@ import { Link, RouteComponentProps } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Heading } from '../../components/Elements'
+import { CreateButton, Heading } from '../../components/Elements'
 import { hoveredRow } from '../../utils/mixins'
 import { ResourceContext } from './Resources'
 
@@ -50,17 +50,4 @@ const Wrapper = styled(Link)`
 const Title = styled.span`
   font-weight: 500;
   color: ${props => props.theme.primaryGrey};
-`
-const CreateButton: any = styled.button`
-  background: ${props => props.theme.primary};
-  border: none;
-  color: ${props => props.theme.white};
-  font-weight: 500;
-  padding: 0.4rem 1.2rem;
-  border-radius: 20px;
-  font-size: 1.4rem;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
 `

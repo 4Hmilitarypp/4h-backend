@@ -5,11 +5,11 @@ import { ILiaison } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  item: ILiaison
+  liaison: ILiaison
   setModalState: TSetModalState<ILiaison>
 }
 
-const Liaison: React.FC<IProps> = ({ item: liaison, setModalState }) => (
+const Liaison: React.FC<IProps> = ({ liaison, setModalState }) => (
   <LiaisonWrapper onClick={() => setModalState({ action: 'update', item: liaison })}>
     <NameAndLocation>
       <Name>{liaison.name}</Name>
