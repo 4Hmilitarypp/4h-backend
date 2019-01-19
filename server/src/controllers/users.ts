@@ -34,7 +34,7 @@ export const register: Controller = async (req, res) => {
   }
 
   if (errors.length > 0) {
-    return res.status(400).send(errors.join('. '))
+    return res.status(400).send({ message: errors.join('. ') })
   }
 
   const user = new User({ email: cleanEmail, password, name })

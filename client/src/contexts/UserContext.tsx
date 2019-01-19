@@ -1,6 +1,6 @@
 import * as React from 'react'
 // import useErrorHandler from '../hooks/useErrorHandler'
-import { IApiError, ILoginForm, IUser } from '../sharedTypes'
+import { IApiError, ILoginForm, IRegisterForm, IUser } from '../sharedTypes'
 import api from '../utils/api'
 
 interface IUserState {
@@ -11,15 +11,16 @@ interface IUserState {
 }
 
 export interface IUserContext {
-  user?: IUserState
   login: (loginForm: ILoginForm) => Promise<void>
   logout: () => Promise<void>
+  register: (registerForm: IRegisterForm) => Promise<void>
+  user?: IUserState
 }
 
 const UserContext = React.createContext<IUserContext>(undefined as any)
 
 export const useUser = () => {
-  const [user, setUser] = React.useState<IUserState | undefined>(undefined)
+  const [user, setUser] = React.useState<IUserContext['user'] | undefined>(undefined)
 
   React.useEffect(() => {
     api.users
@@ -28,8 +29,8 @@ export const useUser = () => {
       .catch(console.error)
   }, [])
 
-  const login = (loginForm: ILoginForm) => {
-    return api.users
+  const login: IUserContext['login'] = (loginForm: ILoginForm) =>
+    api.users
       .login(loginForm)
       .then((responseUser: IUser) => {
         setUser({ ...responseUser })
@@ -38,10 +39,9 @@ export const useUser = () => {
       .catch((err: IApiError) => {
         return Promise.reject(err)
       })
-  }
 
-  const logout = () => {
-    return api.users
+  const logout: IUserContext['logout'] = () =>
+    api.users
       .logout()
       .then(() => {
         setUser(undefined)
@@ -50,9 +50,19 @@ export const useUser = () => {
       .catch((err: IApiError) => {
         return Promise.reject(err)
       })
-  }
 
-  return { user, login, logout }
+  const register: IUserContext['register'] = (registerForm: IRegisterForm) =>
+    api.users
+      .register(registerForm)
+      .then((responseUser: IUser) => {
+        setUser({ ...responseUser })
+        return Promise.resolve()
+      })
+      .catch((err: IApiError) => {
+        return Promise.reject(err)
+      })
+
+  return { user, login, logout, register }
 }
 
 export default UserContext

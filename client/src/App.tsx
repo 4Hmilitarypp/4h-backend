@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import NotFound from './pages/NotFound'
 import Partners from './pages/partners/Partners'
+import Register from './pages/Register'
 import Researches from './pages/research/Researches'
 import Resources from './pages/resources/Resources'
 import Webinars from './pages/webinars/Webinars'
@@ -36,12 +37,12 @@ export const theme = {
 
 const App: React.FC<{}> = () => {
   const { flashState, resetFlashState, setFlashState } = useFlash()
-  const { user, login, logout } = useUser()
+  const { user, login, logout, register } = useUser()
   return (
     <ThemeProvider theme={theme}>
       <AppContainer data-testid="app">
         <GlobalStyle />
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, login, logout, register }}>
           <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
             <Flash />
             <HeaderContainer>
@@ -57,6 +58,7 @@ const App: React.FC<{}> = () => {
               <Webinars path="/webinars" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
+              <Register path="/elevated-users/register" />
               <NotFound default={true} />
             </Router>
           </FlashContext.Provider>

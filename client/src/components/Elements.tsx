@@ -32,13 +32,13 @@ export const PageWrapper = styled.div`
 `
 export const Heading = styled.h1`
   color: ${props => props.theme.primaryBlack};
-  padding: 3.2rem 0 3.2rem;
+  padding: 3.2rem 0;
   text-align: center;
   line-height: 1.2;
 `
 export const SubHeading = styled.h2`
   color: ${props => props.theme.primaryBlack};
-  padding: 3.2rem 0 3.2rem;
+  padding: 2.4rem 0;
   text-align: center;
   line-height: 1.2;
 `
