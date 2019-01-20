@@ -58,7 +58,7 @@ const App: React.FC<{}> = () => {
               <Webinars path="/webinars" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
-              <Register path="/elevated-users/register" />
+              <Register path="/elevated-users" />
               <NotFound default={true} />
             </Router>
           </FlashContext.Provider>
@@ -78,6 +78,10 @@ const GlobalStyle = createGlobalStyle`
   input,
   textarea, button {
     font-family: Rubik, arial, sans-serif;
+  }
+  .grecaptcha-badge {
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 `
 const AppContainer = styled.div`

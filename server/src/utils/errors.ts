@@ -6,14 +6,24 @@ notFoundError.type = 'itemNotFound'
 const routeNotFoundError: IApiError = new Error()
 notFoundError.type = 'routeNotFound'
 
-const emailError = (msg: string, status: number): IApiError => {
-  const err: IApiError = new Error(
-    `This wasn't supposed to happen... Please let Meredith or Suzie know this EMAIL error occurred: ${msg}`
+const emailError = (error: any): IApiError => {
+  const formattedError: IApiError = new Error(
+    `This wasn't supposed to happen... Please let Meredith or Suzie know this EMAIL error occurred: ${error.response}`
   )
-  err.status = status
-  err.type = 'emailError'
-  console.error(msg, status)
-  return err
+  formattedError.status = error.responseCode
+  formattedError.type = 'emailError'
+  console.error(error)
+  return formattedError
 }
 
-export { notFoundError, routeNotFoundError, emailError }
+const captchaError = (error: any): IApiError => {
+  const formattedError: IApiError = new Error(
+    `This wasn't supposed to happen... Please let Meredith or Suzie know this CAPTCHA error occurred`
+  )
+  formattedError.status = 500
+  formattedError.type = 'captchaError'
+  console.error(error)
+  return formattedError
+}
+
+export { captchaError, notFoundError, routeNotFoundError, emailError }

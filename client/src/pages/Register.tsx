@@ -2,20 +2,47 @@ import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../clientTypes'
-import { Button, InputGroup, P, SubHeading } from '../components/Elements'
+import { A, Button, InputGroup, P, SubHeading } from '../components/Elements'
 import FlashContext from '../contexts/FlashContext'
 import UserContext from '../contexts/UserContext'
 import useErrorHandler from '../hooks/useErrorHandler'
+import api from '../utils/api'
+
+const loadCaptcha = () => {
+  const captchaScript = document.createElement('script')
+  captchaScript.src = 'https://www.google.com/recaptcha/api.js?render=6LczLYsUAAAAAJ7UgMGSvCG-fCe9Q6seQrVIvLl9'
+  captchaScript.type = 'text/javascript'
+  document.body.appendChild(captchaScript)
+}
+
+const checkIfSpam = async () => {
+  const token = await (window as any).grecaptcha.execute('6LczLYsUAAAAAJ7UgMGSvCG-fCe9Q6seQrVIvLl9', {
+    action: 'register',
+  })
+  return api.users.checkIfSpam(token)
+}
 
 const Register: React.FC<RouteComponentProps> = () => {
   const handleError = useErrorHandler()
   const userContext = React.useContext(UserContext)
   const flashContext = React.useContext(FlashContext)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
+  React.useEffect(() => loadCaptcha(), [])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
     const { email, password, confirmPassword, name } = e.currentTarget.elements
+
+    try {
+      const isSpam = await checkIfSpam()
+      if (isSpam) {
+        userContext.logout()
+        return
+      }
+    } catch (err) {
+      handleError(err)
+    }
 
     userContext
       .register({
@@ -36,6 +63,7 @@ const Register: React.FC<RouteComponentProps> = () => {
 
   return (
     <RegisterContainer>
+      {/* {getCaptcha()} */}
       <SubHeading>Register for an account</SubHeading>
       <CustomP>Meredith or Suzie will approve your account and then you will be able to modify content</CustomP>
       <Form onSubmit={handleSubmit}>
@@ -55,6 +83,11 @@ const Register: React.FC<RouteComponentProps> = () => {
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input type="password" id="confirmPassword" required={true} />
         </CustomInputGroup>
+        <P>
+          This site is protected by reCAPTCHA and the Google
+          <A href="https://policies.google.com/privacy"> Privacy Policy</A> and
+          <A href="https://policies.google.com/terms"> Terms of Service</A> apply.
+        </P>
         <MyButton type="submit">Sign In</MyButton>
       </Form>
     </RegisterContainer>

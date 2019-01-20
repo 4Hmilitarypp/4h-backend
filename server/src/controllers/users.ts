@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import passport from 'passport'
@@ -5,7 +6,7 @@ import validator from 'validator'
 import registration from '../emailTemplates/registration'
 import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
-import { emailError } from '../utils/errors'
+import { captchaError, emailError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
 
 const cleanRegister = (obj: any) => pick(obj, ['email', 'password', 'confirmPassword', 'name'])
@@ -55,7 +56,7 @@ export const register: Controller = async (req, res) => {
     })
   } catch (err) {
     await User.findByIdAndDelete(user._id)
-    throw emailError(err.response, err.responseCode)
+    throw emailError(err)
   }
 
   res.cookie('token', token, {
@@ -88,6 +89,17 @@ export const login: Controller = async (req, res, next) => {
 export const logout: Controller = async (_, res) => {
   res.clearCookie('token')
   return res.send('Goodbye!')
+}
+
+export const checkIfSpam: Controller = async (req, res) => {
+  const response: any = await axios.post(
+    'https://www.google.com/recaptcha/api/siteverify',
+    `response=${req.body.token}&secret=${process.env.CAPTCHA_SECRET}`
+  )
+  if (!response.data.success) {
+    throw captchaError(response.data)
+  }
+  return res.send(response.data.score < 0.6)
 }
 
 // GET current user

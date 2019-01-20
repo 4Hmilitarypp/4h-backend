@@ -58,6 +58,8 @@ app.use(errorHandlers.unauthorizedError)
 
 app.use(errorHandlers.emailError)
 
+app.use(errorHandlers.captchaError)
+
 // Programmer error handling in dev
 if (process.env.NODE_ENV === 'development') {
   // Development Error Handler - Prints stack trace

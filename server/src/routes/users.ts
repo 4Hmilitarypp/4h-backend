@@ -9,6 +9,7 @@ const setupUserRoutes = (router: Router) => {
   router.post('/login', auth.optional, catchErrors(usersController.login))
   // do not have auth.optional here because we want them to be able to logout if their token is invalid
   router.post('/logout', catchErrors(usersController.logout))
+  router.post('/checkIfSpam', catchErrors(usersController.checkIfSpam))
   router.get('/me', auth.optional, catchErrors(usersController.me))
 }
 export default setupUserRoutes

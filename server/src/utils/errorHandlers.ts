@@ -38,6 +38,13 @@ export const emailError: ErrorHandler = (err, _, res, next) => {
   return next(err)
 }
 
+export const captchaError: ErrorHandler = (err, _, res, next) => {
+  if (err.type === 'captchaError') {
+    return res.status(err.status || 500).json({ message: err.message })
+  }
+  return next(err)
+}
+
 /*
   MongoDB Validation Error Handler
 

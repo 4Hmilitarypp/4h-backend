@@ -18,6 +18,7 @@ const envBaseURL = process.env.REACT_APP_API_URL
 const getData = (res: { data: object }) => res.data
 
 const users = {
+  checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
   login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
   logout: (): Promise<string> => requests.post('/users/logout', {}),
   me: (): Promise<IUser> => requests.get('/users/me'),
