@@ -2,9 +2,11 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import passport from 'passport'
 import validator from 'validator'
-
+import registration from '../emailTemplates/registration'
 import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
+import { emailError } from '../utils/errors'
+import transporter from '../utils/nodemailer'
 
 const cleanRegister = (obj: any) => pick(obj, ['email', 'password', 'confirmPassword', 'name'])
 const createSafeUser = (obj: any) => pick(obj, ['_id', 'email', 'name', 'permissions'])
@@ -41,6 +43,21 @@ export const register: Controller = async (req, res) => {
   await user.setPassword(password)
   const safeUser = createSafeUser(await user.save())
   const token = await user.generateJWT()
+
+  // send email to Meredith / Suzie
+  try {
+    await transporter.sendMail({
+      from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
+      html: registration(user.name, user.email),
+      subject: 'New User Registered',
+      text: '',
+      to: 'alex@wendte.tech',
+    })
+  } catch (err) {
+    await User.findByIdAndDelete(user._id)
+    throw emailError(err.response, err.responseCode)
+  }
+
   res.cookie('token', token, {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 365,

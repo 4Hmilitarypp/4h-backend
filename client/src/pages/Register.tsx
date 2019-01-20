@@ -49,11 +49,11 @@ const Register: React.FC<RouteComponentProps> = () => {
         </CustomInputGroup>
         <CustomInputGroup>
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" required={true} placeholder="password" />
+          <input type="password" id="password" required={true} />
         </CustomInputGroup>
         <CustomInputGroup>
           <label htmlFor="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" required={true} placeholder="confirmPassword" />
+          <input type="password" id="confirmPassword" required={true} />
         </CustomInputGroup>
         <MyButton type="submit">Sign In</MyButton>
       </Form>

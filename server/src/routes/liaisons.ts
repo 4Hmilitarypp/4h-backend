@@ -3,8 +3,8 @@ import { Router } from 'express'
 import guard from 'express-jwt-permissions'
 
 import * as liaisonController from '../controllers/liaisons'
-import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'
+import { catchErrors } from '../utils/errorHandlers'
 
 const setupLiaisonRoutes = (router: Router) => {
   router

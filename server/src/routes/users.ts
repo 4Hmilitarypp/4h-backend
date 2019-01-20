@@ -1,8 +1,8 @@
 import { Router } from 'express'
 
 import * as usersController from '../controllers/users'
-import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'
+import { catchErrors } from '../utils/errorHandlers'
 
 const setupUserRoutes = (router: Router) => {
   router.post('/register', auth.optional, catchErrors(usersController.register))

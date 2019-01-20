@@ -5,8 +5,8 @@ import express from 'express'
 import helmet from 'helmet'
 import path from 'path'
 
-import * as errorHandlers from './handlers/errorHandlers'
 import setupRoutes from './routes'
+import * as errorHandlers from './utils/errorHandlers'
 
 // initialize the application and create the routes
 const app = express()
@@ -56,9 +56,11 @@ app.use(errorHandlers.forbiddenError)
 
 app.use(errorHandlers.unauthorizedError)
 
+app.use(errorHandlers.emailError)
+
 // Programmer error handling in dev
 if (process.env.NODE_ENV === 'development') {
-  /* Development Error Handler - Prints stack trace */
+  // Development Error Handler - Prints stack trace
   app.use(errorHandlers.developmentErrors)
 }
 

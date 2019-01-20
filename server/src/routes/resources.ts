@@ -3,8 +3,8 @@ import { Router } from 'express'
 import guard from 'express-jwt-permissions'
 
 import * as resourceController from '../controllers/resources'
-import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'
+import { catchErrors } from '../utils/errorHandlers'
 
 const setupResourceRoutes = (router: Router) => {
   router.route('/slug/:slug').get(catchErrors(resourceController.getResourceBySlug))

@@ -31,6 +31,13 @@ export const itemNotFound: ErrorHandler = (err, _, res, next) => {
   return next(err)
 }
 
+export const emailError: ErrorHandler = (err, _, res, next) => {
+  if (err.type === 'emailError') {
+    return res.status(err.status || 500).json({ message: err.message })
+  }
+  return next(err)
+}
+
 /*
   MongoDB Validation Error Handler
 
@@ -93,5 +100,6 @@ export const developmentErrors: ErrorHandler = (err, _, res) => {
 */
 export const productionErrors: ErrorHandler = (err, _, res) => {
   err.message = 'Unexpected Server Error'
+  console.error(err)
   return res.status(err.status || 500).json(err)
 }

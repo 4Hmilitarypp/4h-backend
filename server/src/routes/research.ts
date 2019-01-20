@@ -3,8 +3,8 @@ import guard from 'express-jwt-permissions'
 
 import { Router } from 'express'
 import * as educatorController from '../controllers/research'
-import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'
+import { catchErrors } from '../utils/errorHandlers'
 
 const setupEducatorRoutes = (router: Router) => {
   router

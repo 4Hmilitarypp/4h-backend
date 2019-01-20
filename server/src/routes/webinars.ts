@@ -3,8 +3,8 @@ import guard from 'express-jwt-permissions'
 
 import { Router } from 'express'
 import * as webinarController from '../controllers/webinars'
-import { catchErrors } from '../handlers/errorHandlers'
 import auth from '../routes/auth'
+import { catchErrors } from '../utils/errorHandlers'
 
 const setupWebinarRoutes = (router: Router) => {
   router
