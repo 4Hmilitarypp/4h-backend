@@ -38,10 +38,10 @@ const Register: React.FC<RouteComponentProps> = () => {
       const isSpam = await checkIfSpam()
       if (isSpam) {
         userContext.logout()
-        return
+        return flashContext.set({ message: 'you failed to pass the captcha test, please try again', isError: true })
       }
     } catch (err) {
-      handleError(err)
+      return handleError(err)
     }
 
     userContext

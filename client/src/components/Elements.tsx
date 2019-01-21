@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { elevation, transition } from '../utils/mixins'
 
 export const InputGroup = styled.div`
-  margin: 0 0.4rem 1.2rem;
+  margin: 0 0 1.2rem;
   flex-grow: 1;
   label,
   legend {

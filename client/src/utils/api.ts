@@ -79,16 +79,11 @@ const webinars = {
   update: (id: string, updates: IWebinar): Promise<IWebinar> => requests.put(`/webinars/${id}`, updates),
 }
 
-function init({
-  token = window.localStorage.getItem('token'),
-  baseURL = (api && api.defaults.baseURL) || envBaseURL,
-  axiosOptions = { headers: {} },
-} = {}) {
+function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
   api = (axios as any).create({
     baseURL,
     ...axiosOptions,
     headers: {
-      usersorization: token ? `Bearer ${token}` : undefined,
       ...axiosOptions.headers,
     },
   })

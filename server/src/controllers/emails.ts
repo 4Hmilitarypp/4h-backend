@@ -21,5 +21,5 @@ export const contactUs: Controller = async (req, res) => {
     throw emailError(err)
   }
 
-  return res.status(200).send('Your message was sent successfully. You should hear back shortly!')
+  return res.status(200).json(form)
 }
