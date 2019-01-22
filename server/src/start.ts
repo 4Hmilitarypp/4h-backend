@@ -19,7 +19,6 @@ mongoose.connection.on('error', err => {
 import './models/Archive'
 import './models/Liaison'
 import './models/Partner'
-import './models/PartnerSection'
 import './models/Research'
 import './models/Resource'
 import './models/User'

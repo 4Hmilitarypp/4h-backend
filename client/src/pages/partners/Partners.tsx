@@ -1,33 +1,27 @@
-import { RouteComponentProps } from '@reach/router'
-import { map } from 'lodash'
+import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import Table from '../../components/table/Table'
-import TableModal from '../../components/table/TableModal'
-import useTable from '../../components/table/useTable'
-import { IPartner } from '../../sharedTypes'
-import api from '../../utils/api'
+import { IPartnerSection } from '../../sharedTypes'
 import Partner from './Partner'
-import PartnersForm from './PartnerForm'
+import PartnerTable from './PartnerTable'
+import usePartners, { TUpdatePartners } from './usePartners'
+
+export interface IPartnerContext {
+  partners: IPartnerSection[]
+  updatePartners: TUpdatePartners
+}
+export const PartnerContext = React.createContext<IPartnerContext>(undefined as any)
 
 const Partners: React.FC<RouteComponentProps> = () => {
-  const { modalController, items: partners } = useTable<IPartner>('Partner', api.partners)
+  const { handleError, partners, updatePartners } = usePartners()
 
   return (
-    <>
-      <Table itemTitle="Partner" itemTitlePlural="Partners" modalController={modalController}>
-        {partners && (
-          <div data-testid="Partners">
-            {map(partners, partner => (
-              <Partner key={partner.title} partner={partner} setModalState={modalController.set} />
-            ))}
-          </div>
-        )}
-      </Table>
-      <TableModal controller={modalController} itemTitle="Partner">
-        <PartnersForm modalController={modalController} />
-      </TableModal>
-    </>
+    <PartnerContext.Provider value={{ partners, updatePartners }}>
+      {partners.length > 0 && <div data-testid="Partners" />}
+      <Router>
+        <PartnerTable path="/" />
+        <Partner handleError={handleError} path="/:slug" />
+      </Router>
+    </PartnerContext.Provider>
   )
 }
-
 export default Partners

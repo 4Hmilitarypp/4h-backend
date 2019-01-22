@@ -9,8 +9,9 @@ import { catchErrors } from '../utils/errorHandlers'
 const setupPartnerRoutes = (router: Router) => {
   router
     .route('/')
-    .get(auth.optional, catchErrors(partnerController.getPartners))
+    .get(auth.optional, catchErrors(partnerController.getPartnerSections))
     .post(auth.required, guard().check('admin'), catchErrors(partnerController.createPartner))
+  router.route('/slug/:slug').get(auth.optional, catchErrors(partnerController.getPartner))
   router
     .route('/:_id')
     .delete(auth.required, guard().check('admin'), catchErrors(partnerController.deletePartner))

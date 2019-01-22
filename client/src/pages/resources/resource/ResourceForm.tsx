@@ -61,6 +61,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
   }
 
   return (
+    // the id on the form must be what the corresponding submit button's formId is
     <Form onSubmit={handleSubmit} id="ResourceForm" ref={formRef}>
       <CustomInputGroup>
         <label htmlFor="title">Resource Title</label>

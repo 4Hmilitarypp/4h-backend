@@ -54,7 +54,7 @@ const App: React.FC<{}> = () => {
             <Router primary={false}>
               <Home path="/" />
               <Liaisons path="/liaisons" />
-              <Partners path="/partners" />
+              <Partners path="/partners/*" />
               <Webinars path="/webinars" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />

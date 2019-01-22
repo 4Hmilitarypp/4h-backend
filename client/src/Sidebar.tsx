@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { Link } from './components/Elements'
 import { elevation } from './utils/mixins'
 
-const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }) => {
+const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }: { location?: any }) => {
   return (
     <SidebarWrapper>
       <LinkGroup>

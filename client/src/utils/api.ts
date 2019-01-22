@@ -4,6 +4,7 @@ import {
   ILiaison,
   ILoginForm,
   IPartner,
+  IPartnerSection,
   IRegisterForm,
   IResearch,
   IResource,
@@ -16,6 +17,13 @@ let api: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
 
 const getData = (res: { data: object }) => res.data
+
+const requests = {
+  delete: (url: string): Promise<any> => api.delete(url).then(getData),
+  get: (url: string): Promise<any> => api.get(url).then(getData),
+  post: (url: string, body: object): Promise<any> => api.post(url, body).then(getData),
+  put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
+}
 
 const users = {
   checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
@@ -39,21 +47,15 @@ const liaisons = {
   create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
   delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
   get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
-  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons${id}`, updates),
+  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
 }
 
 const partners = {
   create: (data: IPartner): Promise<IPartner> => requests.post('/partners', data),
   delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
-  get: (): Promise<IPartner[]> => requests.get('/partners'),
+  get: (): Promise<IPartnerSection[]> => requests.get('/partners'),
+  getBySlug: (slug: string): Promise<IPartner> => requests.get(`/partners/slug/${slug}`),
   update: (id: string, updates: IPartner): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
-}
-
-const requests = {
-  delete: (url: string): Promise<any> => api.delete(url).then(getData),
-  get: (url: string): Promise<any> => api.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => api.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
 }
 
 const research = {

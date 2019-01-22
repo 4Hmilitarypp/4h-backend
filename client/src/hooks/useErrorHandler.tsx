@@ -10,7 +10,6 @@ const useErrorHandler = () => {
   const flashContext = React.useContext(FlashContext)
 
   const handleError = (dirtyError: IApiError, type?: string) => {
-    console.dir(dirtyError)
     const error = formatError(dirtyError)
     if (type === 'login') {
       return flashContext.set({ isError: true, message: 'Username or Password is invalid, please try again.' })

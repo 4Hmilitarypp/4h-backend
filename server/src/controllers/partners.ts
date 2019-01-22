@@ -9,23 +9,14 @@ const Partner = mongoose.model<IPartnerDocument>('Partner')
 const Archive = mongoose.model('Archive')
 
 const cleanPartner = (obj: any) =>
-  pick(obj, [
-    'annualReports',
-    'images',
-    'longDescription',
-    'videoReports',
-    'title',
-    'featuredImages',
-    'shortDescription',
-    'slug',
-  ])
+  pick(obj, ['reports', 'featuredImage1', 'featuredImage2', 'longDescription', 'title', 'shortDescription', 'slug'])
 const cleanPartnerWithId = (obj: any) =>
   pick(obj, [
     '_id',
-    'annualReports',
-    'images',
+    'reports',
+    'featuredImage1',
+    'featuredImage2',
     'longDescription',
-    'videoReports',
     'title',
     'featuredImages',
     'shortDescription',
@@ -37,9 +28,17 @@ export const createPartner: Controller = async (req, res) => {
   return res.status(201).json(partner)
 }
 
-export const getPartners: Controller = async (_, res) => {
-  const partners = await Partner.find()
+export const getPartnerSections: Controller = async (_, res) => {
+  const partners = await Partner.find(null, '_id title featuredImages shortDescription slug')
   return res.json(partners)
+}
+
+export const getPartner: Controller = async (req, res) => {
+  const partner = await Partner.findOne({ slug: req.params.slug })
+  if (!partner) {
+    throw notFoundError
+  }
+  return res.json(partner)
 }
 
 export const updatePartner: Controller = async (req, res) => {

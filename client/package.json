@@ -1,4 +1,5 @@
 {
+  "name": "4h-military-partnership-cms",
   "proxy": "http://localhost:7777/",
   "scripts": {
     "start": "react-scripts start",

@@ -14,7 +14,7 @@ const Researches: React.FC<RouteComponentProps> = () => {
 
   return (
     <>
-      <Table itemTitle="Research" itemTitlePlural="Researches" modalController={modalController}>
+      <Table itemTitle="Research" itemTitlePlural="Research" modalController={modalController}>
         {researches && (
           <div data-testid="Researches">
             {map(researches, research => (

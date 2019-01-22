@@ -8,14 +8,6 @@ export interface ILiaison {
   region: string
 }
 
-export interface IPartnerSection {
-  _id?: string
-  title: string
-  featuredImages: IImage[]
-  shortDescription: string
-  slug: string
-}
-
 export interface IImage {
   alt?: string
   url: string
@@ -28,15 +20,23 @@ export interface ILink {
 }
 
 interface IReport {
+  image: IImage
   title: string
   url: string
 }
 
+export interface IPartnerSection {
+  _id?: string
+  title: string
+  featuredImage1: IImage
+  featuredImage2?: IImage
+  shortDescription: string
+  slug: string
+}
+
 export interface IPartner extends IPartnerSection {
-  annualReports?: IReport[]
-  images?: IImage[]
+  reports: IReport[]
   longDescription: string
-  videoReports?: IReport[]
 }
 
 export interface IWebinar {

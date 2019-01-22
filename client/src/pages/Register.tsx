@@ -19,7 +19,8 @@ const checkIfSpam = async () => {
   const token = await (window as any).grecaptcha.execute('6LczLYsUAAAAAJ7UgMGSvCG-fCe9Q6seQrVIvLl9', {
     action: 'register',
   })
-  return api.users.checkIfSpam(token)
+  const isSpam = await api.users.checkIfSpam(token)
+  return isSpam
 }
 
 const Register: React.FC<RouteComponentProps> = () => {

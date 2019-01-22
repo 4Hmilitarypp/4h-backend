@@ -24,24 +24,23 @@ export interface ILink {
 }
 
 export interface IReport {
-  image: string
+  image: IImage
   title: string
   url: string
 }
 
 export interface IPartnerSection {
   _id?: string
-  featuredImages: IImage[]
+  featuredImage1: IImage
+  featuredImage2?: IImage
   shortDescription: string
   slug: string
   title: string
 }
 
 export interface IPartner extends IPartnerSection {
-  annualReports?: IReport[]
-  images?: IImage[]
+  reports: IReport[]
   longDescription: string
-  videoReports?: IReport[]
 }
 
 export interface IWebinar {

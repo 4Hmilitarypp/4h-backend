@@ -1,30 +1,99 @@
+import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { TSetModalState } from '../../components/table/useTable'
-import { IPartner } from '../../sharedTypes'
-import { hoveredRow } from '../../utils/mixins'
+import { Button, DeleteButton, Heading, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
+import { IApiError, IPartner } from '../../sharedTypes'
+import api from '../../utils/api'
+import PartnerForm from './PartnerForm'
+import { PartnerContext } from './Partners'
 
-interface IProps {
-  partner: IPartner
-  setModalState: TSetModalState<IPartner>
+interface IProps extends RouteComponentProps {
+  slug?: string
+  handleError: (err: IApiError) => void
 }
 
-const Partner: React.FC<IProps> = ({ partner, setModalState }) => (
-  <Wrapper onClick={() => setModalState({ action: 'update', item: partner })}>
-    <Title>{partner.title}</Title>
-  </Wrapper>
-)
+const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
+  const [partner, setPartner] = React.useState<IPartner | undefined>(undefined)
+  const [action, setAction] = React.useState<'create' | 'update'>(slug === 'new' ? 'create' : 'update')
+  const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
+
+  const partnerContext = React.useContext(PartnerContext)
+
+  React.useEffect(
+    () => {
+      if (slug !== 'new') {
+        // If the action is not already update set it to be update
+        if (action !== 'update') {
+          setAction('update')
+        }
+        api.partners.getBySlug(slug).then(updatePartner => {
+          if (updatePartner) {
+            setPartner(updatePartner)
+          } else {
+            navigate('/partners')
+          }
+        })
+      }
+    },
+    [slug]
+  )
+
+  const handleCancel = () => {
+    setTimesDeleteClicked(0)
+    navigate('/partners')
+  }
+
+  const handleDeleteClicked = () => {
+    if (partner && timesDeleteClicked === 1) {
+      api.partners
+        .delete(partner._id as string)
+        .then(() => {
+          partnerContext.updatePartners({ _id: partner._id, action: 'delete' })
+          navigate('/partners')
+        })
+        .catch(handleError)
+    } else {
+      setTimesDeleteClicked(1)
+    }
+  }
+
+  return (
+    <div>
+      <CustomHeading>{`${action === 'update' ? 'Updating a Partner' : 'Create a new Partner'}`}</CustomHeading>
+      <PartnerForm
+        action={action}
+        handleError={handleError}
+        partner={partner}
+        updatePartners={partnerContext.updatePartners}
+      />
+      <Buttons>
+        {action === 'update' &&
+          (timesDeleteClicked === 0 ? (
+            <DeleteButton onClick={handleDeleteClicked}>Delete</DeleteButton>
+          ) : (
+            <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
+          ))}
+        <RightButtons>
+          <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
+          <Button form="PartnerForm">{action === 'update' ? 'Update' : 'Create'} Partner</Button>
+        </RightButtons>
+      </Buttons>
+      {/* {_id && action === 'update' && <Lessons partnerId={_id} handleError={handleError} />} */}
+    </div>
+  )
+}
 
 export default Partner
 
-const Wrapper = styled.div`
-  padding: 2rem;
-  position: relative;
-  ${hoveredRow()};
-  &:nth-child(2n - 1) {
-    background: ${props => props.theme.white};
-  }
+const CustomHeading = styled(Heading)`
+  font-size: 2.4rem;
 `
-const Title = styled.span`
-  font-weight: 500;
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem 1.4rem;
+  align-items: center;
+`
+const RightButtons = styled.div`
+  margin-left: auto;
 `

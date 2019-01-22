@@ -12,5 +12,6 @@
     "noUnusedParameters": true,
     "strict": true,
     "suppressImplicitAnyIndexErrors": true
-  }
+  },
+  "exclude": ["node_modules", "**/__tests__/*.ts"]
 }

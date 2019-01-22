@@ -1,14 +1,16 @@
 import mongoose from 'mongoose'
 import request from 'supertest'
 
+import slugify from 'slugify'
 import app from '../../app'
+import { IPartnerDocument } from '../../models/Partner'
 import { IUserDocument } from '../../models/User'
 import generate from '../../utils/generate'
 import { formatDb } from '../../utils/object'
 
 process.env.TEST_SUITE = 'partners'
 
-const Partner = mongoose.model('Partner')
+const Partner = mongoose.model<IPartnerDocument>('Partner')
 const User = mongoose.model<IUserDocument>('User')
 
 const getToken = (res: request.Response) => res.header['set-cookie'][0].split('token=')[1].split(';')[0]
@@ -29,7 +31,7 @@ const setup = async () => {
 /**
  * GET
  */
-it('should return a 200 if get was successful', async () => {
+it('should return only a partnerSection if get was successful', async () => {
   const partner = generate.partner()
   await new Partner(partner).save()
   const inDb = await Partner.find()
@@ -38,7 +40,12 @@ it('should return a 200 if get was successful', async () => {
   const res = await request(app).get('/api/partners')
   expect(res.status).toBe(200)
   expect(res.body).toHaveLength(1)
-  expect(res.body[0]).toMatchObject({ ...partner, _id: expect.any(String) })
+  expect(res.body[0]).toMatchObject({
+    _id: expect.any(String),
+    shortDescription: inDb[0].shortDescription,
+    slug: slugify(inDb[0].title),
+    title: inDb[0].title,
+  })
 })
 
 /**
@@ -54,9 +61,13 @@ it('should return a 201 if created was successful', async () => {
     .send(partner)
 
   expect(res.status).toBe(201)
-  expect(res.body).toMatchObject({ ...partner, _id: expect.any(String) })
+  expect(res.body).toMatchObject({ ...partner, _id: expect.any(String), slug: slugify(partner.title) })
   const inDb = await Partner.find()
-  expect(formatDb(inDb[0])).toMatchObject({ ...partner, _id: res.body._id })
+  expect(formatDb(inDb[0])).toMatchObject({
+    ...partner,
+    _id: res.body._id,
+    slug: slugify(inDb[0].title),
+  })
 })
 
 it('should return a 400 if a partner with a bad form is created', async () => {
@@ -89,10 +100,14 @@ it('should return a 200 if the update was successful', async () => {
     .set('cookie', cookie)
     .send(updatePartner)
 
+  expect(res.body).toMatchObject({ ...updatePartner, _id: existingId, slug: slugify(updatePartner.title) })
   expect(res.status).toEqual(200)
-  expect(res.body).toMatchObject({ ...updatePartner, _id: existingId })
   const finalInDb = await Partner.findById(res.body._id)
-  expect(formatDb(finalInDb)).toMatchObject({ ...updatePartner, _id: existingId })
+  expect(formatDb(finalInDb)).toMatchObject({
+    ...updatePartner,
+    _id: existingId,
+    slug: slugify(finalInDb ? finalInDb.title : ''),
+  })
 })
 
 it('should return a 400 if any of the fields are messed up', async () => {
@@ -111,7 +126,7 @@ it('should return a 400 if any of the fields are messed up', async () => {
   expect(res.status).toEqual(400)
   expect(res.body).toMatchObject({ message: expect.any(String) })
   const finalInDb = await Partner.findById(inDb._id)
-  expect(formatDb(finalInDb)).toMatchObject(originalPartner)
+  expect(formatDb(finalInDb)).toMatchObject({ ...originalPartner, slug: slugify(finalInDb ? finalInDb.title : '') })
 })
 
 it('should return a 404 if not found', async () => {

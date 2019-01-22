@@ -2,6 +2,7 @@ import faker from 'faker'
 import { ObjectId } from 'mongodb'
 
 import {
+  IImage,
   ILesson,
   ILiaison,
   ILoginForm,
@@ -20,6 +21,11 @@ const generate = {
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     password: faker.internet.password(),
     permissions: [],
+    ...overrides,
+  }),
+  image: (overrides?: Partial<IImage>): IImage => ({
+    alt: faker.company.catchPhrase(),
+    url: faker.internet.url(),
     ...overrides,
   }),
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
@@ -51,14 +57,13 @@ const generate = {
   objectId: () => new ObjectId().toHexString(),
   partner: (overrides?: Partial<IPartner>): IPartner => ({
     _id: generate.objectId(),
-    annualReports: [{ title: faker.lorem.words(), url: faker.internet.url() }],
-    featuredImages: [{ url: faker.internet.url(), alt: faker.company.catchPhrase() }],
-    images: [{ url: faker.internet.url(), alt: faker.company.catchPhrase() }],
+    featuredImage1: generate.image(),
+    featuredImage2: generate.image(),
     longDescription: faker.lorem.paragraph(),
+    reports: [{ image: generate.image(), title: faker.lorem.words(), url: faker.internet.url() }],
     shortDescription: faker.lorem.word(),
     slug: faker.lorem.word(),
     title: faker.lorem.word(),
-    videoReports: [{ title: faker.lorem.words(), url: faker.internet.url() }],
     ...overrides,
   }),
   partners: (length: number): IPartner[] => Array.from({ length }, () => generate.partner()),

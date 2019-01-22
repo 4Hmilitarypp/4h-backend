@@ -1,8 +1,10 @@
 import faker from 'faker'
 import {
+  IImage,
   ILesson,
   ILiaison,
   ILoginForm,
+  IPartner,
   IResearch,
   IResource,
   IResourceWithLessons,
@@ -11,6 +13,11 @@ import {
 } from '../sharedTypes'
 
 const generate = {
+  image: (overrides?: Partial<IImage>): IImage => ({
+    alt: faker.company.catchPhrase(),
+    url: faker.internet.url(),
+    ...overrides,
+  }),
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
     links: Array.from({ length: faker.random.number({ min: 1, max: 4 }) }, () => ({
@@ -31,6 +38,18 @@ const generate = {
   }),
   liaisons: (length: number): ILiaison[] => Array.from({ length }, () => generate.liaison()),
   objectId: () => faker.random.alphaNumeric(24),
+  partner: (overrides?: Partial<IPartner>): IPartner => ({
+    _id: generate.objectId(),
+    featuredImage1: generate.image(),
+    featuredImage2: generate.image(),
+    longDescription: faker.lorem.paragraph(),
+    reports: [{ image: generate.image(), title: faker.lorem.words(), url: faker.internet.url() }],
+    shortDescription: faker.lorem.word(),
+    slug: faker.lorem.word(),
+    title: faker.lorem.word(),
+    ...overrides,
+  }),
+  partners: (length: number): IPartner[] => Array.from({ length }, () => generate.partner()),
   research: (descriptionLength: number = 100, overrides: {} = {}): IResearch => ({
     _id: generate.objectId(),
     description: faker.lorem.words(descriptionLength),
