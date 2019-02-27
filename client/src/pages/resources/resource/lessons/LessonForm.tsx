@@ -71,7 +71,7 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
         .catch(handleError)
     } else {
       api.lessons
-        .update(updateLesson._id as string, modalController.state.resourceId, updateLesson)
+        .update(modalController.state.resourceId, updateLesson._id as string, updateLesson)
         .then(newLesson => {
           updateLessons({ lesson: newLesson, action })
           resetModalState()

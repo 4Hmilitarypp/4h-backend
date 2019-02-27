@@ -24,6 +24,7 @@ export interface ILink {
 }
 
 export interface IReport {
+  _id?: string
   image: IImage
   title: string
   url: string

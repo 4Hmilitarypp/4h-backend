@@ -16,6 +16,14 @@ const setupPartnerRoutes = (router: Router) => {
     .route('/:_id')
     .delete(auth.required, guard().check('admin'), catchErrors(partnerController.deletePartner))
     .put(auth.required, guard().check('admin'), catchErrors(partnerController.updatePartner))
+  router
+    .route('/:partnerId/reports')
+    .get(auth.optional, catchErrors(partnerController.getReports))
+    .post(auth.required, guard().check('admin'), catchErrors(partnerController.createReport))
+  router
+    .route('/:partnerId/reports/:_id')
+    .delete(auth.required, guard().check('admin'), catchErrors(partnerController.deleteReport))
+    .put(auth.required, guard().check('admin'), catchErrors(partnerController.updateReport))
 }
 
 export default setupPartnerRoutes

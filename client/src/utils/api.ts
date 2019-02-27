@@ -6,6 +6,7 @@ import {
   IPartner,
   IPartnerSection,
   IRegisterForm,
+  IReport,
   IResearch,
   IResource,
   IUser,
@@ -39,7 +40,7 @@ const lessons = {
   delete: (resourceId: string, id: string): Promise<string> =>
     requests.delete(`/resources/${resourceId}/lessons/${id}`),
   get: (resourceId: string): Promise<ILesson[]> => requests.get(`/resources/${resourceId}/lessons/`),
-  update: (id: string, resourceId: string, updates: ILesson): Promise<ILesson> =>
+  update: (resourceId: string, id: string, updates: ILesson): Promise<ILesson> =>
     requests.put(`/resources/${resourceId}/lessons/${id}`, updates),
 }
 
@@ -56,6 +57,15 @@ const partners = {
   get: (): Promise<IPartnerSection[]> => requests.get('/partners'),
   getBySlug: (slug: string): Promise<IPartner> => requests.get(`/partners/slug/${slug}`),
   update: (id: string, updates: IPartner): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
+}
+
+const reports = {
+  create: (partnerId: string, data: IReport): Promise<IReport> =>
+    requests.post(`/partners/${partnerId}/reports/`, data),
+  delete: (partnerId: string, id: string): Promise<string> => requests.delete(`/partners/${partnerId}/reports/${id}`),
+  get: (partnerId: string): Promise<IReport[]> => requests.get(`/partners/${partnerId}/reports/`),
+  update: (partnerId: string, id: string, updates: IReport): Promise<IReport> =>
+    requests.put(`/partners/${partnerId}/reports/${id}`, updates),
 }
 
 const research = {
@@ -96,6 +106,7 @@ const restApi = {
   lessons,
   liaisons,
   partners,
+  reports,
   research,
   resources,
   users,

@@ -6,6 +6,7 @@ import { IApiError, IPartner } from '../../sharedTypes'
 import api from '../../utils/api'
 import PartnerForm from './PartnerForm'
 import { PartnerContext } from './Partners'
+import Reports from './reports/Reports'
 
 interface IProps extends RouteComponentProps {
   slug?: string
@@ -19,24 +20,21 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
 
   const partnerContext = React.useContext(PartnerContext)
 
-  React.useEffect(
-    () => {
-      if (slug !== 'new') {
-        // If the action is not already update set it to be update
-        if (action !== 'update') {
-          setAction('update')
-        }
-        api.partners.getBySlug(slug).then(updatePartner => {
-          if (updatePartner) {
-            setPartner(updatePartner)
-          } else {
-            navigate('/partners')
-          }
-        })
+  React.useEffect(() => {
+    if (slug !== 'new') {
+      // If the action is not already update set it to be update
+      if (action !== 'update') {
+        setAction('update')
       }
-    },
-    [slug]
-  )
+      api.partners.getBySlug(slug).then(updatePartner => {
+        if (updatePartner) {
+          setPartner(updatePartner)
+        } else {
+          navigate('/partners')
+        }
+      })
+    }
+  }, [slug])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
@@ -56,7 +54,6 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
       setTimesDeleteClicked(1)
     }
   }
-
   return (
     <div>
       <CustomHeading>{`${action === 'update' ? 'Updating a Partner' : 'Create a new Partner'}`}</CustomHeading>
@@ -78,7 +75,9 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
           <Button form="PartnerForm">{action === 'update' ? 'Update' : 'Create'} Partner</Button>
         </RightButtons>
       </Buttons>
-      {/* {_id && action === 'update' && <Lessons partnerId={_id} handleError={handleError} />} */}
+      {slug !== 'new' && action === 'update' && partner && (
+        <Reports partnerId={partner ? partner._id || '' : ''} handleError={handleError} />
+      )}
     </div>
   )
 }

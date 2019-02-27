@@ -1,6 +1,6 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { Transition } from 'react-spring'
+import { Transition } from 'react-spring/renderprops'
 import styled from 'styled-components/macro'
 import FlashContext from './contexts/FlashContext'
 
