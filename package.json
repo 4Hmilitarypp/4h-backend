@@ -99,8 +99,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run coverage"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
