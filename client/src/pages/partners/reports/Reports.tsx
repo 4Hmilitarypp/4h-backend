@@ -2,7 +2,7 @@ import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Heading } from '../../../components/Elements'
-import { IApiError } from '../../../sharedTypes'
+import { IApiError, IReport } from '../../../sharedTypes'
 import Report from './Report'
 import ReportModal from './ReportModal'
 import useReports from './useReports'
@@ -10,10 +10,11 @@ import useReports from './useReports'
 interface IProps {
   partnerId: string
   handleError: (err: IApiError) => void
+  reports: IReport[]
 }
 
-const Reports: React.FC<IProps> = ({ partnerId, handleError }) => {
-  const { modalController, reports } = useReports(handleError, partnerId)
+const Reports: React.FC<IProps> = ({ partnerId, handleError, reports: propReports }) => {
+  const { modalController, reports } = useReports(handleError, propReports)
   return (
     <Wrapper>
       <TableHeader>

@@ -76,7 +76,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
         </RightButtons>
       </Buttons>
       {slug !== 'new' && action === 'update' && partner && (
-        <Reports partnerId={partner ? partner._id || '' : ''} handleError={handleError} />
+        <Reports partnerId={partner ? partner._id || '' : ''} handleError={handleError} reports={partner.reports} />
       )}
     </div>
   )

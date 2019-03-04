@@ -28,7 +28,7 @@ export const createPartner: Controller = async (req, res) => {
 }
 
 export const getPartnerSections: Controller = async (_, res) => {
-  const partners = await Partner.find(null, '_id title featuredImages shortDescription slug')
+  const partners = await Partner.find(null, '_id title featuredImages shortDescription slug', { sort: { title: 1 } })
   return res.json(partners)
 }
 
@@ -70,7 +70,12 @@ export const createReport: Controller = async (req, res) => {
   const updatedPartner = (await Partner.findByIdAndUpdate(
     partnerId,
     {
-      $push: { reports: cleanReport(req.body) },
+      $push: {
+        reports: {
+          $each: [cleanReport(req.body)],
+          $sort: { title: 1 },
+        },
+      },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any

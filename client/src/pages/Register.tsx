@@ -89,7 +89,7 @@ const Register: React.FC<RouteComponentProps> = () => {
           <A href="https://policies.google.com/privacy"> Privacy Policy</A> and
           <A href="https://policies.google.com/terms"> Terms of Service</A> apply.
         </P>
-        <MyButton type="submit">Sign In</MyButton>
+        <MyButton type="submit">Register</MyButton>
       </Form>
     </RegisterContainer>
   )

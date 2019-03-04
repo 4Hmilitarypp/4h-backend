@@ -60,7 +60,9 @@ const generate = {
     featuredImage1: generate.image(),
     featuredImage2: generate.image(),
     longDescription: faker.lorem.paragraph(),
-    reports: [{ image: generate.image(), title: faker.lorem.words(), url: faker.internet.url() }],
+    reports: [
+      { image: generate.image(), title: faker.lorem.words(), url: faker.internet.url(), _id: generate.objectId() },
+    ],
     shortDescription: faker.lorem.word(),
     slug: faker.lorem.word(),
     title: faker.lorem.word(),

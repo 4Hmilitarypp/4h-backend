@@ -5,14 +5,13 @@
     "lib": ["esnext", "dom"],
     "module": "esnext",
     "noEmit": true,
-    "outDir": "build/dist",
     "rootDir": "./src",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "exclude": ["build", "node_modules", "coverage", "**/*.js"],
+  "exclude": ["build", "coverage", "**/*.js"],
   "rules": {
     "no-console": [true, "log", "warning"]
   },

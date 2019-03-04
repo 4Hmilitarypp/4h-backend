@@ -2,7 +2,6 @@ import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../../contexts/FlashContext'
 import { IApiError, IReport } from '../../../sharedTypes'
-import api from '../../../utils/api'
 import { numericSort } from '../../../utils/string'
 
 export type IUpdateReports = ({
@@ -15,37 +14,30 @@ export type IUpdateReports = ({
   report?: IReport
 }) => void
 
-export type TSetModalState = ({ action, report, partnerId }: IModalState) => void
+export type TSetModalState = ({  }: IModalState) => void
 
 export interface IModalState {
   action: 'create' | 'update' | 'close'
   report?: IReport
   partnerId: string
+  timesDeleteClicked?: number
 }
 
 export interface IModalController {
   handleError: (err: IApiError) => void
+  incTimesDeleteClicked: () => void
   reset: () => void
   set: TSetModalState
   state: IModalState
   updateReports: IUpdateReports
 }
 
-const useReports = (handleError: (err: IApiError) => void, partnerId: string) => {
-  const [reports, setReports] = React.useState<IReport[]>([])
+const useReports = (handleError: (err: IApiError) => void, propReports: IReport[]) => {
+  const [reports, setReports] = React.useState<IReport[]>(propReports)
   const flashContext = React.useContext(FlashContext)
 
-  const initialModalState = { report: undefined, action: 'close' as 'close', partnerId: '' }
+  const initialModalState = { report: undefined, action: 'close' as 'close', partnerId: '', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState>(initialModalState)
-
-  React.useEffect(() => {
-    if (partnerId) {
-      api.reports
-        .get(partnerId)
-        .then(r => setReports(r))
-        .catch(handleError)
-    }
-  }, [])
 
   const updateReports: IUpdateReports = ({ _id, action, report }) => {
     let newReports: IReport[] = []
@@ -59,12 +51,14 @@ const useReports = (handleError: (err: IApiError) => void, partnerId: string) =>
     } else if (action === 'delete') {
       newReports = filter(reports, r => r._id !== _id)
       flashContext.set({ message: 'Report Deleted Successfully' })
-      setReports(newReports)
+      modalController.reset()
     }
+    setReports(newReports)
   }
 
   const modalController: IModalController = {
     handleError,
+    incTimesDeleteClicked: () => setModalState({ ...modalState, timesDeleteClicked: 1 }),
     reset: () => setModalState(initialModalState),
     set: setModalState,
     state: modalState,

@@ -8,36 +8,31 @@ const TableModal: React.FC<{ controller: IModalController<any>; itemTitle: strin
   children,
   itemTitle,
 }) => {
-  const { api, handleError, reset, state, updateItems } = controller
+  const { api, handleError, reset, state, updateItems, incTimesDeleteClicked } = controller
 
-  const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const [open, setOpen] = React.useState(false)
 
-  React.useLayoutEffect(
-    () => {
-      if (state.action === 'update' || state.action === 'create') {
-        setOpen(true)
-      }
-      if (state.action === 'close') {
-        setOpen(false)
-      }
-    },
-    [state]
-  )
+  React.useLayoutEffect(() => {
+    if (state.action === 'update' || state.action === 'create') {
+      setOpen(true)
+    }
+    if (state.action === 'close') {
+      setOpen(false)
+    }
+  }, [state])
 
   const handleCancel = () => {
     reset()
-    setTimesDeleteClicked(0)
   }
 
   const handleDeleteClicked = () => {
-    if (state.item && timesDeleteClicked === 1) {
+    if (state.item && state.timesDeleteClicked === 1) {
       api
         .delete(state.item._id as string)
         .then(() => updateItems({ _id: state.item ? state.item._id : '', action: 'delete' }))
         .catch(handleError)
     } else {
-      setTimesDeleteClicked(1)
+      incTimesDeleteClicked()
     }
   }
 
@@ -52,7 +47,7 @@ const TableModal: React.FC<{ controller: IModalController<any>; itemTitle: strin
         cancelHandler={handleCancel}
         deleteHandler={handleDeleteClicked}
         itemName={itemTitle}
-        timesDeleteClicked={timesDeleteClicked}
+        timesDeleteClicked={state.timesDeleteClicked || 0}
         formId={`${itemTitle}Form`}
       />
     </Modal>

@@ -4,20 +4,28 @@ import FlashContext from '../../contexts/FlashContext'
 import useErrorHandler from '../../hooks/useErrorHandler'
 import { IApiError } from '../../sharedTypes'
 
-export type TUpdateItems<T> = (
-  { _id, action, item }: { _id?: string; action: 'create' | 'update' | 'delete'; item?: T }
-) => void
+export type TUpdateItems<T> = ({
+  _id,
+  action,
+  item,
+}: {
+  _id?: string
+  action: 'create' | 'update' | 'delete'
+  item?: T
+}) => void
 
 export type TSetModalState<T> = ({ action, item }: IModalState<T>) => void
 
 export interface IModalState<T> {
   action: 'create' | 'update' | 'close'
   item?: T
+  timesDeleteClicked?: number
 }
 
 export interface IModalController<T> {
   api: any
   handleError: (err: IApiError) => void
+  incTimesDeleteClicked: () => void
   reset: () => void
   set: TSetModalState<T>
   state: IModalState<T>
@@ -34,7 +42,7 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
   const [items, setItems] = React.useState<T[]>([])
   const flashContext = React.useContext(FlashContext)
 
-  const initialModalState = { webinar: undefined, action: 'close' as 'close' }
+  const initialModalState = { webinar: undefined, action: 'close' as 'close', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState<T>>(initialModalState)
   const handleError = useErrorHandler()
 
@@ -57,6 +65,7 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
       } else if (action === 'delete') {
         newItems = filter(items, r => r._id !== _id)
         flashContext.set({ message: `${itemTitle} Deleted Successfully` })
+        modalController.reset()
       }
       setItems(newItems)
     }
@@ -65,6 +74,7 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
   const modalController: IModalController<T> = {
     api,
     handleError,
+    incTimesDeleteClicked: () => setModalState({ ...modalState, timesDeleteClicked: 1 }),
     reset: () => setModalState(initialModalState),
     set: setModalState,
     state: modalState,

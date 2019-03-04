@@ -6,35 +6,30 @@ import LessonForm from './LessonForm'
 import { IModalController } from './useLessons'
 
 const LessonModal: React.FC<{ controller: IModalController }> = ({ controller }) => {
-  const { state, reset, handleError, updateLessons } = controller
+  const { state, reset, handleError, updateLessons, incTimesDeleteClicked } = controller
 
-  const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
   const [open, setOpen] = React.useState(false)
 
-  React.useLayoutEffect(
-    () => {
-      if (state.action === 'update' || state.action === 'create') {
-        setOpen(true)
-      }
-      if (state.action === 'close') {
-        setOpen(false)
-      }
-    },
-    [state]
-  )
+  React.useLayoutEffect(() => {
+    if (state.action === 'update' || state.action === 'create') {
+      setOpen(true)
+    }
+    if (state.action === 'close') {
+      setOpen(false)
+    }
+  }, [state])
 
   const handleCancel = () => {
     reset()
-    setTimesDeleteClicked(0)
   }
   const handleDeleteClicked = () => {
-    if (state.lesson && timesDeleteClicked === 1) {
+    if (state.lesson && state.timesDeleteClicked === 1) {
       api.lessons
         .delete(state.resourceId, state.lesson._id as string)
         .then(() => updateLessons({ _id: state.lesson ? state.lesson._id : '', action: 'delete' }))
         .catch(handleError)
     } else {
-      setTimesDeleteClicked(1)
+      incTimesDeleteClicked()
     }
   }
 
@@ -48,7 +43,7 @@ const LessonModal: React.FC<{ controller: IModalController }> = ({ controller })
         deleteHandler={handleDeleteClicked}
         formId="lessonForm"
         itemName="Lesson"
-        timesDeleteClicked={timesDeleteClicked}
+        timesDeleteClicked={state.timesDeleteClicked || 0}
       />
     </Modal>
   )
