@@ -1,43 +1,42 @@
+import { pick } from 'lodash'
 import mongoose from 'mongoose'
-import { IWebinar } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
 const Webinar = mongoose.model('Webinar')
+const Archive = mongoose.model('Archive')
 
-const formatWebinar = (dbWebinar: any): IWebinar => {
-  const { _id, category, description, title, url } = dbWebinar
-  const webinarId = _id.toString()
-  return { category, description, title, url, webinarId }
-}
+const cleanWebinar = (obj: any) => pick(obj, ['category', 'description', 'title', 'url'])
+const cleanWebinarWithId = (obj: any) => pick(obj, ['_id', 'category', 'description', 'title', 'url'])
 
 export const createWebinar: Controller = async (req, res) => {
-  const dirtyWebinar = await new Webinar(req.body).save()
-  return res.status(201).json(formatWebinar(dirtyWebinar))
+  const webinar = await new Webinar(cleanWebinar(req.body)).save()
+  return res.status(201).json(webinar)
 }
 
-export const getWebinars: Controller = async (req, res) => {
-  const dirtyWebinars = await Webinar.find()
-  const webinars = dirtyWebinars.map(formatWebinar)
+export const getWebinars: Controller = async (_, res) => {
+  const webinars = await Webinar.find()
   return res.json(webinars)
 }
 
 export const updateWebinar: Controller = async (req, res) => {
-  const { webinarId, ...updates } = req.body
-  const dirtyWebinar = await Webinar.findOneAndUpdate({ _id: webinarId }, updates, {
+  const { _id } = req.params
+  const webinar = await Webinar.findByIdAndUpdate(_id, cleanWebinar(req.body), {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyWebinar) {
-    return res.status(200).json(formatWebinar(dirtyWebinar))
+  if (webinar) {
+    return res.status(200).json(cleanWebinarWithId(webinar))
   }
   throw notFoundError
 }
 
 export const deleteWebinar: Controller = async (req, res) => {
-  const deletedWebinar = await Webinar.findByIdAndDelete(req.params.id)
+  const { _id } = req.params
+  const deletedWebinar = await Webinar.findByIdAndDelete(_id)
   if (deletedWebinar) {
+    await new Archive({ ...cleanWebinar(deletedWebinar), type: 'webinar' }).save()
     return res.status(204).send()
   }
   throw notFoundError

@@ -1,0 +1,12 @@
+{
+  "workbench.colorCustomizations": {
+    "[Night Owl]": {
+      "titleBar.inactiveBackground": "#f08080B0",
+      "titleBar.activeBackground": "#f08080B0"
+    }
+  },
+  "eslint.enable": false,
+  "typescript.tsdk": "../node_modules/typescript/lib",
+  "tslint.configFile": "../tslint.json",
+  "prettier.tslintIntegration": true
+}

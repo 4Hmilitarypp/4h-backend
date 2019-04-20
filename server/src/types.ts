@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
-import { IApiError } from './sharedTypes'
+
+export interface IApiError extends Error {
+  status?: number
+  type?: string
+}
 
 export type Controller = (req: Request, res: Response, next?: NextFunction) => Promise<Response>
-export type Middleware = (req: Request, res: Response, next: NextFunction) => void
 // export type CatchErrors = (req: Request, res: Response, next: NextFunction) => Promise<Response>
 export type ErrorHandler = (err: IApiError, req: Request, res: Response, next: NextFunction) => Response | void
 const hasNested = (err: any) => {
   for (const key in err.errors) {
-    if (err.errors[key] && err.errors[key].name === 'ValidatorError') {
+    if ((err.errors[key] && err.errors[key].name === 'ValidatorError') || err.errors[key].name === 'ValidationError') {
       return true
     }
   }

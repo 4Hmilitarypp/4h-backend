@@ -1,37 +1,33 @@
 import { RouteComponentProps } from '@reach/router'
+import { map } from 'lodash'
 import * as React from 'react'
-import styled from 'styled-components/macro'
-import { Heading } from '../../components/Elements'
+import Table from '../../components/table/Table'
+import TableModal from '../../components/table/TableModal'
+import useTable from '../../components/table/useTable'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
+import LiaisonForm from './LiaisonForm'
 
 const Liaisons: React.FC<RouteComponentProps> = () => {
-  const [liaisons, setLiaisons] = React.useState<ILiaison[] | undefined>(undefined)
+  const { modalController, items: liaisons } = useTable<ILiaison>('Liaison', api.liaisons)
 
-  React.useEffect(() => {
-    api.liaisons
-      .get()
-      .then(l => setLiaisons(l))
-      .catch(err => console.error(err))
-  }, [])
   return (
-    <LiaisonsContainer>
-      <LiaisonHeading>Liaisons</LiaisonHeading>
-      {liaisons && (
-        <ul>
-          {liaisons.map(l => (
-            <Liaison key={l.region} liaison={l} />
-          ))}
-        </ul>
-      )}
-    </LiaisonsContainer>
+    <>
+      <Table itemTitle="Liaison" itemTitlePlural="Liaisons" modalController={modalController}>
+        {liaisons && (
+          <div data-testid="Liaisons">
+            {map(liaisons, liaison => (
+              <Liaison key={liaison.region + liaison.email} liaison={liaison} setModalState={modalController.set} />
+            ))}
+          </div>
+        )}
+      </Table>
+      <TableModal controller={modalController} itemTitle="Liaison">
+        <LiaisonForm modalController={modalController} />
+      </TableModal>
+    </>
   )
 }
-export default Liaisons
 
-const LiaisonsContainer = styled.div``
-const LiaisonHeading = styled(Heading)`
-  padding-left: 4rem;
-  padding-bottom: 4rem;
-`
+export default Liaisons

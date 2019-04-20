@@ -8,12 +8,18 @@ This website was developed by Alex Wendte [alex@wendte.tech](#mailto:alex@wendte
 		- [Server](#server)
 		- [Database](#database)
 	- [Documentation](#documentation)
+		- [Setting up your local environment](#setting-up-your-local-environment)
 		- [Front End](#front-end-1)
 		- [Server](#server-1)
 		- [Database](#database-1)
 	- [Deployment](#deployment)
-		- [Front End](#front-end-2)
-		- [Server](#server-2)
+		- [Environment](#environment)
+		- [FrontEnd](#frontend)
+			- [Client](#client)
+			- [Server](#server-2)
+		- [BackEnd](#backend)
+			- [Client](#client-1)
+			- [Server](#server-3)
 		- [Database](#database-2)
 
 ## Technologies Used
@@ -36,9 +42,12 @@ This website was developed by Alex Wendte [alex@wendte.tech](#mailto:alex@wendte
 ### Database
 
 - MongoDB
-- Redis
 
 ## Documentation
+
+### Setting up your local environment
+
+- You need to run npm i -g typescript nodemon to install typescript and nodemon globally in order to run and compile the server
 
 ### Front End
 
@@ -50,16 +59,21 @@ This website was developed by Alex Wendte [alex@wendte.tech](#mailto:alex@wendte
 
 ## Deployment
 
-### Front End
+### Environment
 
-- Client Frontend
-  - [Zeit Now](https://zeit.co/now) version 1
-- Admin Frontend
-  - Deployed with the server
+- Both the Frontend and backend are
 
-### Server
+### FrontEnd
 
-- Digital Ocean droplet with Dokku installed
+#### Client
+
+#### Server
+
+### BackEnd
+
+#### Client
+
+#### Server
 
 ### Database
 

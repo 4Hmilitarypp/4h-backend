@@ -1,19 +1,6 @@
 {
   "name": "4h-military-partnership-cms",
-  "version": "0.0.0",
-  "private": false,
   "proxy": "http://localhost:7777/",
-  "dependencies": {
-    "@reach/router": "^1.2.1",
-    "axios": "^0.18.0",
-    "html-react-parser": "^0.4.7",
-    "lodash": "^4.17.11",
-    "react": "^16.7.0-alpha.2",
-    "react-dom": "^16.7.0-alpha.2",
-    "react-scripts": "^2.1.1",
-    "react-spring": "^7.1.2",
-    "styled-components": "^4.1.2"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -21,29 +8,8 @@
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage"
   },
-  "devDependencies": {
-    "@types/faker": "^4.1.4",
-    "@types/jest": "^23.3.10",
-    "@types/lodash": "^4.14.118",
-    "@types/node": "^10.12.10",
-    "@types/reach__router": "^1.2.0",
-    "@types/react": "^16.7.8",
-    "@types/react-dom": "^16.0.11",
-    "@types/styled-components": "^4.1.2",
-    "faker": "^4.1.0",
-    "react-testing-library": "^5.3.1",
-    "stylelint": "^9.9.0",
-    "stylelint-config-standard": "^18.2.0",
-    "stylelint-config-styled-components": "^0.1.1",
-    "stylelint-processor-styled-components": "^1.5.1",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.17.0",
-    "tslint-react": "^3.6.0",
-    "typescript": "^3.1.6"
-  },
   "jest": {
     "coverageReporters": [
-      "text",
       "html"
     ],
     "collectCoverageFrom": [
@@ -60,8 +26,8 @@
     "coverageThreshold": {
       "global": {
         "statements": 20,
-        "branches": 20,
-        "functions": 20,
+        "branches": 5,
+        "functions": 10,
         "lines": 20
       }
     }
@@ -69,7 +35,7 @@
   "browserslist": [
     ">0.2%",
     "not dead",
-    "not ie <= 11",
+    "not ie < 11",
     "not op_mini all"
   ]
 }

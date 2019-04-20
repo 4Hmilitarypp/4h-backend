@@ -1,12 +1,47 @@
 import generate from '../generate'
 
+describe('generate.lesson', () => {
+  it('should return a correct lesson', () => {
+    const res = generate.lesson()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      links: expect.arrayContaining([{ url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) }]),
+      title: expect.any(String),
+    })
+  })
+})
+
+describe('generate.lessons', () => {
+  it('should return multiple lessons', () => {
+    const res = generate.lessons(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          links: expect.arrayContaining([
+            { url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) },
+          ]),
+          title: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          links: expect.arrayContaining([
+            { url: expect.any(String), type: expect.stringMatching(/doc|pdf|external|ppt/) },
+          ]),
+          title: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
 describe('generate.liaison', () => {
   it('should return a full liaison', () => {
     const res = generate.liaison()
     expect(res).toEqual({
       email: expect.any(String),
       image: expect.any(String),
-      liaisonId: expect.any(String),
       name: expect.any(String),
       phoneNumber: expect.any(String),
       region: expect.any(String),
@@ -18,7 +53,6 @@ describe('generate.liaison', () => {
     expect(res).toEqual({
       email: expect.any(String),
       image: expect.any(String),
-      liaisonId: expect.any(String),
       name: expect.any(String),
       phoneNumber: expect.any(String),
       region: testRegion,
@@ -35,7 +69,6 @@ describe('generate.liaisons', () => {
         {
           email: expect.any(String),
           image: expect.any(String),
-          liaisonId: expect.any(String),
           name: expect.any(String),
           phoneNumber: expect.any(String),
           region: expect.any(String),
@@ -43,10 +76,91 @@ describe('generate.liaisons', () => {
         {
           email: expect.any(String),
           image: expect.any(String),
-          liaisonId: expect.any(String),
           name: expect.any(String),
           phoneNumber: expect.any(String),
           region: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
+describe('generate.resource', () => {
+  it('should return a correct resource', () => {
+    const res = generate.resource()
+    expect(res).toEqual({
+      _id: expect.any(String),
+      featuredImage: { url: expect.any(String), alt: expect.any(String) },
+      lessons: undefined,
+      longDescription: expect.any(String),
+      shortDescription: expect.any(String),
+      slug: expect.any(String),
+      title: expect.any(String),
+    })
+  })
+})
+
+describe('generate.resources', () => {
+  it('should return multiple resources', () => {
+    const res = generate.resources(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          lessons: undefined,
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
+          slug: expect.any(String),
+          title: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          featuredImage: { url: expect.any(String), alt: expect.any(String) },
+          lessons: undefined,
+          longDescription: expect.any(String),
+          shortDescription: expect.any(String),
+          slug: expect.any(String),
+          title: expect.any(String),
+        },
+      ])
+    )
+  })
+})
+
+describe('generate.research', () => {
+  it('should return a correct research', () => {
+    const res = generate.research(100)
+    expect(res).toEqual({
+      _id: expect.any(String),
+      description: expect.any(String),
+      title: expect.any(String),
+      type: expect.stringMatching(/doc|pdf|external/),
+      url: expect.any(String),
+    })
+  })
+})
+
+describe('generate.researches', () => {
+  it('should return multiple researches', () => {
+    const res = generate.researches(2)
+    expect(res.length).toBe(2)
+    expect(res).toEqual(
+      expect.arrayContaining([
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          title: expect.any(String),
+          type: expect.stringMatching(/doc|pdf|external/),
+          url: expect.any(String),
+        },
+        {
+          _id: expect.any(String),
+          description: expect.any(String),
+          title: expect.any(String),
+          type: expect.stringMatching(/doc|pdf|external/),
+          url: expect.any(String),
         },
       ])
     )
@@ -71,7 +185,6 @@ describe('generate.webinar', () => {
       description: expect.any(String),
       title: expect.any(String),
       url: expect.any(String),
-      webinarId: expect.any(String),
     })
     expect(res.description.split(' ').length).toBe(100)
   })
@@ -88,14 +201,12 @@ describe('generate.webinars', () => {
           description: expect.any(String),
           title: expect.any(String),
           url: expect.any(String),
-          webinarId: expect.any(String),
         },
         {
           category: expect.any(String),
           description: expect.any(String),
           title: expect.any(String),
           url: expect.any(String),
-          webinarId: expect.any(String),
         },
       ])
     )

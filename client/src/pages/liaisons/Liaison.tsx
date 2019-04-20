@@ -1,26 +1,27 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { TSetModalState } from '../../components/table/useTable'
 import { ILiaison } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
-const Liaison: React.FC<{ liaison: ILiaison }> = ({ liaison }) => {
-  const handleLiaisonClick = () => {
-    console.log('clicked')
-  }
-  return (
-    <LiaisonWrapper onClick={handleLiaisonClick}>
-      <NameAndLocation>
-        <Name>{liaison.name}</Name>
-        <Location>{`${liaison.region} (${liaison.abbreviation})`}</Location>
-      </NameAndLocation>
-      <Contact>
-        <Item>{liaison.email}</Item>
-        <Item>{liaison.phoneNumber}</Item>
-      </Contact>
-      <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
-    </LiaisonWrapper>
-  )
+interface IProps {
+  liaison: ILiaison
+  setModalState: TSetModalState<ILiaison>
 }
+
+const Liaison: React.FC<IProps> = ({ liaison, setModalState }) => (
+  <LiaisonWrapper onClick={() => setModalState({ action: 'update', item: liaison })}>
+    <NameAndLocation>
+      <Name>{liaison.name}</Name>
+      <Location>{`${liaison.region} (${liaison.abbreviation || 'None'})`}</Location>
+    </NameAndLocation>
+    <Contact>
+      <Item>{liaison.email}</Item>
+      <Item>{liaison.phoneNumber}</Item>
+    </Contact>
+    <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
+  </LiaisonWrapper>
+)
 
 export default Liaison
 
@@ -45,6 +46,7 @@ const Contact = styled.div`
 const Name = styled.span`
   font-weight: 700;
   display: block;
+  color: ${props => props.theme.primaryGrey};
 `
 const Item = styled.span`
   display: block;
@@ -53,7 +55,7 @@ const Item = styled.span`
 const Location = styled.div`
   display: block;
   font-weight: 500;
-  color: ${props => props.theme.lightGray};
+  color: ${props => props.theme.lightGrey};
 `
 const SchoolLogo = styled.img`
   width: 100%;

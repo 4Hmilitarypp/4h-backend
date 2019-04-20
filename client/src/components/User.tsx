@@ -2,7 +2,7 @@ const User = () => null
 
 export default User
 /* import * as React from 'react'
-import { IApiError, IUser } from '../types'
+import { IApiError, IUser } from '../sharedTypes'
 import api from '../utils/api'
 
 // TODO Add a error handler that will turn errors into

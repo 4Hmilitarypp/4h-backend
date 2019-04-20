@@ -4,33 +4,33 @@ import styled from 'styled-components/macro'
 import { Link } from './components/Elements'
 import { elevation } from './utils/mixins'
 
-const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }) => {
+const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }: { location?: any }) => {
   return (
     <SidebarWrapper>
       <LinkGroup>
         <GroupHeader>Family Content</GroupHeader>
         <Links>
-          <SideBarLink to="/partners" className={path === '/partners' ? 'active' : ''}>
+          <SideBarLink to="/camps" className={path.includes('/camps') ? 'active' : ''}>
+            Camps
+          </SideBarLink>
+          <SideBarLink to="/partners" className={path.includes('/partners') ? 'active' : ''}>
             Partners
           </SideBarLink>
-          <SideBarLink to="/liaisons" className={path === '/liaisons' ? 'active' : ''}>
+          <SideBarLink to="/liaisons" className={path.includes('/liaisons') ? 'active' : ''}>
             Liaisons
-          </SideBarLink>
-          <SideBarLink to="/camps" className={path === '/camps' ? 'active' : ''}>
-            Camps
           </SideBarLink>
         </Links>
       </LinkGroup>
       <LinkGroup>
         <GroupHeader>Educator Content</GroupHeader>
         <Links>
-          <SideBarLink to="/webinars" className={path === '/webinars' ? 'active' : ''}>
+          <SideBarLink to="/webinars" className={path.includes('/webinars') ? 'active' : ''}>
             Webinars
           </SideBarLink>
-          <SideBarLink to="/research" className={path === '/research' ? 'active' : ''}>
+          <SideBarLink to="/research" className={path.includes('/research') ? 'active' : ''}>
             Research
           </SideBarLink>
-          <SideBarLink to="/resources" className={path === '/resources' ? 'active' : ''}>
+          <SideBarLink to="/curriculum-resources" className={path.includes('/curriculum-resources') ? 'active' : ''}>
             Resources
           </SideBarLink>
         </Links>
@@ -65,7 +65,7 @@ const LinkGroup = styled.nav`
   padding: 1.2rem 0;
 `
 const GroupHeader = styled.h4`
-  color: ${props => props.theme.lightGray};
+  color: ${props => props.theme.primaryGrey};
 `
 const Links = styled.div`
   padding: 0 0.8rem;
@@ -76,8 +76,8 @@ const SideBarLink = styled(Link)`
   &.active {
     background: ${props => props.theme.inputGray};
     margin: 0 -2.8rem;
-    padding: 0.4rem 2.4rem;
-    border-left: 4px solid ${props => props.theme.primary};
+    padding: 0.4rem 2.2rem;
+    border-left: 0.6rem solid ${props => props.theme.primary};
   }
   padding: 0.4rem 0;
 `

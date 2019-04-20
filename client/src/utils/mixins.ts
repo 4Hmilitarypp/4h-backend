@@ -22,7 +22,7 @@ export function elevation(level: number) {
     case 0:
       return 'box-shadow: inset 0 7px 9px -7px rgba(0, 0, 0, .7)'
     case 1:
-      return 'box-shadow: 0 3px 10px 3px rgba(0,0,0,.2)'
+      return 'box-shadow: 0 5px 10px 2px rgba(0,0,0,.1)'
     case 2:
       return 'box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24)'
     case 3:
@@ -51,6 +51,8 @@ export const hoveredRow = () => `
   height: 100%;
   opacity: 0;
   border-radius: 5px;
+  top: 0;
+  left: 0;
   ${elevation(1)};
 }
 &:hover::after {

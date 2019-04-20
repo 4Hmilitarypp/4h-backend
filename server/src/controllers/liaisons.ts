@@ -1,43 +1,43 @@
+import { pick } from 'lodash'
 import mongoose from 'mongoose'
-import { ILiaison } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
 const Liaison = mongoose.model('Liaison')
+const Archive = mongoose.model('Archive')
 
-const formatLiaison = (dbLiaison: any): ILiaison => {
-  const { _id, abbreviation, email, image, name, phoneNumber, region } = dbLiaison
-  const liaisonId = _id.toString()
-  return { abbreviation, email, image, liaisonId, name, phoneNumber, region }
-}
+const cleanLiaison = (obj: any) => pick(obj, ['abbreviation', 'email', 'image', 'name', 'phoneNumber', 'region'])
+const cleanLiaisonWithId = (obj: any) =>
+  pick(obj, ['_id', 'abbreviation', 'email', 'image', 'name', 'phoneNumber', 'region'])
 
 export const createLiaison: Controller = async (req, res) => {
-  const dirtyLiaison = await new Liaison(req.body).save()
-  return res.status(201).json(formatLiaison(dirtyLiaison))
+  const liaison = await new Liaison(cleanLiaison(req.body)).save()
+  return res.status(201).json(liaison)
 }
 
-export const getLiaisons: Controller = async (req, res) => {
-  const dirtyLiaisons = await Liaison.find()
-  const liaisons = dirtyLiaisons.map(formatLiaison)
+export const getLiaisons: Controller = async (_, res) => {
+  const liaisons = await Liaison.find()
   return res.json(liaisons)
 }
 
 export const updateLiaison: Controller = async (req, res) => {
-  const { liaisonId, ...updates } = req.body
-  const dirtyLiaison = await Liaison.findOneAndUpdate({ _id: liaisonId }, updates, {
+  const { _id } = req.params
+  const liaison = await Liaison.findByIdAndUpdate(_id, cleanLiaison(req.body), {
     context: 'query',
     new: true,
     runValidators: true,
   })
-  if (dirtyLiaison) {
-    return res.status(200).json(formatLiaison(dirtyLiaison))
+  if (liaison) {
+    return res.status(200).json(cleanLiaisonWithId(liaison))
   }
   throw notFoundError
 }
 
 export const deleteLiaison: Controller = async (req, res) => {
-  const deletedLiaison = await Liaison.findByIdAndDelete(req.params.id)
+  const { _id } = req.params
+  const deletedLiaison = await Liaison.findByIdAndDelete(_id)
   if (deletedLiaison) {
+    await new Archive({ ...cleanLiaison(deletedLiaison), type: 'liaison' }).save()
     return res.status(204).send()
   }
   throw notFoundError
