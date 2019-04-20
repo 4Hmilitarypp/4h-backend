@@ -28,7 +28,9 @@ export const createPartner: Controller = async (req, res) => {
 }
 
 export const getPartnerSections: Controller = async (_, res) => {
-  const partners = await Partner.find(null, '_id title featuredImages shortDescription slug', { sort: { title: 1 } })
+  const partners = await Partner.find(null, '_id title featuredImage1 featuredImage2 shortDescription slug', {
+    sort: { title: 1 },
+  })
   return res.json(partners)
 }
 
