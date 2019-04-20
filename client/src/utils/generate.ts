@@ -7,7 +7,6 @@ import {
   IPartner,
   IResearch,
   IResource,
-  IResourceWithLessons,
   IWebinar,
   LessonLinkType,
 } from '../sharedTypes'
@@ -59,17 +58,16 @@ const generate = {
     ...overrides,
   }),
   researches: (length: number): IResearch[] => Array.from({ length }, () => generate.research(100)),
-  resource: (overrides?: Partial<IResource>, lessons?: ILesson[]): IResourceWithLessons => ({
+  resource: (overrides?: Partial<IResource>): IResource => ({
     _id: generate.objectId(),
     featuredImage: { url: faker.internet.url(), alt: faker.company.catchPhrase() },
-    lessons: lessons ? [...lessons] : undefined,
     longDescription: faker.lorem.paragraph(),
     shortDescription: faker.lorem.words(20),
     slug: faker.lorem.word(),
     title: faker.company.catchPhrase(),
     ...overrides,
   }),
-  resources: (length: number): IResourceWithLessons[] => Array.from({ length }, () => generate.resource()),
+  resources: (length: number): IResource[] => Array.from({ length }, () => generate.resource()),
   signInForm: (): ILoginForm => ({ email: faker.internet.email(), password: faker.internet.password() }),
   webinar: (descriptionLength: number): IWebinar => ({
     category: faker.commerce.productAdjective(),

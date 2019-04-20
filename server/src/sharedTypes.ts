@@ -1,3 +1,33 @@
+export interface ICampDate {
+  _id?: string
+  beginDate: Date
+  endDate: Date
+}
+
+export interface ICampContact {
+  email?: string
+  name: string
+  phoneNumber?: string
+  url?: string
+  urlText?: string
+}
+
+export interface ICamp {
+  _id?: string
+  ageRange: string
+  city: string
+  contact: ICampContact
+  description: string
+  descriptionTitle: string
+  featuredImage?: IImage
+  state: string
+  title: string
+}
+
+export interface ICampWithDates extends ICamp {
+  dates: ICampDate[]
+}
+
 export interface ILiaison {
   abbreviation?: string | null
   email?: string | null

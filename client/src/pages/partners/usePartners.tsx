@@ -6,17 +6,15 @@ import { IPartnerSection } from '../../sharedTypes'
 import api from '../../utils/api'
 import { numericSort } from '../../utils/string'
 
-export type TUpdatePartners = (
-  {
-    _id,
-    action,
-    partner,
-  }: {
-    _id?: string
-    action: 'create' | 'update' | 'delete'
-    partner?: IPartnerSection
-  }
-) => void
+export type TUpdatePartners = ({
+  _id,
+  action,
+  partner,
+}: {
+  _id?: string
+  action: 'create' | 'update' | 'delete'
+  partner?: IPartnerSection
+}) => void
 
 const usePartners = () => {
   const [partners, setPartners] = React.useState<IPartnerSection[]>([])

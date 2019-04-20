@@ -5,7 +5,9 @@ export const trimToLength = (characterLength: number, words: string) => {
 
 export const numericSort = (array: any[], sortField: string) => {
   const sorted = array.reduce((arr: any[], item) => {
-    const greaterIndex = arr.findIndex(r => r.title.localeCompare(item[sortField], undefined, { numeric: true }) > -1)
+    const greaterIndex = arr.findIndex(
+      r => r[sortField].localeCompare(item[sortField], undefined, { numeric: true }) > -1
+    )
     if (greaterIndex < 0) {
       return [...arr, item]
     }

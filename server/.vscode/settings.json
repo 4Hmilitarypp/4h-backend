@@ -8,5 +8,8 @@
       "titleBar.inactiveBackground": "#FFA500B0",
       "titleBar.activeBackground": "#FFA500B0"
     }
-  }
+  },
+  "typescript.tsdk": "../node_modules/typescript/lib",
+  "tslint.configFile": "../tslint.json",
+  "prettier.tslintIntegration": true
 }

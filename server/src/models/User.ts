@@ -54,6 +54,7 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
   const expirationDate = new Date(today)
   expirationDate.setDate(today.getDate() + 60)
 
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set')
   return jwt.sign(
     {
       _id: this._id,
@@ -61,7 +62,7 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
       exp: expirationDate.getTime() / 1000,
       permissions: this.permissions,
     },
-    process.env.JWT_SECRET || 'secret!'
+    process.env.JWT_SECRET
   )
 }
 

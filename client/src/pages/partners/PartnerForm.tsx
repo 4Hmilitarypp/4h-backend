@@ -29,10 +29,12 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
       alt: `${title.value} logo`,
       url: fi1.value,
     }
-    const featuredImage2 = {
-      alt: `${title.value} logo`,
-      url: fi2.value,
-    }
+    const featuredImage2 = fi2.value
+      ? {
+          alt: `${title.value} logo`,
+          url: fi2.value,
+        }
+      : undefined
     const updatePartner = {
       _id: partner ? partner._id : undefined,
       featuredImage1,

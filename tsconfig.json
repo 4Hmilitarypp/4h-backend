@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
+    "lib": ["esnext"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "sourceMap": true,

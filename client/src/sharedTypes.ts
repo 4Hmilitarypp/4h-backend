@@ -2,6 +2,33 @@ export interface IApiError {
   response: { data: { message: string }; status: number; statusText: string }
 }
 
+export interface ICampDate {
+  _id?: string
+  beginDate: string
+  endDate: string
+}
+
+export interface ICampContact {
+  email?: string
+  name: string
+  phoneNumber?: string
+  url?: string
+  urlText?: string
+}
+
+export interface ICamp {
+  _id?: string
+  ageRange: string
+  city: string
+  contact: ICampContact
+  // dates: ICampDate[]
+  description: string
+  descriptionTitle: string
+  featuredImage?: IImage
+  state: string
+  title: string
+}
+
 export interface ILiaison {
   _id?: string
   abbreviation?: string | null
@@ -69,10 +96,6 @@ export interface IResource {
   shortDescription: string
   slug: string
   title: string
-}
-
-export interface IResourceWithLessons extends IResource {
-  lessons?: ILesson[]
 }
 
 export type LessonLinkType = 'ppt' | 'pdf' | 'doc' | 'external'

@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import { notFoundError } from '../utils/errors'
+import setupCampRoutes from './camps'
 import setupEmailRoutes from './emails'
 import setupLiaisonRoutes from './liaisons'
 import setupPartnerRoutes from './partners'
@@ -9,6 +10,10 @@ import setupUserRoutes from './users'
 import setupWebinarRoutes from './webinars'
 
 const setupRoutes = (app: Express) => {
+  const campRouter = express.Router()
+  setupCampRoutes(campRouter)
+  app.use('/api/camps', campRouter)
+
   const partnerRouter = express.Router()
   setupPartnerRoutes(partnerRouter)
   app.use('/api/partners', partnerRouter)

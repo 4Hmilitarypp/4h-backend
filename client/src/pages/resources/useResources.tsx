@@ -6,17 +6,15 @@ import { IResource } from '../../sharedTypes'
 import api from '../../utils/api'
 import { numericSort } from '../../utils/string'
 
-export type TUpdateResources = (
-  {
-    _id,
-    action,
-    resource,
-  }: {
-    _id?: string
-    action: 'create' | 'update' | 'delete'
-    resource?: IResource
-  }
-) => void
+export type TUpdateResources = ({
+  _id,
+  action,
+  resource,
+}: {
+  _id?: string
+  action: 'create' | 'update' | 'delete'
+  resource?: IResource
+}) => void
 
 const useResources = () => {
   const [resources, setResources] = React.useState<IResource[]>([])

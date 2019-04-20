@@ -10,6 +10,9 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
       <LinkGroup>
         <GroupHeader>Family Content</GroupHeader>
         <Links>
+          <SideBarLink to="/camps" className={path.includes('/camps') ? 'active' : ''}>
+            Camps
+          </SideBarLink>
           <SideBarLink to="/partners" className={path.includes('/partners') ? 'active' : ''}>
             Partners
           </SideBarLink>

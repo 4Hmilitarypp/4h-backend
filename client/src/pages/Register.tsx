@@ -10,13 +10,13 @@ import api from '../utils/api'
 
 const loadCaptcha = () => {
   const captchaScript = document.createElement('script')
-  captchaScript.src = 'https://www.google.com/recaptcha/api.js?render=6LczLYsUAAAAAJ7UgMGSvCG-fCe9Q6seQrVIvLl9'
+  captchaScript.src = `https://www.google.com/recaptcha/api.js?render=${process.env.REACT_APP_CAPTCHA_PUBLIC}`
   captchaScript.type = 'text/javascript'
   document.body.appendChild(captchaScript)
 }
 
 const checkIfSpam = async () => {
-  const token = await (window as any).grecaptcha.execute('6LczLYsUAAAAAJ7UgMGSvCG-fCe9Q6seQrVIvLl9', {
+  const token = await (window as any).grecaptcha.execute(process.env.REACT_APP_CAPTCHA_PUBLIC, {
     action: 'register',
   })
   const isSpam = await api.users.checkIfSpam(token)

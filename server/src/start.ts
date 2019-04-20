@@ -6,10 +6,11 @@ import * as dotenv from 'dotenv'
 dotenv.config({ path: '.env' })
 
 // Connect to our Database and handle any bad connections
-mongoose.connect(
-  process.env.DATABASE_URL || '',
-  { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }
-)
+mongoose.connect(process.env.DATABASE_URL || '', {
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true,
+})
 mongoose.Promise = global.Promise // Tell Mongoose to use ES6 promises
 mongoose.connection.on('error', err => {
   console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`)
@@ -17,6 +18,7 @@ mongoose.connection.on('error', err => {
 
 // register models with mongoose
 import './models/Archive'
+import './models/Camp'
 import './models/Liaison'
 import './models/Partner'
 import './models/Research'

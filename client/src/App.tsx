@@ -5,6 +5,7 @@ import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
+import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import NotFound from './pages/NotFound'
@@ -53,12 +54,13 @@ const App: React.FC<{}> = () => {
             </SidebarContainer>
             <Router primary={false}>
               <Home path="/" />
+              <Camps path="/camps/*" />
               <Liaisons path="/liaisons" />
               <Partners path="/partners/*" />
-              <Webinars path="/webinars" />
+              <Register path="/elevated-users" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
-              <Register path="/elevated-users" />
+              <Webinars path="/webinars" />
               <NotFound default={true} />
             </Router>
           </FlashContext.Provider>

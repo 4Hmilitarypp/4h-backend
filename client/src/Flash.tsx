@@ -56,8 +56,8 @@ const Response = styled.div`
   position: fixed;
   margin: 0 auto;
   top: 7.6rem;
-  left: 24rem;
   right: 0;
+  left: 0;
   z-index: 2000;
   background: ${props => props.theme.white};
   max-width: 60rem;

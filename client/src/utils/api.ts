@@ -1,5 +1,7 @@
 import * as axios from 'axios'
 import {
+  ICamp,
+  ICampDate,
   ILesson,
   ILiaison,
   ILoginForm,
@@ -26,12 +28,19 @@ const requests = {
   put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
 }
 
-const users = {
-  checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
-  login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
-  logout: (): Promise<string> => requests.post('/users/logout', {}),
-  me: (): Promise<IUser> => requests.get('/users/me'),
-  register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
+const camps = {
+  create: (data: ICamp): Promise<ICamp> => requests.post('/camps', data),
+  delete: (id: string): Promise<string> => requests.delete(`/camps/${id}`),
+  get: (): Promise<ICamp[]> => requests.get('/camps'),
+  update: (id: string, updates: ICamp): Promise<ICamp> => requests.put(`/camps/${id}`, updates),
+}
+
+const campDates = {
+  create: (campId: string, data: ICampDate): Promise<ICampDate> => requests.post(`/camps/${campId}/dates/`, data),
+  delete: (campId: string, id: string): Promise<string> => requests.delete(`/camps/${campId}/dates/${id}`),
+  get: (campId: string): Promise<ICampDate[]> => requests.get(`/camps/${campId}/dates/`),
+  update: (campId: string, id: string, updates: ICampDate): Promise<ICampDate> =>
+    requests.put(`/camps/${campId}/dates/${id}`, updates),
 }
 
 const lessons = {
@@ -84,6 +93,14 @@ const resources = {
     requests.put(`/resources/${id}`, updates),
 }
 
+const users = {
+  checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
+  login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
+  logout: (): Promise<string> => requests.post('/users/logout', {}),
+  me: (): Promise<IUser> => requests.get('/users/me'),
+  register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
+}
+
 const webinars = {
   create: (data: IWebinar): Promise<IWebinar> => requests.post('/webinars', data),
   delete: (id: string): Promise<string> => requests.delete(`/webinars/${id}`),
@@ -102,6 +119,8 @@ function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOpti
 }
 
 const restApi = {
+  campDates,
+  camps,
   init,
   lessons,
   liaisons,

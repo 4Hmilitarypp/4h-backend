@@ -27,10 +27,7 @@ const mongooseOpts = {
 
 const connectToDb = async () => {
   try {
-    await mongoose.connect(
-      process.env.MONGO_URL + process.env.TEST_SUITE,
-      mongooseOpts
-    )
+    await mongoose.connect(process.env.MONGO_URL + process.env.TEST_SUITE, mongooseOpts)
   } catch (e) {
     console.error(e)
   }

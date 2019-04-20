@@ -14,9 +14,11 @@ const app = express()
 // sets various http headers https://github.com/helmetjs/helmet
 app.use(helmet())
 
+if (!process.env.FRONTEND_URL_NEW) throw new Error('FRONTEND_URL_NEW is not set')
+
 // allow cors so my site can communicate with my back-end.
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL || '', process.env.NODE_ENV === 'development' ? 'http://localhost:2323' : ''],
+  origin: [process.env.FRONTEND_URL_NEW, process.env.NODE_ENV === 'development' ? 'http://localhost:2323' : ''],
 }
 app.use(cors(corsOptions))
 

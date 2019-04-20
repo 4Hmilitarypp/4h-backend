@@ -41,7 +41,8 @@ it('/register: should return a valid cookie and store the user in the database c
   })
   expect(res.header['set-cookie']).toEqual([expect.stringContaining('token=')])
   const token = getToken(res)
-  const deserialized = await (jwt.verify(token, process.env.JWT_SECRET || '') as any)
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set')
+  const deserialized = await (jwt.verify(token, process.env.JWT_SECRET) as any)
   expect(deserialized.email).toBe(registerForm.email.toLowerCase())
 
   const inDb = await User.findOne()
@@ -63,7 +64,8 @@ it('/login: should log the existing user in and set a response cookie', async ()
     .post('/api/users/login')
     .send(loginForm)
   const token = getToken(res) as string
-  const deserializedToken = await (jwt.verify(token, process.env.JWT_SECRET || '') as any)
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set')
+  const deserializedToken = await (jwt.verify(token, process.env.JWT_SECRET) as any)
 
   expect(deserializedToken.email).toBe(registerForm.email.toLowerCase())
   expect(res.status).toBe(200)

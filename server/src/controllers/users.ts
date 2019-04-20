@@ -107,6 +107,7 @@ export const me: Controller = async (req, res) => {
   if (req.user) {
     const user = await User.findById(req.user._id)
     if (!user) {
+      res.clearCookie('token')
       return res.sendStatus(404)
     } else {
       return res.json(createSafeUser(user))
@@ -114,6 +115,7 @@ export const me: Controller = async (req, res) => {
   }
   // there is no user in the request, so there is no valid token, so just send an empty body
   else {
+    res.clearCookie('token')
     return res.send()
   }
 }

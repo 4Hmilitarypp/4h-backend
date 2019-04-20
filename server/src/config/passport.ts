@@ -21,11 +21,11 @@ passport.use(
         })
         const user = await Users.findOne({ email: cleanEmail })
         if (user) {
-          await user.validatePassword(password)
           const isValid = await user.validatePassword(password)
           if (isValid) {
             return done(null, user)
           }
+          return done(null, null, { message: 'email or password is invalid' })
         } else {
           // err, user, options
           return done(null, null, { message: 'email or password is invalid' })

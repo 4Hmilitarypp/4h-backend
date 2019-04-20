@@ -3,13 +3,21 @@ import FlashContext from '../contexts/FlashContext'
 import UserContext from '../contexts/UserContext'
 import { IApiError } from '../sharedTypes'
 
-export const formatError = (err: IApiError) => ({ message: err.response.data.message, status: err.response.status })
+export const formatError = (err: IApiError) => {
+  if (err.response) {
+    if (err.response.data) {
+      return { message: err.response.data.message, status: err.response.status }
+    }
+  }
+  return { message: err.toString(), status: 500 }
+}
 
 const useErrorHandler = () => {
   const userContext = React.useContext(UserContext)
   const flashContext = React.useContext(FlashContext)
 
   const handleError = (dirtyError: IApiError, type?: string) => {
+    console.error(dirtyError)
     const error = formatError(dirtyError)
     if (type === 'login') {
       return flashContext.set({ isError: true, message: 'Username or Password is invalid, please try again.' })

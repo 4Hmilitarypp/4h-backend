@@ -20,23 +20,20 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
 
   const resourceContext = React.useContext(ResourceContext)
 
-  React.useEffect(
-    () => {
-      if (_id !== 'new') {
-        // If the action is not already update set it to be update
-        if (action !== 'update') {
-          setAction('update')
-        }
-        const updatedResource = resourceContext.findById(_id)
-        if (updatedResource) {
-          setResource(updatedResource)
-        } else {
-          navigate('/curriculum-resources')
-        }
+  React.useEffect(() => {
+    if (_id !== 'new') {
+      // If the action is not already update set it to be update
+      if (action !== 'update') {
+        setAction('update')
       }
-    },
-    [resourceContext, _id]
-  )
+      const updatedResource = resourceContext.findById(_id)
+      if (updatedResource) {
+        setResource(updatedResource)
+      } else {
+        navigate('/curriculum-resources')
+      }
+    }
+  }, [resourceContext, _id])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
@@ -69,7 +66,7 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
-            <DeleteButton onClick={handleDeleteClicked}>Delete</DeleteButton>
+            <DeleteButton onClick={handleDeleteClicked}>Delete Resource</DeleteButton>
           ) : (
             <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
           ))}

@@ -5,5 +5,8 @@
       "titleBar.activeBackground": "#f08080B0"
     }
   },
-  "eslint.enable": false
+  "eslint.enable": false,
+  "typescript.tsdk": "../node_modules/typescript/lib",
+  "tslint.configFile": "../tslint.json",
+  "prettier.tslintIntegration": true
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-// import useErrorHandler from '../hooks/useErrorHandler'
+import useErrorHandler from '../hooks/useErrorHandler'
 import { IApiError, ILoginForm, IRegisterForm, IUser } from '../sharedTypes'
 import api from '../utils/api'
 
@@ -21,12 +21,13 @@ const UserContext = React.createContext<IUserContext>(undefined as any)
 
 export const useUser = () => {
   const [user, setUser] = React.useState<IUserContext['user'] | undefined>(undefined)
+  const handleError = useErrorHandler()
 
   React.useEffect(() => {
     api.users
       .me()
       .then(u => setUser(u))
-      .catch(console.error)
+      .catch(err => handleError(err))
   }, [])
 
   const login: IUserContext['login'] = (loginForm: ILoginForm) =>
@@ -45,6 +46,7 @@ export const useUser = () => {
       .logout()
       .then(() => {
         setUser(undefined)
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
         return Promise.resolve()
       })
       .catch((err: IApiError) => {

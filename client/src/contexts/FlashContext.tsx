@@ -20,20 +20,17 @@ export const useFlash = () => {
   const mySetFlashState = ({ message, isError = false }: ISetFlashStateArgs) => setFlashState({ message, isError })
   const resetFlashState = () => setFlashState(initialState)
 
-  React.useEffect(
-    () => {
-      if (flashState.message && !flashState.isError) {
-        const timeout = setTimeout(() => {
-          resetFlashState()
-        }, 2500)
-        return () => {
-          clearTimeout(timeout)
-        }
+  React.useEffect(() => {
+    if (flashState.message && !flashState.isError) {
+      const timeout = setTimeout(() => {
+        resetFlashState()
+      }, 2500)
+      return () => {
+        clearTimeout(timeout)
       }
-      return undefined
-    },
-    [flashState.message]
-  )
+    }
+    return undefined
+  }, [flashState.message])
 
   return { flashState, setFlashState: mySetFlashState, resetFlashState }
 }
