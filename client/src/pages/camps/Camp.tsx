@@ -1,15 +1,8 @@
-import { Link, navigate, RouteComponentProps } from '@reach/router'
+import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import UnstyledBackButton from '../../components/BackButton'
-import {
-  Button,
-  CreateButton,
-  DeleteButton,
-  Heading,
-  HighSevDeleteButton,
-  OutlineButton,
-} from '../../components/Elements'
+import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
+import FormHeading from '../../components/FormHeading'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import CampDates from './campDates/CampDates'
@@ -66,17 +59,7 @@ const Camp: React.FC<IProps> = ({ _id = '', handleError }) => {
   }
   return (
     <div>
-      <HeaderWrapper>
-        <UnstyledBackButton route={'/camps'} title="Camps" />
-        <CustomHeading>{`${action === 'update' ? 'Updating a Camp' : 'Create a new Camp'}`}</CustomHeading>
-        <CreateButtonWrapper>
-          {_id !== 'new' && (
-            <CreateButton as={Link} to="/camps/new">
-              New Camp
-            </CreateButton>
-          )}
-        </CreateButtonWrapper>
-      </HeaderWrapper>
+      <FormHeading _id={_id} action={action} singular="Camp" plural="Camps" route="/camps" />
       <CampForm action={action} handleError={handleError} camp={camp} updateCamps={campContext.updateCamps} />
       <Buttons>
         {action === 'update' &&
@@ -97,21 +80,6 @@ const Camp: React.FC<IProps> = ({ _id = '', handleError }) => {
 
 export default Camp
 
-const CustomHeading = styled(Heading)`
-  font-size: 2.4rem;
-`
-const HeaderWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 3.2rem;
-`
-const CreateButtonWrapper = styled.div`
-  width: 20.2rem;
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 1.6rem;
-`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

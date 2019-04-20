@@ -1,7 +1,8 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, DeleteButton, Heading, HighSevDeleteButton, OutlineButton } from '../../../components/Elements'
+import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../../components/Elements'
+import FormHeading from '../../../components/FormHeading'
 import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 import { ResourceContext } from '../Resources'
@@ -32,6 +33,9 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
       } else {
         navigate('/curriculum-resources')
       }
+    } else {
+      setResource(undefined)
+      setAction('create')
     }
   }, [resourceContext, _id])
 
@@ -56,7 +60,7 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
 
   return (
     <div>
-      <CustomHeading>{`${action === 'update' ? 'Updating a Resource' : 'Create a new Resource'}`}</CustomHeading>
+      <FormHeading _id={_id} action={action} singular="Resource" plural="Resources" route="/curriculum-resources" />
       <ResourceForm
         action={action}
         handleError={handleError}
@@ -82,9 +86,6 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
 
 export default Resource
 
-const CustomHeading = styled(Heading)`
-  font-size: 2.4rem;
-`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

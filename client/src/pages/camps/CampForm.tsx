@@ -19,18 +19,15 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
-    console.log('effect ran')
     createCloudinaryScript()
   }, [])
 
   React.useEffect(() => {
     if (camp && camp.featuredImage) {
-      console.log('featured Url set')
       setFeaturedImageUrl(camp.featuredImage.url)
     }
     if (!camp && formRef.current) {
       formRef.current.reset()
-      console.log('featured Url set to undefined')
       setFeaturedImageUrl(undefined)
     }
   }, [camp])
