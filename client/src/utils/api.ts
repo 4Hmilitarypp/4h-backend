@@ -31,6 +31,7 @@ const requests = {
 const admin = {
   cloudinaryReports: ({ beginDate, endDate }: { beginDate: string; endDate: string }): Promise<any[]> =>
     requests.get(`/admin/cloudinary-reports/${beginDate}/${endDate}`),
+  cloudinaryUsage: (): Promise<any> => requests.get(`/admin/cloudinary-reports/usage`),
 }
 
 const camps = {

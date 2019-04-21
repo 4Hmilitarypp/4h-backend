@@ -3,7 +3,7 @@ import csv from 'csvtojson/v2'
 import { Controller } from '../types'
 
 export const getReport: Controller = async (req, res) => {
-  const report = await axios.get(
+  const response = await axios.get(
     `https://cloudinary.com/console/lui/reports.csv?report_date=${req.params.beginDate}%2C${
       req.params.endDate
     }&utf8=%E2%9C%93`,
@@ -15,6 +15,14 @@ export const getReport: Controller = async (req, res) => {
     }
   )
 
-  const json = await csv().fromString(report.data)
+  const json = await csv().fromString(response.data)
   return res.send(json)
+}
+
+export const getUsage: Controller = async (_, res) => {
+  const response = await axios.get(
+    `https://559898188584278:${process.env.CLOUDINARY_SECRET}@api.cloudinary.com/v1_1/four-hmpp/usage`
+  )
+
+  return res.send(response.data)
 }

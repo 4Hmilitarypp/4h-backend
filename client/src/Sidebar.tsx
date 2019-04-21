@@ -69,6 +69,7 @@ const SidebarWrapper = styled.div`
   height: 100%;
   width: 24rem;
   position: fixed;
+  z-index: 10;
   ${elevation(3)};
 `
 
