@@ -2,9 +2,9 @@ import { Link, RouteComponentProps } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { CreateButton, Heading } from '../../components/Elements'
-import { hoveredRow } from '../../utils/mixins'
-import { ResourceContext } from './Resources'
+import { CreateButton, Heading } from '../../../components/Elements'
+import { hoveredRow } from '../../../utils/mixins'
+import { ResourceContext } from '../Resources'
 
 const ResourceTable: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(ResourceContext)

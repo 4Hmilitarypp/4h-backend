@@ -49,8 +49,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          const fAutoUrl = res.info.secure_url.split('/upload/').join('/upload/f_auto/')
-          setFeaturedImageUrl(fAutoUrl)
+          setFeaturedImageUrl(res.info.secure_url)
         }
       }
     )
@@ -158,7 +157,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
           <ResourceLabel>Featured Image Upload</ResourceLabel>
           {featuredImageUrl ? (
             <FeaturedImage
-              src={featuredImageUrl.split('f_auto').join('f_auto,h_250,w_250,c_fill')}
+              src={featuredImageUrl.split('h_850,q_80,w_1650').join('h_250,q_80,w_250')}
               onClick={openCloudinary}
             />
           ) : (

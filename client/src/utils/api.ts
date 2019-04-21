@@ -28,6 +28,11 @@ const requests = {
   put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
 }
 
+const admin = {
+  cloudinaryReports: ({ beginDate, endDate }: { beginDate: string; endDate: string }): Promise<any[]> =>
+    requests.get(`/admin/cloudinary-reports/${beginDate}/${endDate}`),
+}
+
 const camps = {
   create: (data: ICamp): Promise<ICamp> => requests.post('/camps', data),
   delete: (id: string): Promise<string> => requests.delete(`/camps/${id}`),
@@ -119,6 +124,7 @@ function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOpti
 }
 
 const restApi = {
+  admin,
   campDates,
   camps,
   init,

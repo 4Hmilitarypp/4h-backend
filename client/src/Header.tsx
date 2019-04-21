@@ -20,7 +20,7 @@ const Header: React.FC<RouteComponentProps> = () => {
   return (
     <HeaderWrapper>
       <ExternalLink>
-        <CustomLink as="a" href="https://4h.wendte.tech">
+        <CustomLink as="a" href="https://4-hmilitarypartnerships.org">
           View the Website
         </CustomLink>
       </ExternalLink>

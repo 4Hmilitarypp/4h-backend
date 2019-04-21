@@ -42,6 +42,9 @@ export const SubHeading = styled.h2`
   text-align: center;
   line-height: 1.2;
 `
+export const LeftSubHeading = styled(SubHeading)`
+  text-align: left;
+`
 export const Button: any = styled.button`
   border-radius: 5px;
   color: ${props => props.theme.white};

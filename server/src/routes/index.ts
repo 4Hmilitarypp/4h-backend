@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import { notFoundError } from '../utils/errors'
+import setupAdminRoutes from './admin'
 import setupCampRoutes from './camps'
 import setupEmailRoutes from './emails'
 import setupLiaisonRoutes from './liaisons'
@@ -41,6 +42,10 @@ const setupRoutes = (app: Express) => {
   const emailRouter = express.Router()
   setupEmailRoutes(emailRouter)
   app.use('/api/emails', emailRouter)
+
+  const adminRouter = express.Router()
+  setupAdminRoutes(adminRouter)
+  app.use('/api/admin', adminRouter)
 
   // Docker check to tell whether the app is ready or not
   app.get('/api/docker-check', (_, res) => res.send('app is ready'))

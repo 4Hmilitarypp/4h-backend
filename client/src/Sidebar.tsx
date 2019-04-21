@@ -2,9 +2,11 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Link } from './components/Elements'
+import UserContext from './contexts/UserContext'
 import { elevation } from './utils/mixins'
 
 const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }: { location?: any }) => {
+  const userContext = React.useContext(UserContext)
   return (
     <SidebarWrapper>
       <LinkGroup>
@@ -47,6 +49,15 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
         <GroupHeader>Liaison Admin</GroupHeader>
         <Links />
       </LinkGroup>
+      {userContext.user && userContext.user.permissions.includes('admin') && (
+        <LinkGroup>
+          <GroupHeader>Website Admin</GroupHeader>
+          <SideBarLink to="/admin" className={path.includes('/admin') ? 'active' : ''}>
+            Cloudinary Reports
+          </SideBarLink>
+          <Links />
+        </LinkGroup>
+      )}
     </SidebarWrapper>
   )
 }

@@ -2,7 +2,7 @@ import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
 import { IResource } from '../../sharedTypes'
 import Resource from './resource/Resource'
-import ResourceTable from './ResourceTable'
+import ResourceTable from './resource/ResourceTable'
 import useResources, { TUpdateResources } from './useResources'
 
 export interface IResourceContext {

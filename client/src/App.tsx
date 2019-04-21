@@ -5,6 +5,7 @@ import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
+import Admin from './pages/admin/Admin'
 import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
@@ -61,6 +62,7 @@ const App: React.FC<{}> = () => {
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
               <Webinars path="/webinars" />
+              <Admin path="/admin/*" />
               <NotFound default={true} />
             </Router>
           </FlashContext.Provider>
