@@ -1,8 +1,10 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { theme } from '../../../App'
 import { IForm } from '../../../clientTypes'
-import { InputGroup } from '../../../components/Elements'
+import { BlankUploadBox, InputGroup, UploadButton, UploadImage, UploadLabel } from '../../../components/Elements'
+import Icon from '../../../components/Icon'
 import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 import { TUpdateResources } from '../useResources'
@@ -15,17 +17,41 @@ interface IProps {
 }
 
 const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateResources }) => {
+  const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
   const formRef = React.useRef<HTMLFormElement>(null)
+
+  React.useEffect(() => {
+    if (resource && resource.featuredImage) {
+      setFeaturedImageUrl(resource.featuredImage.url)
+    }
+    if (!resource && formRef.current) {
+      formRef.current.reset()
+      setFeaturedImageUrl(undefined)
+    }
+  }, [resource])
+
+  const openCloudinary = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'resources-lessons',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          console.log(res.info)
+          setFeaturedImageUrl(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { featuredImageAlt, featuredImageUrl, longDescription, shortDescription, title } = e.currentTarget.elements
-    const imageUrl = featuredImageUrl.value
-    const imageAlt = featuredImageAlt.value || undefined
-    let featuredImage
-    if (imageUrl) {
-      featuredImage = { url: imageUrl, alt: imageAlt }
-    }
+    const { longDescription, shortDescription, title } = e.currentTarget.elements
+    const imageAlt = title.value
+    const featuredImage = featuredImageUrl ? { url: featuredImageUrl, alt: imageAlt } : undefined
     const updateResource = {
       _id: resource ? resource._id : undefined,
       featuredImage,
@@ -67,22 +93,26 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
         <label htmlFor="title">Resource Title</label>
         <input type="text" id="title" defaultValue={(resource && resource.title) || ''} />
       </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="featuredImageUrl">Featured Image Url</label>
-        <input
-          type="text"
-          id="featuredImageUrl"
-          defaultValue={(resource && resource.featuredImage && resource.featuredImage.url) || ''}
-        />
-      </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="featuredImageAlt">Featured Image Description</label>
-        <input
-          type="text"
-          id="featuredImageAlt"
-          defaultValue={(resource && resource.featuredImage && resource.featuredImage.alt) || ''}
-        />
-      </CustomInputGroup>
+      <ResourceSection>
+        <UploadLabel hasImage={featuredImageUrl}>
+          Featured Image
+          {featuredImageUrl && (
+            <DeleteIcon
+              name="delete"
+              height={2.5}
+              color={theme.warning}
+              onClick={() => setFeaturedImageUrl(undefined)}
+            />
+          )}
+        </UploadLabel>
+        {featuredImageUrl ? (
+          <UploadImage src={featuredImageUrl} onClick={openCloudinary} />
+        ) : (
+          <BlankUploadBox onClick={openCloudinary}>
+            <UploadButton>Upload Image</UploadButton>
+          </BlankUploadBox>
+        )}
+      </ResourceSection>
       <CustomInputGroup>
         <label htmlFor="shortDescription">Short Description</label>
         {/* Had to do the following because the shortDescription was not showing up for some reason */}
@@ -125,5 +155,18 @@ const CustomInputGroup = styled(InputGroup)`
   input,
   textarea {
     background: ${props => props.theme.white};
+  }
+`
+
+const ResourceSection = styled.div`
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+const DeleteIcon = styled(Icon)`
+  &:hover {
+    cursor: pointer;
   }
 `

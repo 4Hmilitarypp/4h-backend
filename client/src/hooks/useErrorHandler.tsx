@@ -9,7 +9,7 @@ export const formatError = (err: IApiError) => {
       return { message: err.response.data.message, status: err.response.status }
     }
   }
-  return { message: err.toString(), status: 500 }
+  return { message: typeof err === 'object' ? JSON.stringify(err) : err, status: 500 }
 }
 
 const useErrorHandler = () => {

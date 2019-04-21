@@ -1,8 +1,17 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { theme } from '../../App'
 import { IForm } from '../../clientTypes'
-import { InputGroup, SubHeading } from '../../components/Elements'
+import {
+  BlankUploadBox,
+  InputGroup,
+  SubHeading,
+  UploadButton,
+  UploadImage,
+  UploadLabel,
+} from '../../components/Elements'
+import Icon from '../../components/Icon'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateCamps } from './useCamps'
@@ -19,10 +28,6 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
-    createCloudinaryScript()
-  }, [])
-
-  React.useEffect(() => {
     if (camp && camp.featuredImage) {
       setFeaturedImageUrl(camp.featuredImage.url)
     }
@@ -32,25 +37,17 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
     }
   }, [camp])
 
-  const createCloudinaryScript = () => {
-    const cloudinaryScript = document.createElement('script')
-    cloudinaryScript.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
-    cloudinaryScript.async = true
-    cloudinaryScript.defer = true
-    cloudinaryScript.type = 'text/javascript'
-    document.body.appendChild(cloudinaryScript)
-  }
-
   const openCloudinary = () => {
     const widget = (window as any).cloudinary.createUploadWidget(
       {
         cloudName: 'four-hmpp',
-        uploadPreset: 'vxkayjrs',
+        uploadPreset: 'camp-images',
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
           setFeaturedImageUrl(res.info.secure_url)
         }
+        if (err) handleError(err)
       }
     )
     if (widget) widget.open()
@@ -154,24 +151,34 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       <SubHeading>Camp Resources</SubHeading>
       <CampResources>
         <ResourceSection>
-          <ResourceLabel>Featured Image Upload</ResourceLabel>
+          <UploadLabel hasImage={featuredImageUrl}>
+            Featured Image
+            {featuredImageUrl && (
+              <DeleteIcon
+                name="delete"
+                height={2.5}
+                color={theme.warning}
+                onClick={() => setFeaturedImageUrl(undefined)}
+              />
+            )}
+          </UploadLabel>
           {featuredImageUrl ? (
-            <FeaturedImage
+            <UploadImage
               src={featuredImageUrl.split('h_850,q_80,w_1650').join('h_250,q_80,w_250')}
               onClick={openCloudinary}
             />
           ) : (
             <BlankUploadBox onClick={openCloudinary}>
-              <Upload>Upload Image</Upload>
+              <UploadButton>Upload Image</UploadButton>
             </BlankUploadBox>
           )}
         </ResourceSection>
-        <ResourceSection>
+        {/* <ResourceSection>
           <ResourceLabel>File Upload</ResourceLabel>
           <BlankUploadBox onClick={openCloudinary}>
             <Upload>Upload File</Upload>
           </BlankUploadBox>
-        </ResourceSection>
+        </ResourceSection> */}
       </CampResources>
       <SubHeading>Camp's Contact Information</SubHeading>
       <CustomInputGroup>
@@ -223,36 +230,8 @@ const ResourceSection = styled.div`
   justify-content: center;
   align-items: center;
 `
-const ResourceLabel = styled.label`
-  font-size: 1.8rem;
-  color: ${props => props.theme.primaryGrey};
-  padding-bottom: 1.2rem;
-`
-const FeaturedImage = styled.img`
-  width: 25rem;
-  height: 25rem;
-  border-radius: 5px;
-  object-fit: cover;
+const DeleteIcon = styled(Icon)`
   &:hover {
-    opacity: 0.8;
     cursor: pointer;
   }
-`
-const BlankUploadBox = styled.div`
-  background: ${props => props.theme.primaryLight};
-  width: 25rem;
-  height: 25rem;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    opacity: 0.8;
-    cursor: pointer;
-  }
-`
-const Upload = styled.span`
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: ${props => props.theme.primaryDark};
 `

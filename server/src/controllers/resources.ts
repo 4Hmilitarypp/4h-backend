@@ -46,7 +46,7 @@ export const updateResource: Controller = async (req, res) => {
   const { _id } = req.params
   const resource = await Resource.findOneAndUpdate(
     { _id },
-    { ...cleanResource(req.body) },
+    { ...cleanResource(req.body), featuredImage: req.body.featuredImage },
     {
       context: 'query',
       new: true,

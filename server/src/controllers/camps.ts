@@ -34,11 +34,15 @@ export const getCamps: Controller = async (_, res) => {
 
 export const updateCamp: Controller = async (req, res) => {
   const { _id } = req.params
-  const camp = await Camp.findByIdAndUpdate(_id, cleanCamp(req.body), {
-    context: 'query',
-    new: true,
-    runValidators: true,
-  })
+  const camp = await Camp.findByIdAndUpdate(
+    _id,
+    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
   if (camp) {
     return res.status(200).json(cleanCampWithId(camp))
   }

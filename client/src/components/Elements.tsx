@@ -177,3 +177,43 @@ export const CreateButton: any = styled.button`
     opacity: 0.8;
   }
 `
+export const UploadImage = styled.img`
+  width: 25rem;
+  height: 25rem;
+  border-radius: 5px;
+  object-fit: cover;
+  ${elevation(4)};
+  &:hover
+    opacity: 0.8;
+    cursor: pointer;
+  }
+`
+export const BlankUploadBox = styled.div`
+  background: ${props => props.theme.primaryLight};
+  width: 25rem;
+  height: 25rem;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${elevation(4)};
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+`
+export const UploadButton = styled.span`
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: ${props => props.theme.primaryDark};
+`
+export const UploadLabel: any = styled.label`
+  font-size: 1.8rem;
+  color: ${props => props.theme.primaryGrey};
+  padding-bottom: 1.2rem;
+  display: flex;
+  justify-content: ${(props: any) => (props.hasImage ? 'space-between' : 'center')};
+  align-items: center;
+  padding: 0 1.6rem 1.2rem;
+  width: 25rem;
+`
