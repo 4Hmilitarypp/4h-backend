@@ -6,13 +6,79 @@ import validator from 'validator'
 import registration from '../emailTemplates/registration'
 import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
-import { captchaError, emailError } from '../utils/errors'
+import { captchaError, emailError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
 
 const cleanRegister = (obj: any) => pick(obj, ['email', 'password', 'confirmPassword', 'name'])
 const createSafeUser = (obj: any) => pick(obj, ['_id', 'email', 'name', 'permissions'])
 
 const User = mongoose.model<IUserDocument>('User')
+const Archive = mongoose.model('Archive')
+
+export const getUsers: Controller = async (_, res) => {
+  const users = await User.find()
+  const safeUsers = users ? users.map(createSafeUser) : []
+  return res.json(safeUsers)
+}
+
+export const updateUser: Controller = async (req, res) => {
+  const { _id } = req.params
+  const user = await User.findByIdAndUpdate(
+    _id,
+    { ...createSafeUser(req.body), updatedBy: req.user.email },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
+  if (user) {
+    return res.status(200).json(createSafeUser(user))
+  }
+  throw notFoundError
+}
+
+export const deleteUser: Controller = async (req, res) => {
+  const { _id } = req.params
+  const deletedUser = await User.findByIdAndDelete(_id)
+  if (deletedUser) {
+    await new Archive({ archivedBy: req.user.email, record: createSafeUser(deletedUser), type: 'user' }).save()
+    return res.status(204).send()
+  }
+  throw notFoundError
+}
+
+export const createUser: Controller = async (req, res) => {
+  const { email, password, confirmPassword, name } = cleanRegister(req.body)
+  const errors: string[] = []
+  if (!validator.isEmail(email)) {
+    errors.push('please input a valid email')
+  }
+  const cleanEmail = validator.normalizeEmail(email, {
+    all_lowercase: true,
+    gmail_remove_dots: false,
+    gmail_remove_subaddress: false,
+  })
+  if (password.length < 1) {
+    errors.push('Please input a password')
+  }
+  if (confirmPassword.length < 1) {
+    errors.push('Please input a confirmed password')
+  }
+  if (password !== confirmPassword) {
+    errors.push('The password and confirmed password are not the same')
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).send({ message: errors.join('. ') })
+  }
+
+  const user = new User({ createdBy: req.user.email, updatedBy: req.user.email, email: cleanEmail, password, name })
+  await user.setPassword(password)
+  const safeUser = createSafeUser(await user.save())
+
+  return res.status(201).json(safeUser)
+}
 
 // POST new user
 export const register: Controller = async (req, res) => {
@@ -40,7 +106,7 @@ export const register: Controller = async (req, res) => {
     return res.status(400).send({ message: errors.join('. ') })
   }
 
-  const user = new User({ email: cleanEmail, password, name })
+  const user = new User({ createdBy: 'register', updatedBy: 'register', email: cleanEmail, password, name })
   await user.setPassword(password)
   const safeUser = createSafeUser(await user.save())
   const token = await user.generateJWT()

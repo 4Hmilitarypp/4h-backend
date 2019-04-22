@@ -26,7 +26,11 @@ const campContactSchema = new mongoose.Schema({
 
 const campDateSchema = new mongoose.Schema({
   beginDate: String,
+  createdAt: { type: Date, default: Date.now },
+  createdBy: String,
   endDate: String,
+  updatedAt: { type: Date, default: Date.now },
+  updatedBy: String,
 })
 
 const campSchema = new mongoose.Schema({
@@ -42,6 +46,8 @@ const campSchema = new mongoose.Schema({
     required: 'Contact is Required',
     type: campContactSchema,
   },
+  createdAt: { type: Date, default: Date.now },
+  createdBy: String,
   dates: {
     required: 'Camp Dates are Required',
     type: [campDateSchema],
@@ -63,6 +69,28 @@ const campSchema = new mongoose.Schema({
     required: 'Title is Required',
     type: String,
   },
+  updatedAt: { type: Date, default: Date.now },
+  updatedBy: String,
+})
+
+campSchema.pre('save', function(this: any, next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+campSchema.pre('findOneAndUpdate', function(this: any, next) {
+  ;(this as any)._update.updatedAt = Date.now()
+  next()
+})
+
+campDateSchema.pre('save', function(this: any, next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+campDateSchema.pre('findOneAndUpdate', function(this: any, next) {
+  ;(this as any)._update.updatedAt = Date.now()
+  next()
 })
 
 export default mongoose.model('Camp', campSchema)

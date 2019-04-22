@@ -23,7 +23,7 @@ const cleanCampWithId = (obj: any) =>
   ])
 
 export const createCamp: Controller = async (req, res) => {
-  const camp = await new Camp(cleanCamp(req.body)).save()
+  const camp = await new Camp({ ...cleanCamp(req.body), createdBy: req.user.email, updatedBy: req.user.email }).save()
   return res.status(201).json(camp)
 }
 
@@ -36,7 +36,7 @@ export const updateCamp: Controller = async (req, res) => {
   const { _id } = req.params
   const camp = await Camp.findByIdAndUpdate(
     _id,
-    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage },
+    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
     {
       context: 'query',
       new: true,
@@ -53,7 +53,7 @@ export const deleteCamp: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedCamp = await Camp.findByIdAndDelete(_id)
   if (deletedCamp) {
-    await new Archive({ ...cleanCamp(deletedCamp), type: 'camp' }).save()
+    await new Archive({ archivedBy: req.user.email, record: cleanCamp(deletedCamp), type: 'camp' }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -66,7 +66,7 @@ export const createCampDate: Controller = async (req, res) => {
   const updatedCamp = (await Camp.findByIdAndUpdate(
     campId,
     {
-      $push: { dates: cleanCampDate(req.body) },
+      $push: { dates: { ...cleanCampDate(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -99,7 +99,7 @@ export const updateCampDate: Controller = async (req, res) => {
   const resource = await Camp.findOneAndUpdate(
     { _id: campId, 'dates._id': _id },
     {
-      $set: { 'dates.$': { ...cleanCampDate(req.body), _id } },
+      $set: { 'dates.$': { ...cleanCampDate(req.body), _id, updatedBy: req.user.email } },
     },
     { new: true }
   )
@@ -118,7 +118,7 @@ export const deleteCampDate: Controller = async (req, res) => {
   if (updatedCamp) {
     const deletedCampDate = findCampDateById(_id, updatedCamp.dates)
     if (deletedCampDate) {
-      await new Archive({ ...cleanCampDate(deletedCampDate), type: 'campDate' }).save()
+      await new Archive({ archivedBy: req.user.email, record: cleanCampDate(deletedCampDate), type: 'campDate' }).save()
       return res.status(204).send()
     }
     throw notFoundError

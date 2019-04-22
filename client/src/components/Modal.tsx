@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import Icon from '../components/Icon'
+import { media } from '../utils/mixins'
 import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from './Elements'
 import Portal from './Portal'
 
@@ -101,6 +102,9 @@ const ModalCard = styled.div`
   max-width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  ${media.tabletPort`
+    min-width: unset;
+  `}
 `
 const Background = styled.div`
   position: absolute;

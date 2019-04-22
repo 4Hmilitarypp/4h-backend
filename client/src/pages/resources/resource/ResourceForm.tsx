@@ -38,7 +38,6 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          console.log(res.info)
           setFeaturedImageUrl(res.info.secure_url)
         }
         if (err) handleError(err)

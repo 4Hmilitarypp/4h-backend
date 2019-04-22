@@ -14,7 +14,11 @@ const Resource = mongoose.model<IResourceDocument>('Resource')
 const Archive = mongoose.model('Archive')
 
 export const createResource: Controller = async (req, res) => {
-  const resource = await new Resource(cleanResource(req.body)).save()
+  const resource = await new Resource({
+    ...cleanResource(req.body),
+    createdBy: req.user.email,
+    updatedBy: req.user.email,
+  }).save()
   return res.status(201).json(cleanResourceWithId(resource))
 }
 
@@ -46,7 +50,7 @@ export const updateResource: Controller = async (req, res) => {
   const { _id } = req.params
   const resource = await Resource.findOneAndUpdate(
     { _id },
-    { ...cleanResource(req.body), featuredImage: req.body.featuredImage },
+    { ...cleanResource(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
     {
       context: 'query',
       new: true,
@@ -63,7 +67,11 @@ export const deleteResource: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedResource = await Resource.findByIdAndDelete(_id)
   if (deletedResource) {
-    await new Archive({ ...cleanResourceWithLessons(deletedResource), type: 'resource' }).save()
+    await new Archive({
+      archivedBy: req.user.email,
+      record: cleanResourceWithLessons(deletedResource),
+      type: 'resource',
+    }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -76,7 +84,7 @@ export const createLesson: Controller = async (req, res) => {
   const updatedResource = (await Resource.findByIdAndUpdate(
     resourceId,
     {
-      $push: { lessons: cleanLesson(req.body) },
+      $push: { lessons: { ...cleanLesson(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -111,7 +119,7 @@ export const updateLesson: Controller = async (req, res) => {
   const resource = await Resource.findOneAndUpdate(
     { _id: resourceId, 'lessons._id': _id },
     {
-      $set: { 'lessons.$': { ...cleanLesson(req.body), _id } },
+      $set: { 'lessons.$': { ...cleanLesson(req.body), _id, updatedBy: req.user.email } },
     },
     { new: true }
   )
@@ -130,7 +138,7 @@ export const deleteLesson: Controller = async (req, res) => {
   if (updatedResource) {
     const deletedLesson = findLessonById(_id, updatedResource.lessons)
     if (deletedLesson) {
-      await new Archive({ ...cleanLesson(deletedLesson), type: 'lesson' }).save()
+      await new Archive({ archivedBy: req.user.email, record: cleanLesson(deletedLesson), type: 'lesson' }).save()
       return res.status(204).send()
     }
     throw notFoundError

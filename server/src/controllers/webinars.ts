@@ -10,7 +10,11 @@ const cleanWebinar = (obj: any) => pick(obj, ['category', 'description', 'title'
 const cleanWebinarWithId = (obj: any) => pick(obj, ['_id', 'category', 'description', 'title', 'url'])
 
 export const createWebinar: Controller = async (req, res) => {
-  const webinar = await new Webinar(cleanWebinar(req.body)).save()
+  const webinar = await new Webinar({
+    ...cleanWebinar(req.body),
+    createdBy: req.user.email,
+    updatedBy: req.user.email,
+  }).save()
   return res.status(201).json(webinar)
 }
 
@@ -21,11 +25,15 @@ export const getWebinars: Controller = async (_, res) => {
 
 export const updateWebinar: Controller = async (req, res) => {
   const { _id } = req.params
-  const webinar = await Webinar.findByIdAndUpdate(_id, cleanWebinar(req.body), {
-    context: 'query',
-    new: true,
-    runValidators: true,
-  })
+  const webinar = await Webinar.findByIdAndUpdate(
+    _id,
+    { ...cleanWebinar(req.body), updatedBy: req.user.email },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
   if (webinar) {
     return res.status(200).json(cleanWebinarWithId(webinar))
   }
@@ -36,7 +44,7 @@ export const deleteWebinar: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedWebinar = await Webinar.findByIdAndDelete(_id)
   if (deletedWebinar) {
-    await new Archive({ ...cleanWebinar(deletedWebinar), type: 'webinar' }).save()
+    await new Archive({ archivedBy: req.user.email, record: cleanWebinar(deletedWebinar), type: 'webinar' }).save()
     return res.status(204).send()
   }
   throw notFoundError

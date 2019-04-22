@@ -9,6 +9,7 @@ const AdminHome: React.FC<RouteComponentProps> = () => {
       <Heading>Admin Dashboard</Heading>
       <Section>
         <Link to="cloudinary-reports">Cloudinary Reports</Link>
+        <Link to="users">Manage Users</Link>
       </Section>
     </AdminContainer>
   )

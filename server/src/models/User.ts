@@ -17,6 +17,8 @@ export interface IUserDocument extends Omit<IUser, '_id'>, Document {
 }
 
 const UsersSchema = new mongoose.Schema({
+  createdAt: { type: Date, default: Date.now },
+  createdBy: String,
   email: {
     required: 'email is required',
     trim: true,
@@ -36,6 +38,8 @@ const UsersSchema = new mongoose.Schema({
     default: [],
     type: [String],
   },
+  updatedAt: { type: Date, default: Date.now },
+  updatedBy: String,
 })
 
 UsersSchema.methods.setPassword = async function(this: IUserDocument, password: string) {
@@ -65,6 +69,16 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
     process.env.JWT_SECRET
   )
 }
+
+UsersSchema.pre('save', function(this: any, next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+UsersSchema.pre('findOneAndUpdate', function(this: any, next) {
+  ;(this as any)._update.updatedAt = Date.now()
+  next()
+})
 
 UsersSchema.plugin(uniqueValidator)
 

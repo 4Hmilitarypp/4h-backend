@@ -1,16 +1,12 @@
 import mongoose from 'mongoose'
 
-const archiveSchema = new mongoose.Schema(
-  {
-    archivedAt: { type: Date, default: Date.now },
-    liaison: {
-      type: Object,
-    },
-    research: {
-      type: Object,
-    },
+const archiveSchema = new mongoose.Schema({
+  archivedAt: { type: Date, default: Date.now },
+  archivedBy: String,
+  record: {
+    type: Object,
   },
-  { strict: false }
-)
+  type: String,
+})
 
 export default mongoose.model('Archive', archiveSchema)

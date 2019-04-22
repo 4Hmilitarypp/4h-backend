@@ -52,10 +52,17 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
       {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Website Admin</GroupHeader>
-          <SideBarLink to="/admin" className={path.includes('/admin') ? 'active' : ''}>
-            Cloudinary Reports
-          </SideBarLink>
-          <Links />
+          <Links>
+            <SideBarLink
+              to="/admin/cloudinary-reports"
+              className={path.includes('/admin/cloudinary-reports') ? 'active' : ''}
+            >
+              Cloudinary Reports
+            </SideBarLink>
+            <SideBarLink to="/admin/users" className={path.includes('/admin/users') ? 'active' : ''}>
+              Manage Users
+            </SideBarLink>
+          </Links>
         </LinkGroup>
       )}
     </SidebarWrapper>

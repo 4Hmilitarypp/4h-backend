@@ -9,6 +9,8 @@ const webinarSchema = new mongoose.Schema({
     required: 'category is required',
     type: String,
   },
+  createdAt: { type: Date, default: Date.now },
+  createdBy: String,
   description: {
     required: 'description is required',
     type: String,
@@ -17,10 +19,22 @@ const webinarSchema = new mongoose.Schema({
     required: 'title is required',
     type: String,
   },
+  updatedAt: { type: Date, default: Date.now },
+  updatedBy: String,
   url: {
     required: 'url is required',
     type: String,
   },
+})
+
+webinarSchema.pre('save', function(this: any, next) {
+  this.updatedAt = Date.now()
+  next()
+})
+
+webinarSchema.pre('findOneAndUpdate', function(this: any, next) {
+  ;(this as any)._update.updatedAt = Date.now()
+  next()
 })
 
 export default mongoose.model<IWebinarDocument>('Webinar', webinarSchema)

@@ -101,10 +101,14 @@ const resources = {
 
 const users = {
   checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
+  create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
+  delete: (id: string): Promise<string> => requests.delete(`/users/${id}`),
+  get: (): Promise<IUser[]> => requests.get('/users'),
   login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
   logout: (): Promise<string> => requests.post('/users/logout', {}),
   me: (): Promise<IUser> => requests.get('/users/me'),
   register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
+  update: (id: string, updates: IUser): Promise<IUser> => requests.put(`/users/${id}`, updates),
 }
 
 const webinars = {
