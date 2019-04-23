@@ -13,7 +13,7 @@ import NotFound from './pages/NotFound'
 import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
-import Resources from './pages/resources/Resources'
+import EducatorResources from './pages/resources/EducatorResources'
 import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
 
@@ -60,7 +60,7 @@ const App: React.FC<{}> = () => {
               <Partners path="/partners/*" />
               <Register path="/register" />
               <Researches path="/research" />
-              <Resources path="/curriculum-resources/*" />
+              <EducatorResources path="/educator-resources/*" />
               <Webinars path="/webinars" />
               <Admin path="/admin/*" />
               <NotFound default={true} />

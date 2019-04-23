@@ -5,16 +5,16 @@ import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../
 import FormHeading from '../../../components/FormHeading'
 import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
-import { ResourceContext } from '../Resources'
+import { ResourceContext } from '../EducatorResources'
+import ResourceForm from './EducatorResourceForm'
 import Lessons from './lessons/Lessons'
-import ResourceForm from './ResourceForm'
 
 interface IProps extends RouteComponentProps {
   _id?: string
   handleError: (err: IApiError) => void
 }
 
-const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
+const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
   const [resource, setResource] = React.useState<IResource | undefined>(undefined)
   const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
@@ -84,7 +84,7 @@ const Resource: React.FC<IProps> = ({ _id = '', handleError }) => {
   )
 }
 
-export default Resource
+export default EducatorResource
 
 const Buttons = styled.div`
   display: flex;

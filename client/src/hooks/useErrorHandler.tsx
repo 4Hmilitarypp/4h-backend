@@ -26,11 +26,14 @@ const useErrorHandler = () => {
       return flashContext.set({ isError: true, message: 'Username or Password is invalid, please try again.' })
     } else if (error.status === 401) {
       userContext.logout()
-      return flashContext.set({ isError: true, message: 'You must be signed in to perform that action.' })
+      return flashContext.set({
+        isError: true,
+        message: error.message || 'You must be signed in to perform that action.',
+      })
     } else if (error.status === 403) {
       return flashContext.set({
         isError: true,
-        message: 'You do not have sufficient permissions to perform that action.',
+        message: error.message || 'You do not have sufficient permissions to perform that action.',
       })
     }
     flashContext.set({ message: error.message, isError: true })

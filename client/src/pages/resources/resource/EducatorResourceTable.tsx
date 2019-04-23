@@ -4,9 +4,9 @@ import * as React from 'react'
 import styled from 'styled-components/macro'
 import { CreateButton, Heading } from '../../../components/Elements'
 import { hoveredRow } from '../../../utils/mixins'
-import { ResourceContext } from '../Resources'
+import { ResourceContext } from '../EducatorResources'
 
-const ResourceTable: React.FC<RouteComponentProps> = () => {
+const EducatorResourceTable: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(ResourceContext)
   return (
     <div>
@@ -27,7 +27,7 @@ const ResourceTable: React.FC<RouteComponentProps> = () => {
   )
 }
 
-export default ResourceTable
+export default EducatorResourceTable
 
 const TableHeader = styled.div`
   padding: 0rem 4rem 3.2rem;

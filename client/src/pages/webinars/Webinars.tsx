@@ -4,6 +4,7 @@ import * as React from 'react'
 import Table from '../../components/table/Table'
 import TableModal from '../../components/table/TableModal'
 import useTable from '../../components/table/useTable'
+import usePermission from '../../hooks/usePermission'
 import { IWebinar } from '../../sharedTypes'
 import api from '../../utils/api'
 import Webinar from './Webinar'
@@ -11,6 +12,7 @@ import WebinarsForm from './WebinarForm'
 
 const Webinars: React.FC<RouteComponentProps> = () => {
   const { modalController, items: webinars } = useTable<IWebinar>('Webinar', api.webinars)
+  usePermission('admin')
 
   return (
     <>

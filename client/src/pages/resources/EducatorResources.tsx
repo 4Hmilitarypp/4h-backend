@@ -1,8 +1,9 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
+import usePermission from '../../hooks/usePermission'
 import { IResource } from '../../sharedTypes'
-import Resource from './resource/Resource'
-import ResourceTable from './resource/ResourceTable'
+import EducatorResource from './resource/EducatorResource'
+import EducatorResourceTable from './resource/EducatorResourceTable'
 import useResources, { TUpdateResources } from './useResources'
 
 export interface IResourceContext {
@@ -12,18 +13,20 @@ export interface IResourceContext {
 }
 export const ResourceContext = React.createContext<IResourceContext>(undefined as any)
 
-const Resources: React.FC<RouteComponentProps> = () => {
+const EducatorResources: React.FC<RouteComponentProps> = () => {
   const { handleError, resources, updateResources } = useResources()
+  usePermission('admin')
+
   const findById = (id: string) => (resources ? resources.find(r => r._id === id) : undefined)
 
   return (
     <ResourceContext.Provider value={{ resources, updateResources, findById }}>
       {resources.length > 0 && <div data-testid="Resources" />}
       <Router>
-        <ResourceTable path="/" />
-        <Resource handleError={handleError} path="/:_id" />
+        <EducatorResourceTable path="/" />
+        <EducatorResource handleError={handleError} path="/:_id" />
       </Router>
     </ResourceContext.Provider>
   )
 }
-export default Resources
+export default EducatorResources

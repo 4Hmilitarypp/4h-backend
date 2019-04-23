@@ -5,8 +5,9 @@ import { AddressInfo } from 'net'
 import * as dotenv from 'dotenv'
 dotenv.config({ path: '.env' })
 
+if (!process.env.DATABASE_URL) throw new Error('No DATABASE_URL')
 // Connect to our Database and handle any bad connections
-mongoose.connect(process.env.DATABASE_URL || '', {
+mongoose.connect(process.env.DATABASE_URL, {
   useCreateIndex: true,
   useFindAndModify: false,
   useNewUrlParser: true,

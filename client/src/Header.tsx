@@ -1,7 +1,7 @@
-import { RouteComponentProps } from '@reach/router'
+import { Link, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, Link } from './components/Elements'
+import { Button, Link as A } from './components/Elements'
 import SignInModal from './components/SignInModal'
 import UserContext from './contexts/UserContext'
 import useErrorHandler from './hooks/useErrorHandler'
@@ -20,9 +20,9 @@ const Header: React.FC<RouteComponentProps> = () => {
   return (
     <HeaderWrapper>
       <ExternalLink>
-        <CustomLink as="a" href="https://4-hmilitarypartnerships.org">
+        <CustomA as="a" href="https://4-hmilitarypartnerships.org">
           View the Website
-        </CustomLink>
+        </CustomA>
       </ExternalLink>
       <Title>4-HMPP CMS</Title>
       <User>
@@ -32,9 +32,14 @@ const Header: React.FC<RouteComponentProps> = () => {
             <CustomButton onClick={handleLogoutClicked}>Logout</CustomButton>
           </>
         ) : (
-          <SignInModal>
-            <CustomButton>Login</CustomButton>
-          </SignInModal>
+          <>
+            <Register as={Link} to="register">
+              Register
+            </Register>
+            <SignInModal>
+              <CustomButton>Login</CustomButton>
+            </SignInModal>
+          </>
         )}
       </User>
     </HeaderWrapper>
@@ -57,7 +62,7 @@ const ExternalLink = styled.div`
   width: 26rem;
   padding-left: 2.4rem;
 `
-const CustomLink = styled(Link)`
+const CustomA = styled(A)`
   color: ${props => props.theme.white};
 `
 const Title = styled.h1`
@@ -76,4 +81,7 @@ const Name = styled.span`
 const CustomButton = styled(Button)`
   color: ${props => props.theme.primary};
   background: ${props => props.theme.white};
+`
+const Register = styled(CustomButton)`
+  margin-right: 2rem;
 `

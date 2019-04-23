@@ -4,6 +4,7 @@ import * as React from 'react'
 import Table from '../../components/table/Table'
 import TableModal from '../../components/table/TableModal'
 import useTable from '../../components/table/useTable'
+import usePermission from '../../hooks/usePermission'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
 import Liaison from './Liaison'
@@ -11,6 +12,7 @@ import LiaisonForm from './LiaisonForm'
 
 const Liaisons: React.FC<RouteComponentProps> = () => {
   const { modalController, items: liaisons } = useTable<ILiaison>('Liaison', api.liaisons)
+  usePermission('admin')
 
   return (
     <>
