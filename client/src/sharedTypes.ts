@@ -21,10 +21,10 @@ export interface ICamp {
   ageRange: string
   city: string
   contact: ICampContact
-  // dates: ICampDate[]
   description: string
   descriptionTitle: string
   featuredImage?: IImage
+  flyerUrl: string
   state: string
   title: string
 }

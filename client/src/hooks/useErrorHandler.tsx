@@ -3,6 +3,9 @@ import FlashContext from '../contexts/FlashContext'
 import UserContext from '../contexts/UserContext'
 import { IApiError } from '../sharedTypes'
 
+export const createError = (message: string, status: number) =>
+  ({ response: { data: { message }, status, statusText: '' } } as IApiError)
+
 export const formatError = (err: IApiError) => {
   if (err.response) {
     if (err.response.data) {

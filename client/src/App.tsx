@@ -58,7 +58,7 @@ const App: React.FC<{}> = () => {
               <Camps path="/camps/*" />
               <Liaisons path="/liaisons" />
               <Partners path="/partners/*" />
-              <Register path="/elevated-users" />
+              <Register path="/register" />
               <Researches path="/research" />
               <Resources path="/curriculum-resources/*" />
               <Webinars path="/webinars" />

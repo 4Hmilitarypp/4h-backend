@@ -85,11 +85,11 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
         <label htmlFor="title">Lesson Title</label>
         <input type="text" id="title" defaultValue={(lesson && lesson.title) || ''} autoFocus={true} />
       </InputGroup>
-      {resources.length && <ResourceLabel>Lesson resources</ResourceLabel>}
+      {resources.length ? <ResourceLabel>Lesson resources</ResourceLabel> : null}
       {resources.map(resource => (
         <Resource key={resource.url}>
           {resource.url}
-          <DeleteIcon name="delete" height={2.5} color={theme.warning} onClick={() => removeResource(resource.url)} />
+          <DeleteIcon name="delete" height={2.2} color={theme.warning} onClick={() => removeResource(resource.url)} />
         </Resource>
       ))}
       <CustomCreateButton type="button" onClick={openCloudinary}>
@@ -120,6 +120,7 @@ const Resource = styled.p`
   }
 `
 const DeleteIcon = styled(Icon)`
+  margin-left: 0.8rem;
   &:hover {
     cursor: pointer;
   }

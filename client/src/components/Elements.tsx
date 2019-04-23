@@ -202,6 +202,11 @@ export const BlankUploadBox = styled.div`
     cursor: pointer;
   }
 `
+export const TextUploadBox = styled(BlankUploadBox)`
+  padding: 0.8rem;
+  word-break: break-all;
+`
+
 export const UploadButton = styled.span`
   font-size: 1.8rem;
   font-weight: 600;

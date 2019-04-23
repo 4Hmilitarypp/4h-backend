@@ -137,7 +137,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
             <textarea id="longDescription" name="longDescription" defaultValue={resource.longDescription} rows={5} />
           </>
         ) : (
-          <textarea id="longDescription" name="longDescription" rows={5} maxLength={300} />
+          <textarea id="longDescription" name="longDescription" rows={5} />
         )}
       </CustomInputGroup>
     </Form>

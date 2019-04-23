@@ -8,7 +8,17 @@ const Camp = mongoose.model<ICampDocument>('Camp')
 const Archive = mongoose.model('Archive')
 
 const cleanCamp = (obj: any) =>
-  pick(obj, ['ageRange', 'city', 'contact', 'description', 'descriptionTitle', 'featuredImage', 'state', 'title'])
+  pick(obj, [
+    'ageRange',
+    'city',
+    'contact',
+    'description',
+    'descriptionTitle',
+    'featuredImage',
+    'flyerUrl',
+    'state',
+    'title',
+  ])
 const cleanCampWithId = (obj: any) =>
   pick(obj, [
     '_id',
@@ -18,6 +28,7 @@ const cleanCampWithId = (obj: any) =>
     'description',
     'descriptionTitle',
     'featuredImage',
+    'flyerUrl',
     'state',
     'title',
   ])

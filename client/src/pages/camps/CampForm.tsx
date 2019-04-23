@@ -7,11 +7,13 @@ import {
   BlankUploadBox,
   InputGroup,
   SubHeading,
+  TextUploadBox,
   UploadButton,
   UploadImage,
   UploadLabel,
 } from '../../components/Elements'
 import Icon from '../../components/Icon'
+import { createError } from '../../hooks/useErrorHandler'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateCamps } from './useCamps'
@@ -25,19 +27,22 @@ interface IProps {
 
 const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) => {
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
+  const [flyerUrl, setFlyerUrl] = React.useState<string | undefined>(undefined)
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
     if (camp && camp.featuredImage) {
       setFeaturedImageUrl(camp.featuredImage.url)
+      setFlyerUrl(camp.flyerUrl)
     }
     if (!camp && formRef.current) {
       formRef.current.reset()
       setFeaturedImageUrl(undefined)
+      setFlyerUrl(undefined)
     }
   }, [camp])
 
-  const openCloudinary = () => {
+  const uploadImage = () => {
     const widget = (window as any).cloudinary.createUploadWidget(
       {
         cloudName: 'four-hmpp',
@@ -53,8 +58,26 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
     if (widget) widget.open()
   }
 
+  const uploadFlyer = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'camp-flyers',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          setFlyerUrl(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
+
+    if (!flyerUrl) return handleError(createError('Please Upload a Flyer', 400))
 
     const {
       ageRange,
@@ -91,6 +114,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       description: description.value,
       descriptionTitle: descriptionTitle.value,
       featuredImage,
+      flyerUrl,
       state: state.value,
       title: title.value,
     }
@@ -165,20 +189,29 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
           {featuredImageUrl ? (
             <UploadImage
               src={featuredImageUrl.split('h_850,q_80,w_1650').join('h_250,q_80,w_250')}
-              onClick={openCloudinary}
+              onClick={uploadImage}
             />
           ) : (
-            <BlankUploadBox onClick={openCloudinary}>
+            <BlankUploadBox onClick={uploadImage}>
               <UploadButton>Upload Image</UploadButton>
             </BlankUploadBox>
           )}
         </ResourceSection>
-        {/* <ResourceSection>
-          <ResourceLabel>File Upload</ResourceLabel>
-          <BlankUploadBox onClick={openCloudinary}>
-            <Upload>Upload File</Upload>
-          </BlankUploadBox>
-        </ResourceSection> */}
+        <ResourceSection>
+          <UploadLabel hasImage={flyerUrl}>
+            Camp Flyer
+            {flyerUrl && (
+              <DeleteIcon name="delete" height={2.5} color={theme.warning} onClick={() => setFlyerUrl(undefined)} />
+            )}
+          </UploadLabel>
+          {flyerUrl ? (
+            <TextUploadBox>{flyerUrl}</TextUploadBox>
+          ) : (
+            <BlankUploadBox onClick={uploadFlyer}>
+              <UploadButton>Upload Flyer</UploadButton>
+            </BlankUploadBox>
+          )}
+        </ResourceSection>
       </CampResources>
       <SubHeading>Camp's Contact Information</SubHeading>
       <CustomInputGroup>

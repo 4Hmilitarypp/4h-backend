@@ -61,6 +61,10 @@ const campSchema = new mongoose.Schema({
     type: String,
   },
   featuredImage: { type: imageSchema },
+  flyerUrl: {
+    required: 'Please upload a flyer',
+    type: String,
+  },
   state: {
     required: 'State is Required',
     type: String,
