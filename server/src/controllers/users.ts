@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import passport from 'passport'
 import validator from 'validator'
 import registration from '../emailTemplates/registration'
+import userModified from '../emailTemplates/userModified'
 import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
 import { captchaError, emailError, notFoundError } from '../utils/errors'
@@ -33,6 +34,18 @@ export const updateUser: Controller = async (req, res) => {
     }
   )
   if (user) {
+    try {
+      await transporter.sendMail({
+        from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
+        html: userModified(user.name),
+        subject: 'User Was Updated',
+        text: '',
+        to: user.email,
+      })
+    } catch (err) {
+      throw emailError(err)
+    }
+
     return res.status(200).json(createSafeUser(user))
   }
   throw notFoundError
