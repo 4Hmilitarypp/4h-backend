@@ -135,7 +135,7 @@ export const register: Controller = async (req, res) => {
   try {
     await transporter.sendMail({
       from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
-      html: registration(user.name, user.email),
+      html: registration(user.name, user.email, user.affiliation),
       subject: 'New User Registered',
       text: '',
       to: 'alex@wendte.tech',

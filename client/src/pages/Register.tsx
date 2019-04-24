@@ -78,7 +78,7 @@ const Register: React.FC<RouteComponentProps> = () => {
           <input type="email" id="email" required={true} autoFocus={true} placeholder="brianna.smith@example.com" />
         </CustomInputGroup>
         <InputGroup>
-          <label htmlFor="affiliation">Affiliation</label>
+          <label htmlFor="affiliation">What is your affiliation with 4-H Military Partnerships?</label>
           <input type="text" id="affiliation" />
         </InputGroup>
         <CustomInputGroup>
