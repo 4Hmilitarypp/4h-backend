@@ -82,7 +82,7 @@ const GlobalStyle = createGlobalStyle`
   font-family: Rubik, arial, sans-serif;
   }
   input,
-  textarea, button {
+  textarea, button, select {
     font-family: Rubik, arial, sans-serif;
   }
   .grecaptcha-badge {

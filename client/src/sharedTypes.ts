@@ -24,9 +24,11 @@ export interface ICamp {
   description: string
   descriptionTitle: string
   featuredImage?: IImage
-  flyerUrl: string
+  flyerUrl?: string
+  serviceBranch: 'Air Force' | 'Navy' | 'Army'
   state: string
   title: string
+  type: 'Residential' | 'Day'
 }
 
 export interface ILiaison {
@@ -118,12 +120,14 @@ export interface ILoginForm {
 }
 
 export interface IRegisterForm extends ILoginForm {
+  affiliation: string
   name: string
   confirmPassword: string
 }
 
 export interface IUser {
   _id?: string
+  affiliation: string
   email: string
   name: string
   permissions: string[]

@@ -222,3 +222,6 @@ export const UploadLabel: any = styled.label`
   padding: 0 1.6rem 1.2rem;
   width: 25rem;
 `
+export const Select = styled.select`
+  font-size: 1.6rem;
+`

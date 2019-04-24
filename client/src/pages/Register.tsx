@@ -33,7 +33,7 @@ const Register: React.FC<RouteComponentProps> = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
-    const { email, password, confirmPassword, name } = e.currentTarget.elements
+    const { affiliation, email, password, confirmPassword, name } = e.currentTarget.elements
 
     try {
       const isSpam = await checkIfSpam()
@@ -47,6 +47,7 @@ const Register: React.FC<RouteComponentProps> = () => {
 
     userContext
       .register({
+        affiliation: affiliation.value,
         confirmPassword: confirmPassword.value,
         email: email.value,
         name: name.value,
@@ -76,6 +77,10 @@ const Register: React.FC<RouteComponentProps> = () => {
           <label htmlFor="email">Email</label>
           <input type="email" id="email" required={true} autoFocus={true} placeholder="brianna.smith@example.com" />
         </CustomInputGroup>
+        <InputGroup>
+          <label htmlFor="affiliation">Affiliation</label>
+          <input type="text" id="affiliation" />
+        </InputGroup>
         <CustomInputGroup>
           <label htmlFor="password">Password</label>
           <input type="password" id="password" required={true} />

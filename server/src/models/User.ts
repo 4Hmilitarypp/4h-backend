@@ -17,6 +17,10 @@ export interface IUserDocument extends Omit<IUser, '_id'>, Document {
 }
 
 const UsersSchema = new mongoose.Schema({
+  affiliation: {
+    required: 'affiliaiton is required',
+    type: String,
+  },
   createdAt: { type: Date, default: Date.now },
   createdBy: String,
   email: {

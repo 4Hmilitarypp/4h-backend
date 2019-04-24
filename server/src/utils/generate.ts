@@ -17,6 +17,7 @@ import {
 const generate = {
   dbUser: (overrides?: Partial<IUser>): IUser => ({
     _id: generate.objectId(),
+    affiliation: faker.lorem.word(),
     email: faker.internet.email().toLowerCase(),
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     password: faker.internet.password(),

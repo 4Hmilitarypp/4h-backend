@@ -10,8 +10,8 @@ import { Controller } from '../types'
 import { captchaError, emailError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
 
-const cleanRegister = (obj: any) => pick(obj, ['email', 'password', 'confirmPassword', 'name'])
-const createSafeUser = (obj: any) => pick(obj, ['_id', 'email', 'name', 'permissions'])
+const cleanRegister = (obj: any) => pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name'])
+const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions'])
 
 const User = mongoose.model<IUserDocument>('User')
 const Archive = mongoose.model('Archive')
@@ -62,7 +62,7 @@ export const deleteUser: Controller = async (req, res) => {
 }
 
 export const createUser: Controller = async (req, res) => {
-  const { email, password, confirmPassword, name } = cleanRegister(req.body)
+  const { affiliation, email, password, confirmPassword, name } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
     errors.push('please input a valid email')
@@ -86,7 +86,14 @@ export const createUser: Controller = async (req, res) => {
     return res.status(400).send({ message: errors.join('. ') })
   }
 
-  const user = new User({ createdBy: req.user.email, updatedBy: req.user.email, email: cleanEmail, password, name })
+  const user = new User({
+    affiliation,
+    createdBy: req.user.email,
+    email: cleanEmail,
+    name,
+    password,
+    updatedBy: req.user.email,
+  })
   await user.setPassword(password)
   const safeUser = createSafeUser(await user.save())
 

@@ -16,14 +16,18 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { admin, confirmPassword, email, name, password } = e.currentTarget.elements as any
+    const { admin, affiliation, confirmPassword, email, name, password } = e.currentTarget.elements as any
+    const updateUser = {
+      _id: user ? user._id : undefined,
+      affiliation: affiliation.value,
+      confirmPassword: action === 'create' ? confirmPassword.value : undefined,
+      email: email.value,
+      name: name.value,
+      password: action === 'create' ? password.value : undefined,
+      permissions: admin.checked ? ['admin'] : [],
+    }
+
     if (action === 'update') {
-      const updateUser = {
-        _id: user ? user._id : undefined,
-        email: email.value,
-        name: name.value,
-        permissions: admin.checked ? ['admin'] : [],
-      }
       api.users
         .update(updateUser._id as string, updateUser)
         .then(newUser => {
@@ -32,16 +36,8 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
         })
         .catch(handleError)
     } else if (action === 'create') {
-      const createUser = {
-        _id: user ? user._id : undefined,
-        confirmPassword: confirmPassword.value,
-        email: email.value,
-        name: name.value,
-        password: password.value,
-        permissions: admin.checked ? ['admin'] : [],
-      }
       api.users
-        .create(createUser)
+        .create(updateUser)
         .then(newUser => {
           updateUsers({ item: newUser, action })
           resetModalState()
@@ -58,6 +54,10 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
       <InputGroup>
         <label htmlFor="email">Email</label>
         <input type="email" id="email" defaultValue={(user && user.email) || ''} />
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="affiliation">Affiliation</label>
+        <input type="text" id="affiliation" defaultValue={(user && user.affiliation) || ''} />
       </InputGroup>
       {!user && (
         <InputGroup>

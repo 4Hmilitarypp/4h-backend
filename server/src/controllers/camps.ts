@@ -16,8 +16,10 @@ const cleanCamp = (obj: any) =>
     'descriptionTitle',
     'featuredImage',
     'flyerUrl',
+    'serviceBranch',
     'state',
     'title',
+    'type',
   ])
 const cleanCampWithId = (obj: any) =>
   pick(obj, [
@@ -29,8 +31,10 @@ const cleanCampWithId = (obj: any) =>
     'descriptionTitle',
     'featuredImage',
     'flyerUrl',
+    'serviceBranch',
     'state',
     'title',
+    'type',
   ])
 
 export const createCamp: Controller = async (req, res) => {

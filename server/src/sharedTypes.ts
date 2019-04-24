@@ -20,8 +20,11 @@ export interface ICamp {
   description: string
   descriptionTitle: string
   featuredImage?: IImage
+  flyerUrl?: string
+  serviceBranch: 'Air Force' | 'Navy' | 'Army'
   state: string
   title: string
+  type: 'Residential' | 'Day'
 }
 
 export interface ICampWithDates extends ICamp {
@@ -126,6 +129,7 @@ export interface IRegisterForm extends ILoginForm {
 
 export interface IUser {
   _id: string
+  affiliation: string
   email: string
   name: string
   password: string

@@ -35,42 +35,48 @@ const campDateSchema = new mongoose.Schema({
 
 const campSchema = new mongoose.Schema({
   ageRange: {
-    required: 'AgeRange is Required',
+    required: 'AgeRange is required',
     type: String,
   },
   city: {
-    required: 'City is Required',
+    required: 'City is required',
     type: String,
   },
   contact: {
-    required: 'Contact is Required',
+    required: 'Contact is required',
     type: campContactSchema,
   },
   createdAt: { type: Date, default: Date.now },
   createdBy: String,
   dates: {
-    required: 'Camp Dates are Required',
+    required: 'Camp Dates are required',
     type: [campDateSchema],
   },
   description: {
-    required: 'Description is Required',
+    required: 'Description is required',
     type: String,
   },
   descriptionTitle: {
-    required: 'DescriptionTitle is Required',
+    required: 'DescriptionTitle is required',
     type: String,
   },
   featuredImage: { type: imageSchema },
-  flyerUrl: {
-    required: 'Please upload a flyer',
+  flyerUrl: String,
+  serviceBranch: {
+    enum: ['Air Force', 'Navy', 'Army'],
+    required: 'Service branch is required',
     type: String,
   },
   state: {
-    required: 'State is Required',
+    required: 'State is required',
     type: String,
   },
   title: {
-    required: 'Title is Required',
+    required: 'Title is required',
+    type: String,
+  },
+  type: {
+    enum: ['Residential', 'Day'],
     type: String,
   },
   updatedAt: { type: Date, default: Date.now },

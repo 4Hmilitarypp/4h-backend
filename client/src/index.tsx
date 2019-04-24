@@ -12,7 +12,8 @@ import api from './utils/api'
 api.init()
 ReactDOM.render(<App />, document.getElementById('root'))
 if (process.env.NODE_ENV === 'production') {
-  serviceWorker.register()
-} else {
+  // serviceWorker.register() I decided that they should always have the most up to date version of the CMS
   serviceWorker.unregister()
+} else {
+  // serviceWorker.unregister()
 }

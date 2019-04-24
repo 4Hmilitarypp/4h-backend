@@ -26,6 +26,10 @@ const User: React.FC<IProps> = ({ user, setModalState }) => (
         ))}
       </Permissions>
     </PermissionsSection>
+    <NameAndEmail>
+      <Name>Affiliation:</Name>
+      <Email>{user.affiliation}</Email>
+    </NameAndEmail>
   </UserWrapper>
 )
 
@@ -57,6 +61,7 @@ const Name = styled.span`
 `
 const Item = styled.span`
   font-weight: 500;
+  color: ${props => props.theme.lightGrey};
 `
 const Email = styled.div`
   display: block;

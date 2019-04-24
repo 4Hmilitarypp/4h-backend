@@ -6,6 +6,7 @@ import { IForm } from '../../clientTypes'
 import {
   BlankUploadBox,
   InputGroup,
+  Select,
   SubHeading,
   TextUploadBox,
   UploadButton,
@@ -13,7 +14,6 @@ import {
   UploadLabel,
 } from '../../components/Elements'
 import Icon from '../../components/Icon'
-import { createError } from '../../hooks/useErrorHandler'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateCamps } from './useCamps'
@@ -77,8 +77,6 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
-    if (!flyerUrl) return handleError(createError('Please Upload a Flyer', 400))
-
     const {
       ageRange,
       city,
@@ -89,8 +87,10 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       contactUrlText,
       description,
       descriptionTitle,
+      serviceBranch,
       state,
       title,
+      type,
     } = e.currentTarget.elements
 
     const featuredImage = featuredImageUrl
@@ -115,8 +115,10 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       descriptionTitle: descriptionTitle.value,
       featuredImage,
       flyerUrl,
+      serviceBranch: serviceBranch.value as 'Air Force' | 'Navy' | 'Army',
       state: state.value,
       title: title.value,
+      type: type.value as 'Residential' | 'Day',
     }
     if (action === 'update') {
       api.camps
@@ -156,6 +158,28 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       <CustomInputGroup>
         <label htmlFor="ageRange">Campers Age Ranges</label>
         <input type="text" id="ageRange" defaultValue={(camp && camp.ageRange) || ''} />
+      </CustomInputGroup>
+      <CustomInputGroup>
+        <label htmlFor="type">Camp Type</label>
+        <Select id="type">
+          <option value="Day" selected={!camp || camp.type === 'Day'}>
+            Day
+          </option>
+          <option value="Residential" selected={camp && camp.type === 'Residential'}>
+            Residential
+          </option>
+        </Select>
+      </CustomInputGroup>
+      <CustomInputGroup>
+        <label htmlFor="serviceBranch">Service Branch</label>
+        <Select id="serviceBranch">
+          <option value="Air Force" selected={!camp || camp.serviceBranch === 'Air Force'}>
+            Air Force
+          </option>
+          <option value="Navy" selected={camp && camp.serviceBranch === 'Navy'}>
+            Navy
+          </option>
+        </Select>
       </CustomInputGroup>
       <CustomInputGroup>
         <label htmlFor="descriptionTitle">Description Title</label>
@@ -247,7 +271,8 @@ const Form = styled.form`
 `
 const CustomInputGroup = styled(InputGroup)`
   input,
-  textarea {
+  textarea,
+  select {
     background: ${props => props.theme.white};
   }
 `
