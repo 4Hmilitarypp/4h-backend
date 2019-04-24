@@ -4,6 +4,7 @@ import setupAdminRoutes from './admin'
 import setupCampRoutes from './camps'
 import setupEmailRoutes from './emails'
 import setupLiaisonRoutes from './liaisons'
+import setupPageInfoRoutes from './pageInfo'
 import setupPartnerRoutes from './partners'
 import setupResearchRoutes from './research'
 import setupResourceRoutes from './resources'
@@ -46,6 +47,10 @@ const setupRoutes = (app: Express) => {
   const adminRouter = express.Router()
   setupAdminRoutes(adminRouter)
   app.use('/api/admin', adminRouter)
+
+  const pageInfoRouter = express.Router()
+  setupPageInfoRoutes(pageInfoRouter)
+  app.use('/api/page-info', pageInfoRouter)
 
   // Docker check to tell whether the app is ready or not
   app.get('/api/docker-check', (_, res) => res.send('app is ready'))

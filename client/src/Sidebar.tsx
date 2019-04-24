@@ -27,6 +27,16 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
       )}
       {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
+          <GroupHeader>Dynamic Pages</GroupHeader>
+          <Links>
+            <SideBarLink to="/page-info/home" className={path.includes('/page-info/home') ? 'active' : ''}>
+              Home
+            </SideBarLink>
+          </Links>
+        </LinkGroup>
+      )}
+      {userContext.user && userContext.user.permissions.includes('admin') && (
+        <LinkGroup>
           <GroupHeader>Resources</GroupHeader>
           <Links>
             <SideBarLink to="/webinars" className={path.includes('/webinars') ? 'active' : ''}>

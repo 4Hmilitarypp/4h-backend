@@ -3,9 +3,7 @@ import mongoose from 'mongoose'
 const archiveSchema = new mongoose.Schema({
   archivedAt: { type: Date, default: Date.now },
   archivedBy: String,
-  record: {
-    type: Object,
-  },
+  record: Object,
   type: String,
 })
 

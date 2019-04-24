@@ -10,6 +10,7 @@ import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
 import NotFound from './pages/NotFound'
+import HomeInfo from './pages/pageInfo/HomeInfo'
 import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
@@ -63,6 +64,7 @@ const App: React.FC<{}> = () => {
               <EducatorResources path="/educator-resources/*" />
               <Webinars path="/webinars" />
               <Admin path="/admin/*" />
+              <HomeInfo path="page-info/home" />
               <NotFound default={true} />
             </Router>
           </FlashContext.Provider>

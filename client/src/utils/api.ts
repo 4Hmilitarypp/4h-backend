@@ -66,6 +66,12 @@ const liaisons = {
   update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
 }
 
+const pageInfo = {
+  create: (data: any): Promise<any> => requests.post('/page-info', { info: data, page: data.page }),
+  get: (page: string): Promise<any> => requests.get(`/page-info/${page}`),
+  update: (page: string, updates: any): Promise<any> => requests.put(`/page-info/${page}`, { info: updates }),
+}
+
 const partners = {
   create: (data: IPartner): Promise<IPartner> => requests.post('/partners', data),
   delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
@@ -135,6 +141,7 @@ const restApi = {
   init,
   lessons,
   liaisons,
+  pageInfo,
   partners,
   reports,
   research,

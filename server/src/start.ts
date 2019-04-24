@@ -21,6 +21,7 @@ mongoose.connection.on('error', err => {
 import './models/Archive'
 import './models/Camp'
 import './models/Liaison'
+import './models/PageInfo'
 import './models/Partner'
 import './models/Research'
 import './models/Resource'
