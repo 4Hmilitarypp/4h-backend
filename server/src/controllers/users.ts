@@ -126,7 +126,14 @@ export const register: Controller = async (req, res) => {
     return res.status(400).send({ message: errors.join('. ') })
   }
 
-  const user = new User({ createdBy: 'register', updatedBy: 'register', email: cleanEmail, password, name })
+  const user = new User({
+    affiliation: req.body.affiliation,
+    createdBy: 'register',
+    email: cleanEmail,
+    name,
+    password,
+    updatedBy: 'register',
+  })
   await user.setPassword(password)
   const safeUser = createSafeUser(await user.save())
   const token = await user.generateJWT()
