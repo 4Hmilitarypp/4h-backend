@@ -1,9 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { theme } from '../../../../App'
 import { IForm } from '../../../../clientTypes'
-import { CreateButton, InputGroup, ModalForm } from '../../../../components/Elements'
-import Icon from '../../../../components/Icon'
+import { CreateButton, InputGroup, ModalForm, TrashCan } from '../../../../components/Elements'
 import { ILessonLink } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
 import { IModalController } from './useLessons'
@@ -89,7 +87,7 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
       {resources.map(resource => (
         <Resource key={resource.url}>
           {resource.url}
-          <DeleteIcon name="delete" height={2.2} color={theme.warning} onClick={() => removeResource(resource.url)} />
+          <TrashCan height={2.2} onClick={() => removeResource(resource.url)} />
         </Resource>
       ))}
       <CustomCreateButton type="button" onClick={openCloudinary}>
@@ -117,11 +115,5 @@ const Resource = styled.p`
   align-items: center;
   &:nth-child(2n - 1) {
     background: ${props => props.theme.primaryLight};
-  }
-`
-const DeleteIcon = styled(Icon)`
-  margin-left: 0.8rem;
-  &:hover {
-    cursor: pointer;
   }
 `

@@ -65,7 +65,6 @@ const Register: React.FC<RouteComponentProps> = () => {
 
   return (
     <RegisterContainer>
-      {/* {getCaptcha()} */}
       <SubHeading>Register for an account</SubHeading>
       <CustomP>Meredith or Suzie will approve your account and then you will be able to modify content</CustomP>
       <Form onSubmit={handleSubmit}>

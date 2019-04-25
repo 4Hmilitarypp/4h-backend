@@ -1,10 +1,16 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { theme } from '../../../App'
 import { IForm } from '../../../clientTypes'
-import { BlankUploadBox, InputGroup, UploadButton, UploadImage, UploadLabel } from '../../../components/Elements'
-import Icon from '../../../components/Icon'
+import {
+  BlankUploadBox,
+  InputGroup,
+  ResourceSection,
+  TrashCan,
+  UploadButton,
+  UploadImage,
+  UploadLabel,
+} from '../../../components/Elements'
 import { IApiError, IResource } from '../../../sharedTypes'
 import api from '../../../utils/api'
 import { TUpdateResources } from '../useResources'
@@ -95,14 +101,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
       <ResourceSection>
         <UploadLabel hasImage={featuredImageUrl}>
           Featured Image
-          {featuredImageUrl && (
-            <DeleteIcon
-              name="delete"
-              height={2.5}
-              color={theme.warning}
-              onClick={() => setFeaturedImageUrl(undefined)}
-            />
-          )}
+          {featuredImageUrl && <TrashCan onClick={() => setFeaturedImageUrl(undefined)} />}
         </UploadLabel>
         {featuredImageUrl ? (
           <UploadImage src={featuredImageUrl} onClick={openCloudinary} />
@@ -154,18 +153,5 @@ const CustomInputGroup = styled(InputGroup)`
   input,
   textarea {
     background: ${props => props.theme.white};
-  }
-`
-
-const ResourceSection = styled.div`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-const DeleteIcon = styled(Icon)`
-  &:hover {
-    cursor: pointer;
   }
 `

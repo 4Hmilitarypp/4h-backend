@@ -1,18 +1,18 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { theme } from '../../App'
 import { IForm } from '../../clientTypes'
 import {
   BlankUploadBox,
   Button,
   InputGroup,
+  ResourceSection,
   SubHeading,
+  TrashCan,
   UploadButton,
   UploadImage,
   UploadLabel,
 } from '../../components/Elements'
-import Icon from '../../components/Icon'
 import useErrorHandler from '../../hooks/useErrorHandler'
 import usePermission from '../../hooks/usePermission'
 import api from '../../utils/api'
@@ -89,17 +89,10 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
           <textarea id="text" name="text" rows={5} />
         )}
       </CustomInputGroup>
-      <ResourceSection>
+      <CustomResourceSection>
         <UploadLabel hasImage={featuredImageUrl}>
           Featured Image
-          {featuredImageUrl && (
-            <DeleteIcon
-              name="delete"
-              height={2.5}
-              color={theme.warning}
-              onClick={() => setFeaturedImageUrl(undefined)}
-            />
-          )}
+          {featuredImageUrl && <TrashCan onClick={() => setFeaturedImageUrl(undefined)} />}
         </UploadLabel>
         {featuredImageUrl ? (
           <UploadImage
@@ -111,7 +104,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
             <UploadButton>Upload Image</UploadButton>
           </BlankUploadBox>
         )}
-      </ResourceSection>
+      </CustomResourceSection>
       <Button type="submit">Update</Button>
     </Form>
   )
@@ -125,18 +118,8 @@ const Form = styled.form`
   max-width: 90rem;
   margin: 0 auto;
 `
-const ResourceSection = styled.div`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+const CustomResourceSection = styled(ResourceSection)`
   margin-bottom: 1.8rem;
-`
-const DeleteIcon = styled(Icon)`
-  &:hover {
-    cursor: pointer;
-  }
 `
 const CustomInputGroup = styled(InputGroup)`
   input,

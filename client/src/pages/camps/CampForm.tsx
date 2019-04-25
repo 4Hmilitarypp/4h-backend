@@ -1,19 +1,19 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { theme } from '../../App'
 import { IForm } from '../../clientTypes'
 import {
   BlankUploadBox,
   InputGroup,
+  ResourceSection,
   Select,
   SubHeading,
   TextUploadBox,
+  TrashCan,
   UploadButton,
   UploadImage,
   UploadLabel,
 } from '../../components/Elements'
-import Icon from '../../components/Icon'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateCamps } from './useCamps'
@@ -201,14 +201,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <ResourceSection>
           <UploadLabel hasImage={featuredImageUrl}>
             Featured Image
-            {featuredImageUrl && (
-              <DeleteIcon
-                name="delete"
-                height={2.5}
-                color={theme.warning}
-                onClick={() => setFeaturedImageUrl(undefined)}
-              />
-            )}
+            {featuredImageUrl && <TrashCan onClick={() => setFeaturedImageUrl(undefined)} />}
           </UploadLabel>
           {featuredImageUrl ? (
             <UploadImage
@@ -224,9 +217,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <ResourceSection>
           <UploadLabel hasImage={flyerUrl}>
             Camp Flyer
-            {flyerUrl && (
-              <DeleteIcon name="delete" height={2.5} color={theme.warning} onClick={() => setFlyerUrl(undefined)} />
-            )}
+            {flyerUrl && <TrashCan onClick={() => setFlyerUrl(undefined)} />}
           </UploadLabel>
           {flyerUrl ? (
             <TextUploadBox>{flyerUrl}</TextUploadBox>
@@ -280,16 +271,4 @@ const CampResources = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
-const ResourceSection = styled.div`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-const DeleteIcon = styled(Icon)`
-  &:hover {
-    cursor: pointer;
-  }
 `

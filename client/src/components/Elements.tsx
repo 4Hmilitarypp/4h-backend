@@ -1,7 +1,9 @@
 import { Link as UnstyledLink } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { theme } from '../App'
 import { elevation, transition } from '../utils/mixins'
+import Icon from './Icon'
 
 export const InputGroup = styled.div`
   margin: 0 0 1.2rem;
@@ -224,4 +226,17 @@ export const UploadLabel: any = styled.label`
 `
 export const Select = styled.select`
   font-size: 1.6rem;
+`
+const DeleteIcon = styled(Icon)`
+  &:hover {
+    cursor: pointer;
+  }
+`
+export const TrashCan = (props: any) => <DeleteIcon name="delete" height={2.5} color={theme.warning} {...props} />
+export const ResourceSection = styled.div`
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `
