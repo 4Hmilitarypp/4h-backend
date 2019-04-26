@@ -1,6 +1,7 @@
 import { Router } from '@reach/router'
 import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
+import ErrorBoundary from './components/ErrorBoundry'
 import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
@@ -43,33 +44,35 @@ const App: React.FC<{}> = () => {
   const { isLoaded, user, login, logout, register } = useUser()
   return (
     <ThemeProvider theme={theme}>
-      <AppContainer data-testid="app">
-        <GlobalStyle />
-        <UserContext.Provider value={{ isLoaded, user, login, logout, register }}>
-          <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
-            <Flash />
-            <HeaderContainer>
-              <Header path="/*" />
-            </HeaderContainer>
-            <SidebarContainer>
-              <Sidebar path="/*" />
-            </SidebarContainer>
-            <Router primary={false}>
-              <Home path="/" />
-              <Camps path="/camps/*" />
-              <Liaisons path="/liaisons" />
-              <Partners path="/partners/*" />
-              <Register path="/register" />
-              <Researches path="/research" />
-              <EducatorResources path="/educator-resources/*" />
-              <Webinars path="/webinars" />
-              <Admin path="/admin/*" />
-              <HomeInfo path="page-info/home" />
-              <NotFound default={true} />
-            </Router>
-          </FlashContext.Provider>
-        </UserContext.Provider>
-      </AppContainer>
+      <ErrorBoundary>
+        <AppContainer data-testid="app">
+          <GlobalStyle />
+          <UserContext.Provider value={{ isLoaded, user, login, logout, register }}>
+            <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
+              <Flash />
+              <HeaderContainer>
+                <Header path="/*" />
+              </HeaderContainer>
+              <SidebarContainer>
+                <Sidebar path="/*" />
+              </SidebarContainer>
+              <Router primary={false}>
+                <Home path="/" />
+                <Camps path="/camps/*" />
+                <Liaisons path="/liaisons" />
+                <Partners path="/partners/*" />
+                <Register path="/register" />
+                <Researches path="/research" />
+                <EducatorResources path="/educator-resources/*" />
+                <Webinars path="/webinars" />
+                <Admin path="/admin/*" />
+                <HomeInfo path="page-info/home" />
+                <NotFound default={true} />
+              </Router>
+            </FlashContext.Provider>
+          </UserContext.Provider>
+        </AppContainer>
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }

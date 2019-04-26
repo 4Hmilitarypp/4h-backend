@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node'
 import axios from 'axios'
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
@@ -157,6 +158,9 @@ export const register: Controller = async (req, res) => {
     maxAge: 1000 * 60 * 60 * 24 * 365,
     secure: process.env.NODE_ENV === 'production',
   })
+  Sentry.configureScope(scope => {
+    scope.setUser({ email: cleanEmail || undefined, name })
+  })
   return res.status(201).json(safeUser)
 }
 
@@ -172,6 +176,9 @@ export const login: Controller = async (req, res, next) => {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,
         secure: process.env.NODE_ENV === 'production',
+      })
+      Sentry.configureScope(scope => {
+        scope.setUser({ email: passportUser.email, name: passportUser.name })
       })
       return res.json(createSafeUser(passportUser))
     }
@@ -203,6 +210,9 @@ export const me: Controller = async (req, res) => {
       res.clearCookie('token')
       return res.sendStatus(404)
     } else {
+      Sentry.configureScope(scope => {
+        scope.setUser({ email: user.email, name: user.name })
+      })
       return res.json(createSafeUser(user))
     }
   }

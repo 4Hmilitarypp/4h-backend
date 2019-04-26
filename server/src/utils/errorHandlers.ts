@@ -105,8 +105,6 @@ export const developmentErrors: ErrorHandler = (err, _, res) => {
 
   No stacktraces are leaked to user
 */
-export const productionErrors: ErrorHandler = (err, _, res) => {
-  err.message = 'Unexpected Server Error'
-  console.error(err)
-  return res.status(err.status || 500).json(err)
+export const productionErrors: ErrorHandler = (_1, _2, res: any) => {
+  return res.end(res.sentry + '\n')
 }

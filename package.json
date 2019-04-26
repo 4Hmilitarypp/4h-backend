@@ -4,6 +4,8 @@
   "private": false,
   "dependencies": {
     "@reach/router": "^1.2.1",
+    "@sentry/browser": "^5.1.1",
+    "@sentry/node": "^5.1.0",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.4",
