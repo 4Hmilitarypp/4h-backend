@@ -18,30 +18,22 @@ export const catchErrors = (fn: Controller) => (req: Request, res: Response, nex
   If we hit a route that is not found, we mark it as 404 and pass it along to the next error handler to display
 */
 export const routeNotFound: ErrorHandler = (err, _, res, next) => {
-  if (err.type === 'routeNotFound') {
-    return res.status(404).json({ message: 'The requested url was not found' })
-  }
+  if (err.name === 'routeNotFound') return res.status(404).json({ message: err.message })
   return next(err)
 }
 
 export const itemNotFound: ErrorHandler = (err, _, res, next) => {
-  if (err.type === 'itemNotFound') {
-    return res.status(404).json({ message: 'The requested item was not found' })
-  }
+  if (err.name === 'itemNotFound') return res.status(404).json({ message: err.message })
   return next(err)
 }
 
 export const emailError: ErrorHandler = (err, _, res, next) => {
-  if (err.type === 'emailError') {
-    return res.status(err.status || 500).json({ message: err.message })
-  }
+  if (err.name === 'emailError') return res.status(err.status || 500).json({ message: err.message })
   return next(err)
 }
 
 export const captchaError: ErrorHandler = (err, _, res, next) => {
-  if (err.type === 'captchaError') {
-    return res.status(err.status || 500).json({ message: err.message })
-  }
+  if (err.name === 'captchaError') return res.status(err.status || 500).json({ message: err.message })
   return next(err)
 }
 
@@ -51,9 +43,7 @@ export const captchaError: ErrorHandler = (err, _, res, next) => {
   Detect if there are mongodb validation errors that we can nicely show via flash messages
 */
 export const validationErrors: ErrorHandler = (err, _, res, next) => {
-  if (!isValidationError(err)) {
-    return next(err)
-  }
+  if (!isValidationError(err)) return next(err)
   const errorMessages: string[] = []
   const errorKeys = Object.keys(err.errors)
   errorKeys.forEach(key => errorMessages.push(err.errors[key].message))
@@ -62,9 +52,7 @@ export const validationErrors: ErrorHandler = (err, _, res, next) => {
 }
 
 export const castErrors: ErrorHandler = (err, _, res, next) => {
-  if (!isCastError(err)) {
-    return next(err)
-  }
+  if (!isCastError(err)) return next(err)
   const { value } = err
   return res
     .status(404)
@@ -72,16 +60,12 @@ export const castErrors: ErrorHandler = (err, _, res, next) => {
 }
 
 export const forbiddenError: ErrorHandler = (err: any, _, res, next) => {
-  if (err.code !== 'permission_denied') {
-    return next(err)
-  }
+  if (err.code !== 'permission_denied') return next(err)
   return res.status(403).json({ message: err.message })
 }
 
 export const unauthorizedError: ErrorHandler = (err, _, res, next) => {
-  if (err.name !== 'UnauthorizedError') {
-    return next(err)
-  }
+  if (err.name !== 'UnauthorizedError') return next(err)
   return res.status(401).json({ message: err.message })
 }
 

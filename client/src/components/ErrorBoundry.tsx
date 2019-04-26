@@ -7,7 +7,6 @@ class ErrorBoundary extends React.Component<{}, { eventId?: string }> {
   state = { eventId: undefined }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.error(error)
     Sentry.withScope(scope => {
       scope.setExtras(errorInfo)
       const eventId = Sentry.captureException(error)
