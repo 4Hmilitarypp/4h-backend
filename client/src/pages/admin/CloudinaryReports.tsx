@@ -30,14 +30,12 @@ const CloudinaryReports: React.FC<RouteComponentProps> = () => {
 
   const imagesByBandwidth = (lines: any[]) => {
     const startIndex = lines.findIndex(el => el.Position === 'Top Images by bandwidth (bytes)')
-    // const endIndex = lines.findIndex(el => el.Position === 'Top Images by requests')
 
     return { lines: lines.slice(startIndex + 1, startIndex + 10), header: lines[startIndex].Position }
   }
 
   const resourcesByBandwidth = (lines: any[]) => {
     const startIndex = lines.findIndex(el => el.Position === 'Top Resources by bandwidth (bytes)')
-    // const endIndex = lines.findIndex(el => el.Position === 'Top Resources by requests')
     return { lines: lines.slice(startIndex + 1, startIndex + 10), header: lines[startIndex].Position }
   }
 

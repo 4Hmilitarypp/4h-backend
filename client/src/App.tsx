@@ -18,6 +18,7 @@ import Researches from './pages/research/Researches'
 import EducatorResources from './pages/resources/EducatorResources'
 import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
+import { media } from './utils/mixins'
 
 export const theme = {
   lightGrey: 'hsl(150, 20%, 40%)',
@@ -108,4 +109,7 @@ const HeaderContainer = styled(Router)`
 const SidebarContainer = styled(Router)`
   grid-column: 1 / 1;
   grid-row: 2 / -1;
+  ${media.phone`
+    display: none;
+  `}
 `
