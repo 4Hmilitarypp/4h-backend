@@ -35,7 +35,7 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { shortDescription, longDescription, title, slug } = e.currentTarget.elements
+    const { shortDescription, longDescription, title } = e.currentTarget.elements
 
     if (!featuredImageUrl1) return handleError(createError('Please supply a featured image', 400))
 
@@ -56,7 +56,6 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
       longDescription: longDescription.value,
       reports: partner ? partner.reports : [],
       shortDescription: shortDescription.value,
-      slug: slug.value,
       title: title.value,
     }
     if (action === 'update') {
@@ -113,10 +112,6 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
       <CustomInputGroup>
         <label htmlFor="title">Title</label>
         <input type="text" id="title" defaultValue={(partner && partner.title) || ''} autoFocus={true} />
-      </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="slug">Partner Slug</label>
-        <input type="text" id="slug" defaultValue={(partner && partner.slug) || ''} />
       </CustomInputGroup>
       <CampResources>
         <ResourceSection>

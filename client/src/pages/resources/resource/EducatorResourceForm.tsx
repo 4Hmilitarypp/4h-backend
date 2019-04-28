@@ -69,7 +69,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
         .create(updateResource)
         .then(newResource => {
           updateResources({ resource: newResource, action })
-          navigate(`/curriculum-resources/${newResource._id}`)
+          navigate(`/educator-resources/${newResource._id}`)
           if (formRef.current) {
             // reset the form so the actual returned data can be loaded
             formRef.current.reset()
@@ -81,7 +81,7 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
         .update(updateResource._id as string, updateResource)
         .then(newResource => {
           updateResources({ resource: newResource, action })
-          navigate(`/curriculum-resources/${newResource._id}`)
+          navigate(`/educator-resources/${newResource._id}`)
           if (formRef.current) {
             // reset the form so the actual returned data can be loaded
             formRef.current.reset()

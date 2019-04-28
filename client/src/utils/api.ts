@@ -73,11 +73,11 @@ const pageInfo = {
 }
 
 const partners = {
-  create: (data: IPartner): Promise<IPartner> => requests.post('/partners', data),
+  create: (data: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.post('/partners', data),
   delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
   get: (): Promise<IPartnerSection[]> => requests.get('/partners'),
   getBySlug: (slug: string): Promise<IPartner> => requests.get(`/partners/slug/${slug}`),
-  update: (id: string, updates: IPartner): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
+  update: (id: string, updates: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
 }
 
 const reports = {
