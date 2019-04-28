@@ -76,7 +76,7 @@ ResourceSchema.pre('save', function(this: IResourceDocument, next) {
     next()
     return
   }
-  this.slug = slugify(this.title)
+  this.slug = slugify(this.title, { lower: true })
   next()
 })
 
@@ -84,7 +84,7 @@ ResourceSchema.pre('findOneAndUpdate', function(this: any, next) {
   ;(this as any)._update.updatedAt = Date.now()
   const title = this.getUpdate().title
   if (title) {
-    ;(this as any)._update.slug = slugify(title)
+    ;(this as any)._update.slug = slugify(title, { lower: true })
     next()
   } else {
     next()

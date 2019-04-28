@@ -57,7 +57,7 @@ partnerSchema.pre('save', function(this: any, next) {
     next()
     return
   }
-  ;(this as any).slug = slugify((this as any).title)
+  ;(this as any).slug = slugify((this as any).title, { lower: true })
   next()
 })
 
@@ -65,7 +65,7 @@ partnerSchema.pre('findOneAndUpdate', function(next) {
   ;(this as any)._update.updatedAt = Date.now()
   const title = this.getUpdate().title
   if (title) {
-    ;(this as any)._update.slug = slugify(title)
+    ;(this as any)._update.slug = slugify(title, { lower: true })
     next()
   } else {
     next()
