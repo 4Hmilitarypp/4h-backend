@@ -33,11 +33,11 @@ export interface ICamp {
 
 export interface ILiaison {
   _id?: string
-  abbreviation?: string | null
-  email?: string | null
+  abbreviation?: string
+  email?: string
   image: string
-  name?: string | null
-  phoneNumber?: string | null
+  name?: string
+  phoneNumber?: string
   region: string
 }
 

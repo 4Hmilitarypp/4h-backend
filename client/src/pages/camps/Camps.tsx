@@ -1,6 +1,5 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import usePermission from '../../hooks/usePermission'
 import { ICamp } from '../../sharedTypes'
 import Camp from './Camp'
 import CampTable from './CampTable'
@@ -15,7 +14,6 @@ export const CampContext = React.createContext<ICampContext>(undefined as any)
 
 const Camps: React.FC<RouteComponentProps> = () => {
   const { handleError, camps, updateCamps } = useCamps()
-  usePermission('admin')
 
   const findById = (id: string) => (camps ? camps.find(r => r._id === id) : undefined)
 

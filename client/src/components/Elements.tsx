@@ -24,7 +24,7 @@ export const InputGroup = styled.div`
     border-radius: 5px;
     padding: 0.9rem 1.5rem;
     border: none;
-    background: ${props => props.theme.primaryBackground};
+    background: ${props => (props.color === 'white' ? props.theme.white : props.theme.primaryBackground)};
   }
 `
 export const PageWrapper = styled.div`

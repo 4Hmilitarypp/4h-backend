@@ -2,12 +2,18 @@ import { Link, RouteComponentProps } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { CreateButton, Heading } from '../../../components/Elements'
+import { CreateButton, Heading, InputGroup } from '../../../components/Elements'
 import { hoveredRow } from '../../../utils/mixins'
 import { ResourceContext } from '../EducatorResources'
 
 const EducatorResourceTable: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(ResourceContext)
+
+  const [filterText, setFilterText] = React.useState<string>('')
+
+  const filterResources = () =>
+    context.resources.filter(resource => !filterText || resource.title.toLowerCase().includes(filterText))
+
   return (
     <div>
       <TableHeader>
@@ -16,8 +22,12 @@ const EducatorResourceTable: React.FC<RouteComponentProps> = () => {
           + New Resource
         </CreateButton>
       </TableHeader>
+      <CustomInputGroup color="white">
+        <label>Filter Educator Resources</label>
+        <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
+      </CustomInputGroup>
       <div>
-        {map(context.resources, r => (
+        {map(filterResources(), r => (
           <Wrapper to={r._id} key={r._id}>
             <Title>{r.title}</Title>
           </Wrapper>
@@ -50,4 +60,7 @@ const Wrapper = styled(Link)`
 const Title = styled.span`
   font-weight: 500;
   color: ${props => props.theme.primaryGrey};
+`
+const CustomInputGroup = styled(InputGroup)`
+  margin: 0 2.4rem 2rem;
 `

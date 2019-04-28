@@ -2,13 +2,20 @@ import { Link, RouteComponentProps } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { CreateButton, Heading } from '../../components/Elements'
+import { CreateButton, Heading, InputGroup } from '../../components/Elements'
 import { hoveredRow } from '../../utils/mixins'
 import { CampContext } from './Camps'
 
 const CampTable: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(CampContext)
-  const sortedCamps = context.camps.sort((a, b) => (a.state > b.state ? 1 : -1))
+
+  const [filterText, setFilterText] = React.useState<string>('')
+  const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
+  const filterAndSortCamps = () =>
+    context.camps
+      .filter(camp => !filterText || isFound(camp.title, camp.city, camp.state))
+      .sort((a, b) => (a.state > b.state ? 1 : -1))
+
   return (
     <div>
       <TableHeader>
@@ -17,8 +24,12 @@ const CampTable: React.FC<RouteComponentProps> = () => {
           + New Camp
         </CreateButton>
       </TableHeader>
+      <CustomInputGroup color="white">
+        <label>Filter Camps</label>
+        <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
+      </CustomInputGroup>
       <div>
-        {map(sortedCamps, p => (
+        {map(filterAndSortCamps(), p => (
           <Wrapper to={p._id} key={p._id}>
             <CityAndState>{`${p.city}, ${p.state}:`}</CityAndState>
             <Title>{p.title}</Title>
@@ -57,4 +68,7 @@ const CityAndState = styled.span`
 const Title = styled.span`
   font-weight: 500;
   color: ${props => props.theme.primaryGrey};
+`
+const CustomInputGroup = styled(InputGroup)`
+  margin: 0 2.4rem 2rem;
 `

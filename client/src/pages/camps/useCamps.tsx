@@ -2,6 +2,7 @@ import { filter, map } from 'lodash'
 import * as React from 'react'
 import FlashContext from '../../contexts/FlashContext'
 import useErrorHandler from '../../hooks/useErrorHandler'
+import usePermission from '../../hooks/usePermission'
 import { ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { numericSort } from '../../utils/string'
@@ -17,8 +18,10 @@ export type TUpdateCamps = ({
 }) => void
 
 const useCamps = () => {
-  const [camps, setCamps] = React.useState<ICamp[]>([])
+  usePermission('admin')
   const handleError = useErrorHandler()
+
+  const [camps, setCamps] = React.useState<ICamp[]>([])
   React.useEffect(() => {
     api.camps
       .get()
