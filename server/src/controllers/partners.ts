@@ -39,7 +39,7 @@ export const getPartnerSections: Controller = async (_, res) => {
 }
 
 export const getPartner: Controller = async (req, res) => {
-  const partner = await Partner.findOne({ slug: new RegExp(req.params.slug, 'i') })
+  const partner = await Partner.findOne({ slug: req.params.slug.toLowerCase() })
   if (!partner) {
     throw notFoundError
   }

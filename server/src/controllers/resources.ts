@@ -39,7 +39,7 @@ export const getResource: Controller = async (req, res) => {
 }
 export const getResourceBySlug: Controller = async (req, res) => {
   const { slug } = req.params
-  const resource = await Resource.findOne({ slug: new RegExp(slug, 'i') })
+  const resource = await Resource.findOne({ slug: slug.toLowerCase() })
   if (resource) {
     return res.json(resource)
   }
