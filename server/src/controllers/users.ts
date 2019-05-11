@@ -11,8 +11,9 @@ import { Controller } from '../types'
 import { captchaError, emailError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
 
-const cleanRegister = (obj: any) => pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name'])
-const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions'])
+const cleanRegister = (obj: any) =>
+  pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name', 'university'])
+const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'roles', 'university'])
 
 const User = mongoose.model<IUserDocument>('User')
 const Archive = mongoose.model('Archive')
@@ -63,7 +64,7 @@ export const deleteUser: Controller = async (req, res) => {
 }
 
 export const createUser: Controller = async (req, res) => {
-  const { affiliation, email, password, confirmPassword, name } = cleanRegister(req.body)
+  const { affiliation, email, password, confirmPassword, name, university } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
     errors.push('please input a valid email')
@@ -93,6 +94,7 @@ export const createUser: Controller = async (req, res) => {
     email: cleanEmail,
     name,
     password,
+    university,
     updatedBy: req.user.email,
   })
   await user.setPassword(password)
@@ -103,7 +105,7 @@ export const createUser: Controller = async (req, res) => {
 
 // POST new user
 export const register: Controller = async (req, res) => {
-  const { email, password, confirmPassword, name } = cleanRegister(req.body)
+  const { email, password, confirmPassword, name, university } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
     errors.push('please input a valid email')
@@ -133,6 +135,7 @@ export const register: Controller = async (req, res) => {
     email: cleanEmail,
     name,
     password,
+    university,
     updatedBy: 'register',
   })
   await user.setPassword(password)
@@ -143,7 +146,7 @@ export const register: Controller = async (req, res) => {
   try {
     await transporter.sendMail({
       from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
-      html: registration(user.name, user.email, user.affiliation),
+      html: registration(user.name, user.email, user.affiliation, user.university),
       subject: 'New User Registered',
       text: '',
       to: 'alex@wendte.tech',

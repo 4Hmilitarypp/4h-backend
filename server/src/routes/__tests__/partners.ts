@@ -16,7 +16,7 @@ const User = mongoose.model<IUserDocument>('User')
 const getToken = (res: request.Response) => res.header['set-cookie'][0].split('token=')[1].split(';')[0]
 
 const setup = async () => {
-  const user = generate.dbUser({ permissions: ['admin'] })
+  const user = generate.dbUser({ roles: ['admin'] })
   const dbUser = new User(user)
   await dbUser.setPassword(user.password)
   await dbUser.save()

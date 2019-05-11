@@ -18,6 +18,7 @@ mongoose.connection.on('error', err => {
 })
 
 // register models with mongoose
+import './models/Application'
 import './models/Archive'
 import './models/Camp'
 import './models/Liaison'
@@ -26,6 +27,7 @@ import './models/Partner'
 import './models/Research'
 import './models/Resource'
 import './models/User'
+import './models/UserApplication'
 import './models/Webinar'
 
 // must be below models

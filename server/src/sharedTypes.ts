@@ -1,3 +1,11 @@
+export interface IApplication {
+  _id: string
+  dueDate: Date
+  name: string
+  url: string
+  userGroups: string[]
+}
+
 export interface ICampDate {
   _id?: string
   beginDate: Date
@@ -133,7 +141,25 @@ export interface IUser {
   email: string
   name: string
   password: string
-  permissions: string[]
+  roles: string[]
+  university: string
+}
+
+export interface IComment {
+  _id: string
+  text: string
+  userId: string
+}
+
+export interface IUserApplication {
+  _id: string
+  baseId: string
+  comments: IComment[]
+  dueDate: Date
+  name: string
+  status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
+  url: string
+  userGroups: string[]
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
