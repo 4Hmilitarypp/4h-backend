@@ -10,10 +10,10 @@ const setupLiaisonRoutes = (router: Router) => {
   router
     .route('/')
     .get(auth.optional, catchErrors(liaisonController.getLiaisons))
-    .post(auth.required, guard().check('admin'), catchErrors(liaisonController.createLiaison))
+    .post(auth.required, guard({}).check('admin'), catchErrors(liaisonController.createLiaison))
   router
     .route('/:_id')
-    .delete(auth.required, guard().check('admin'), catchErrors(liaisonController.deleteLiaison))
-    .put(auth.required, guard().check('admin'), catchErrors(liaisonController.updateLiaison))
+    .delete(auth.required, guard({}).check('admin'), catchErrors(liaisonController.deleteLiaison))
+    .put(auth.required, guard({}).check('admin'), catchErrors(liaisonController.updateLiaison))
 }
 export default setupLiaisonRoutes

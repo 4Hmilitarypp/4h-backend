@@ -7,10 +7,10 @@ import { catchErrors } from '../utils/errorHandlers'
 import auth from './auth'
 
 const setupPageInfoRoutes = (router: Router) => {
-  router.route('/').post(auth.required, guard().check('admin'), catchErrors(pageInfoController.createPageInfo))
+  router.route('/').post(auth.required, guard({}).check('admin'), catchErrors(pageInfoController.createPageInfo))
   router
     .route('/:page')
     .get(auth.optional, catchErrors(pageInfoController.getPageInfo))
-    .put(auth.required, guard().check('admin'), catchErrors(pageInfoController.updatePageInfo))
+    .put(auth.required, guard({}).check('admin'), catchErrors(pageInfoController.updatePageInfo))
 }
 export default setupPageInfoRoutes

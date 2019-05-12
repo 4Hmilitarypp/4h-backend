@@ -10,10 +10,10 @@ const setupApplicationRoutes = (router: Router) => {
   router
     .route('/')
     .get(auth.optional, catchErrors(applicationController.getApplications))
-    .post(auth.required, guard().check('admin'), catchErrors(applicationController.createApplication))
+    .post(auth.required, guard({}).check('admin'), catchErrors(applicationController.createApplication))
   router
     .route('/:_id')
-    .delete(auth.required, guard().check('admin'), catchErrors(applicationController.deleteApplication))
-    .put(auth.required, guard().check('admin'), catchErrors(applicationController.updateApplication))
+    .delete(auth.required, guard({}).check('admin'), catchErrors(applicationController.deleteApplication))
+    .put(auth.required, guard({}).check('admin'), catchErrors(applicationController.updateApplication))
 }
 export default setupApplicationRoutes

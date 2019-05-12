@@ -108,14 +108,10 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
           defaultValue={(baseApplication && baseApplication.dueDate.substr(0, 10)) || ''}
         />
       </CustomInputGroup>
-      <CustomSubHeading>Permissions</CustomSubHeading>
+      <CustomSubHeading>User Groups that should see this application</CustomSubHeading>
       <PermissionGroup>
         <label htmlFor="applicationUser">Application User</label>
-        <CheckBox
-          type="checkbox"
-          id="applicationUser"
-          defaultChecked={baseApplication && baseApplication.userGroups.includes('application-user')}
-        />
+        <CheckBox type="checkbox" id="applicationUser" defaultChecked={true} />
       </PermissionGroup>
       <BaseApplicationResources>
         <ResourceSection>

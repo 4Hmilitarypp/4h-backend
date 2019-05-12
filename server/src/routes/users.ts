@@ -16,12 +16,12 @@ const setupUserRoutes = (router: Router) => {
     .get('/me', auth.optional, catchErrors(usersController.me))
   router
     .route('/')
-    .get(auth.required, guard().check('admin'), catchErrors(usersController.getUsers))
-    .post(auth.required, guard().check('admin'), catchErrors(usersController.createUser))
+    .get(auth.required, guard({}).check('admin'), catchErrors(usersController.getUsers))
+    .post(auth.required, guard({}).check('admin'), catchErrors(usersController.createUser))
 
   router
     .route('/:_id')
-    .put(auth.required, guard().check('admin'), catchErrors(usersController.updateUser))
-    .delete(auth.required, guard().check('admin'), catchErrors(usersController.deleteUser))
+    .put(auth.required, guard({}).check('admin'), catchErrors(usersController.updateUser))
+    .delete(auth.required, guard({}).check('admin'), catchErrors(usersController.deleteUser))
 }
 export default setupUserRoutes
