@@ -19,10 +19,10 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
     const { admin, affiliation, applicationUser, confirmPassword, email, name, password, university } = e.currentTarget
       .elements as any
 
-    const roles = []
+    const permissions = []
 
-    if (admin.checked) roles.push('admin')
-    if (applicationUser.checked) roles.push('application-user')
+    if (admin.checked) permissions.push('admin')
+    if (applicationUser.checked) permissions.push('application-user')
 
     const updateUser = {
       _id: user ? user._id : undefined,
@@ -31,7 +31,7 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
       email: email.value,
       name: name.value,
       password: action === 'create' ? password.value : undefined,
-      roles,
+      permissions,
       university: university.value,
     }
 
@@ -86,12 +86,12 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
       <CustomSubHeading>Permissions</CustomSubHeading>
       <PermissionGroup>
         <label htmlFor="admin">Admin</label>
-        <CheckBox type="checkbox" id="admin" defaultChecked={user && user.roles.includes('admin')} />
+        <CheckBox type="checkbox" id="admin" defaultChecked={user && user.permissions.includes('admin')} />
         <label htmlFor="applicationUser">Application User</label>
         <CheckBox
           type="checkbox"
           id="applicationUser"
-          defaultChecked={user && user.roles.includes('application-user')}
+          defaultChecked={user && user.permissions.includes('application-user')}
         />
       </PermissionGroup>
     </Form>

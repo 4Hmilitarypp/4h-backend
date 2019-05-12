@@ -38,7 +38,7 @@ const useUserApplications = () => {
       flashContext.set({ message: 'Application Updated Successfully' })
     } else if (action === 'create' && userApplication) {
       const unsorted = [userApplication, ...userApplications]
-      newUserApplications = numericSort(unsorted, 'title')
+      newUserApplications = numericSort(unsorted, 'dueDate')
       flashContext.set({ message: 'Application Created Successfully' })
     } else if (action === 'delete') {
       newUserApplications = filter(userApplications, c => c._id !== _id)

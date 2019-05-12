@@ -141,7 +141,7 @@ export interface IUser {
   email: string
   name: string
   password: string
-  roles: string[]
+  permissions: string[]
   university: string
 }
 
@@ -155,11 +155,14 @@ export interface IUserApplication {
   _id: string
   baseId: string
   comments: IComment[]
+  createdBy: string
   dueDate: string
   name: string
   status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
+  updatedBy: string
   url: string
   userGroups: string[]
+  userId: string
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

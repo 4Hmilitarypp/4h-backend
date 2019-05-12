@@ -240,3 +240,11 @@ export const ResourceSection = styled.div`
   justify-content: center;
   align-items: center;
 `
+export const UploadInput = styled.input`
+  width: 100%;
+  border-radius: 5px;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  margin-top: 2.4rem;
+  background: ${props => props.theme.white};
+`

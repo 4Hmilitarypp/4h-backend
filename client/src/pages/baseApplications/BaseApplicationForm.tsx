@@ -11,6 +11,7 @@ import {
   TextUploadBox,
   TrashCan,
   UploadButton,
+  UploadInput,
   UploadLabel,
 } from '../../components/Elements'
 import { createError } from '../../hooks/useErrorHandler'
@@ -78,7 +79,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
         .update(updateBaseApplication._id as string, updateBaseApplication)
         .then(newBaseApplication => {
           updateBaseApplications({ baseApplication: newBaseApplication, action })
-          navigate(`/applications/${newBaseApplication._id}`)
+          navigate(`/applications-admin/${newBaseApplication._id}`)
         })
         .catch(handleError)
     } else if (action === 'create') {
@@ -86,11 +87,13 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
         .create(updateBaseApplication)
         .then(newBaseApplication => {
           updateBaseApplications({ baseApplication: newBaseApplication, action })
-          navigate(`/applications/${newBaseApplication._id}`)
+          navigate(`/applications-admin/${newBaseApplication._id}`)
         })
         .catch(handleError)
     }
   }
+
+  const handleUrlChange = (e: any) => setApplicationUrl(e.target.value)
 
   return (
     // the id on the form must be what the corresponding submit button's formId is
@@ -116,16 +119,17 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
       <BaseApplicationResources>
         <ResourceSection>
           <UploadLabel hasImage={applicationUrl}>
-            BaseApplication Flyer
+            Application Upload
             {applicationUrl && <TrashCan onClick={() => setApplicationUrl(undefined)} />}
           </UploadLabel>
           {applicationUrl ? (
             <TextUploadBox>{applicationUrl}</TextUploadBox>
           ) : (
             <BlankUploadBox onClick={uploadApplication}>
-              <UploadButton>Upload Flyer</UploadButton>
+              <UploadButton>Upload Application</UploadButton>
             </BlankUploadBox>
           )}
+          <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
         </ResourceSection>
       </BaseApplicationResources>
     </Form>

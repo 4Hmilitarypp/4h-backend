@@ -37,7 +37,7 @@ it('/register: should return a valid cookie and store the user in the database c
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
-    roles: [],
+    permissions: [],
   })
   expect(res.header['set-cookie']).toEqual([expect.stringContaining('token=')])
   const token = getToken(res)
@@ -73,7 +73,7 @@ it('/login: should log the existing user in and set a response cookie', async ()
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
-    roles: [],
+    permissions: [],
   })
 })
 
@@ -102,6 +102,6 @@ it('/me: should return the current user', async () => {
     _id: expect.any(String),
     email: registerForm.email.toLowerCase(),
     name: registerForm.name,
-    roles: [],
+    permissions: [],
   })
 })

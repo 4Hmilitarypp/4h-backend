@@ -38,7 +38,7 @@ const useBaseApplications = () => {
       flashContext.set({ message: 'Application Updated Successfully' })
     } else if (action === 'create' && baseApplication) {
       const unsorted = [baseApplication, ...baseApplications]
-      newBaseApplications = numericSort(unsorted, 'title')
+      newBaseApplications = numericSort(unsorted, 'dueDate')
       flashContext.set({ message: 'Application Created Successfully' })
     } else if (action === 'delete') {
       newBaseApplications = filter(baseApplications, c => c._id !== _id)

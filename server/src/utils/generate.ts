@@ -21,7 +21,7 @@ const generate = {
     email: faker.internet.email().toLowerCase(),
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     password: faker.internet.password(),
-    roles: [],
+    permissions: [],
     university: faker.lorem.word(),
     ...overrides,
   }),

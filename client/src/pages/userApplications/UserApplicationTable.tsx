@@ -1,4 +1,5 @@
 import { Link, RouteComponentProps } from '@reach/router'
+import { format } from 'date-fns'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
@@ -32,7 +33,7 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
         {map(filterAndSortBaseApplications(), p => (
           <Wrapper to={p._id} key={p._id}>
             <CityAndState>{`${p.name}`}</CityAndState>
-            <DueDate>{p.dueDate}</DueDate>
+            <DueDate>{`${format(p.dueDate, 'MMMM D YYYY')}`}</DueDate>
           </Wrapper>
         ))}
       </div>

@@ -13,7 +13,7 @@ import transporter from '../utils/nodemailer'
 
 const cleanRegister = (obj: any) =>
   pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name', 'university'])
-const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'roles', 'university'])
+const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions', 'university'])
 
 const User = mongoose.model<IUserDocument>('User')
 const Archive = mongoose.model('Archive')

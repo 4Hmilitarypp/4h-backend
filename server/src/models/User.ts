@@ -38,7 +38,7 @@ const UsersSchema = new mongoose.Schema({
     required: 'password is required',
     type: String,
   },
-  roles: {
+  permissions: {
     default: [],
     type: [{ type: String, enum: ['admin', 'liaison', 'application-user'] }],
   },
@@ -69,7 +69,7 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
       _id: this._id,
       email: this.email,
       exp: expirationDate.getTime() / 1000,
-      permissions: this.roles,
+      permissions: this.permissions,
     },
     process.env.JWT_SECRET
   )

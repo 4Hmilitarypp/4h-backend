@@ -1,10 +1,12 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import { IApplicationDocument } from '../models/Application'
+// import { IUserApplicationDocument } from '../models/UserApplication';
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
 const Application = mongoose.model<IApplicationDocument>('Application')
+// const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
 const Archive = mongoose.model('Archive')
 
 const cleanApplication = (obj: any) => pick(obj, ['dueDate', 'name', 'url', 'userGroups'])
@@ -12,7 +14,7 @@ const cleanApplicationWithId = (obj: any) => pick(obj, ['_id', 'dueDate', 'name'
 
 export const createApplication: Controller = async (req, res) => {
   const application = await new Application({
-    ...cleanApplication(req.body),
+    ...cleanApplication({ ...req.body, userGroups: ['admin', ...req.body.userGroups] }),
     createdBy: req.user.email,
     updatedBy: req.user.email,
   }).save()

@@ -68,13 +68,13 @@ const BaseApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
       <Buttons>
         {action === 'update' &&
           (timesDeleteClicked === 0 ? (
-            <DeleteButton onClick={handleDeleteClicked}>Delete BaseApplication</DeleteButton>
+            <DeleteButton onClick={handleDeleteClicked}>Delete Application</DeleteButton>
           ) : (
             <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
           ))}
         <RightButtons>
           <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
-          <Button form="BaseApplicationForm">{action === 'update' ? 'Update' : 'Create'} BaseApplication</Button>
+          <Button form="BaseApplicationForm">{action === 'update' ? 'Update' : 'Create'} Application</Button>
         </RightButtons>
       </Buttons>
     </div>

@@ -13,8 +13,8 @@ const usePermission = (permission: string) => {
         handleError(createError('You must be signed in to visit that route', 401))
         navigate('/')
       } else {
-        if (!userContext.user.roles.includes(permission)) {
-          handleError(createError('You do not have sufficient roles to visit that route', 403))
+        if (!userContext.user.permissions.includes(permission)) {
+          handleError(createError('You do not have sufficient permissions to visit that route', 403))
           navigate('/')
         }
       }

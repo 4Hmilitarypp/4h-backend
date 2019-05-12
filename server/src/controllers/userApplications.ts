@@ -1,30 +1,57 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
+import { IApplicationDocument } from '../models/Application'
 import { IUserApplicationDocument } from '../models/UserApplication'
+import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
+type TCreateUserApplication = Pick<
+  IUserApplication,
+  'baseId' | 'createdBy' | 'updatedBy' | 'dueDate' | 'name' | 'url' | 'userId' | 'userGroups'
+>
+
+const Application = mongoose.model<IApplicationDocument>('Application')
 const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
 const Archive = mongoose.model('Archive')
 
-const cleanUserApplication = (obj: any) =>
-  pick(obj, ['abbreviation', 'email', 'image', 'name', 'phoneNumber', 'region'])
-const cleanUserApplicationWithId = (obj: any) =>
-  pick(obj, ['_id', 'abbreviation', 'email', 'image', 'name', 'phoneNumber', 'region'])
+const cleanUserApplication = (obj: any) => pick(obj, ['url'])
+const cleanUserApplicationWithId = (obj: any) => pick(obj, ['_id', 'url'])
 
-export const createUserApplication: Controller = async (req, res) => {
-  const userApplication = await new UserApplication({
-    ...cleanUserApplication(req.body),
-    createdBy: req.user.email,
-    updatedBy: req.user.email,
-  }).save()
-  return res.status(201).json(userApplication)
+/**
+ * Shows a user their applications. If a user has not seen a a base application before, it should be created for them.
+ * All base applications should show up in a user's application section, but it must be the application unique to that user.
+ * key will be userId and baseId
+ */
+export const getUserApplications: Controller = async (req, res) => {
+  const baseApplications = await Application.find({ userGroups: { $in: req.user.permissions } })
+  const userApplications = await UserApplication.find({ userId: req.user._id })
+
+  const applicationsToCreate = baseApplications.reduce<TCreateUserApplication[]>((arr, baseApplication) => {
+    if (!userApplications.find(app => baseApplication._id.equals(app.baseId))) {
+      arr.push({
+        baseId: baseApplication._id,
+        createdBy: 'system',
+        dueDate: baseApplication.dueDate,
+        name: baseApplication.name,
+        updatedBy: 'system',
+        url: baseApplication.url,
+        userGroups: baseApplication.userGroups,
+        userId: req.user._id,
+      })
+    }
+    return arr
+  }, [])
+  const createdApplications = await UserApplication.insertMany(applicationsToCreate)
+
+  const returnApplications = [...userApplications, ...createdApplications].map(userApp => ({
+    ...(userApp as any)._doc,
+    baseApplicationUrl: (baseApplications.find(app => app._id.equals(userApp.baseId)) as any).url,
+  }))
+
+  return res.json(returnApplications)
 }
 
-export const getUserApplications: Controller = async (_, res) => {
-  const userApplications = await UserApplication.find()
-  return res.json(userApplications)
-}
 export const getUserApplication: Controller = async (req, res) => {
   const userApplication = await UserApplication.find({ id: req.params.id })
   return res.json(userApplication)

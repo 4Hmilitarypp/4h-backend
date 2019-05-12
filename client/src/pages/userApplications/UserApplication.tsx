@@ -1,9 +1,9 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
+import { Button, CreateButton, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
 import FormHeading from '../../components/FormHeading'
-import { IApiError, IUserApplication } from '../../sharedTypes'
+import { IApiError, IFullUserApplication } from '../../sharedTypes'
 import api from '../../utils/api'
 import Comments from './comments/Comments'
 import UserApplicationForm from './UserApplicationForm'
@@ -15,7 +15,7 @@ interface IProps extends RouteComponentProps {
 }
 
 const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
-  const [userApplication, setUserApplication] = React.useState<IUserApplication | undefined>(undefined)
+  const [userApplication, setUserApplication] = React.useState<IFullUserApplication | undefined>(undefined)
   const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
 
@@ -60,6 +60,13 @@ const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
   return (
     <div>
       <FormHeading _id={_id} action={action} singular="Application" plural="Applications" route="/applications" />
+      <DownloadSection>
+        {userApplication && (
+          <CreateButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
+            Download Application
+          </CreateButton>
+        )}
+      </DownloadSection>
       <UserApplicationForm
         action={action}
         handleError={handleError}
@@ -87,6 +94,7 @@ const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
 
 export default UserApplication
 
+const DownloadSection = styled.div``
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

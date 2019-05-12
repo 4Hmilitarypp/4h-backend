@@ -36,7 +36,7 @@ const useErrorHandler = () => {
     } else if (error.status === 403) {
       return flashContext.set({
         isError: true,
-        message: error.message || 'You do not have sufficient roles to perform that action.',
+        message: error.message || 'You do not have sufficient permissions to perform that action.',
       })
     }
     flashContext.set({ message: error.message, isError: true })

@@ -9,7 +9,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
   const userContext = React.useContext(UserContext)
   return (
     <SidebarWrapper>
-      {userContext.user && userContext.user.roles.includes('admin') && (
+      {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Family Content</GroupHeader>
           <Links>
@@ -25,7 +25,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.roles.includes('admin') && (
+      {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Dynamic Pages</GroupHeader>
           <Links>
@@ -35,7 +35,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.roles.includes('admin') && (
+      {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Resources</GroupHeader>
           <Links>
@@ -51,7 +51,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.roles.includes('admin') && (
+      {userContext.user && userContext.user.permissions.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Website Admin</GroupHeader>
           <Links>
@@ -68,7 +68,8 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
         </LinkGroup>
       )}
       {userContext.user &&
-        (userContext.user.roles.includes('admin') || userContext.user.roles.includes('application-user')) && (
+        (userContext.user.permissions.includes('admin') ||
+          userContext.user.permissions.includes('application-user')) && (
           <LinkGroup>
             <GroupHeader>Grant Applications</GroupHeader>
             <Links>
@@ -78,7 +79,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
               >
                 Applications
               </SideBarLink>
-              {userContext.user.roles.includes('admin') && (
+              {userContext.user.permissions.includes('admin') && (
                 <SideBarLink to="/applications-admin" className={path.includes('/applications-admin') ? 'active' : ''}>
                   Applications Admin
                 </SideBarLink>

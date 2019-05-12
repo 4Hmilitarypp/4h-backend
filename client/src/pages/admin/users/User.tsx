@@ -18,7 +18,7 @@ const User: React.FC<IProps> = ({ user, setModalState }) => (
     <PermissionsSection>
       <Name>Permissions:</Name>
       <Permissions>
-        {user.roles.map((permission, index) => (
+        {user.permissions.map((permission, index) => (
           <Item key={permission}>
             {index > 0 && ', '}
             {permission}

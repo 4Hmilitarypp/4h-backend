@@ -138,7 +138,7 @@ export interface IUser {
   affiliation: string
   email: string
   name: string
-  roles: string[]
+  permissions: string[]
   university: string
 }
 
@@ -157,14 +157,13 @@ export interface IUserApplication {
   url: string
 }
 
-export interface IFullUserApplication {
-  _id?: string
+export interface IFullUserApplication extends IUserApplication {
+  baseApplicationUrl: string
   baseId: string
   comments: IComment[]
   dueDate: string
   name: string
   status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
-  url: string
   userGroups: string[]
 }
 
