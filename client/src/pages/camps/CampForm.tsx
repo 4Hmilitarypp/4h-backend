@@ -50,7 +50,8 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          setFeaturedImageUrl(res.info.secure_url)
+          const optimizedUrl = res.info.secure_url.split('/upload/').join('/upload/c_fill,f_auto,h_850,q_80,w_1650/')
+          setFeaturedImageUrl(optimizedUrl)
         }
         if (err) handleError(err)
       }
