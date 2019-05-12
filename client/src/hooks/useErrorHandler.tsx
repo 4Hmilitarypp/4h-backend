@@ -21,6 +21,9 @@ const useErrorHandler = () => {
 
   const handleError = (dirtyError: IApiError, type?: string) => {
     console.error(dirtyError)
+
+    if (!flashContext) return
+
     const error = formatError(dirtyError)
     if (type === 'login') {
       return flashContext.set({ isError: true, message: 'Username or Password is invalid, please try again.' })
@@ -33,7 +36,7 @@ const useErrorHandler = () => {
     } else if (error.status === 403) {
       return flashContext.set({
         isError: true,
-        message: error.message || 'You do not have sufficient permissions to perform that action.',
+        message: error.message || 'You do not have sufficient roles to perform that action.',
       })
     }
     flashContext.set({ message: error.message, isError: true })

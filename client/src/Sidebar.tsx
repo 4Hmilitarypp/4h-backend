@@ -9,7 +9,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
   const userContext = React.useContext(UserContext)
   return (
     <SidebarWrapper>
-      {userContext.user && userContext.user.permissions.includes('admin') && (
+      {userContext.user && userContext.user.roles.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Family Content</GroupHeader>
           <Links>
@@ -25,7 +25,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
+      {userContext.user && userContext.user.roles.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Dynamic Pages</GroupHeader>
           <Links>
@@ -35,7 +35,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
+      {userContext.user && userContext.user.roles.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Resources</GroupHeader>
           <Links>
@@ -51,7 +51,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
+      {userContext.user && userContext.user.roles.includes('admin') && (
         <LinkGroup>
           <GroupHeader>Website Admin</GroupHeader>
           <Links>
@@ -67,6 +67,25 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           </Links>
         </LinkGroup>
       )}
+      {userContext.user &&
+        (userContext.user.roles.includes('admin') || userContext.user.roles.includes('application-user')) && (
+          <LinkGroup>
+            <GroupHeader>Grant Applications</GroupHeader>
+            <Links>
+              <SideBarLink
+                to="/applications"
+                className={path.includes('/applications') && !path.includes('/applications-admin') ? 'active' : ''}
+              >
+                Applications
+              </SideBarLink>
+              {userContext.user.roles.includes('admin') && (
+                <SideBarLink to="/applications-admin" className={path.includes('/applications-admin') ? 'active' : ''}>
+                  Applications Admin
+                </SideBarLink>
+              )}
+            </Links>
+          </LinkGroup>
+        )}
     </SidebarWrapper>
   )
 }
@@ -74,8 +93,9 @@ export default Sidebar
 
 const SidebarWrapper = styled.div`
   background: ${props => props.theme.white};
-  padding: 2rem;
+  padding: 2rem 2rem 6rem;
   height: 100%;
+  overflow-y: auto;
   width: 24rem;
   position: fixed;
   z-index: 10;

@@ -40,7 +40,7 @@ const UsersSchema = new mongoose.Schema({
   },
   roles: {
     default: [],
-    type: [{ enum: ['admin', 'liaison', 'application-user'] }],
+    type: [{ type: String, enum: ['admin', 'liaison', 'application-user'] }],
   },
   university: { type: String, required: 'university is required' },
   updatedAt: { type: Date, default: Date.now },

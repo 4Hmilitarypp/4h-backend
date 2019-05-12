@@ -1,7 +1,11 @@
 import * as axios from 'axios'
 import {
+  IApiComment,
+  IApplication,
   ICamp,
   ICampDate,
+  IComment,
+  IFullUserApplication,
   ILesson,
   ILiaison,
   ILoginForm,
@@ -12,6 +16,7 @@ import {
   IResearch,
   IResource,
   IUser,
+  IUserApplication,
   IWebinar,
   Omit,
 } from '../sharedTypes'
@@ -34,6 +39,13 @@ const admin = {
   cloudinaryUsage: (): Promise<any> => requests.get(`/admin/cloudinary-reports/usage`),
 }
 
+const applications = {
+  create: (data: Omit<IApplication, '_id'>): Promise<IApplication> => requests.post('/applications', data),
+  delete: (id: string): Promise<string> => requests.delete(`/applications/${id}`),
+  get: (): Promise<IApplication[]> => requests.get('/applications'),
+  update: (id: string, updates: IApplication): Promise<IApplication> => requests.put(`/applications/${id}`, updates),
+}
+
 const camps = {
   create: (data: ICamp): Promise<ICamp> => requests.post('/camps', data),
   delete: (id: string): Promise<string> => requests.delete(`/camps/${id}`),
@@ -47,6 +59,19 @@ const campDates = {
   get: (campId: string): Promise<ICampDate[]> => requests.get(`/camps/${campId}/dates/`),
   update: (campId: string, id: string, updates: ICampDate): Promise<ICampDate> =>
     requests.put(`/camps/${campId}/dates/${id}`, updates),
+}
+
+const comments = {
+  create: (userApplicationId: string, data: Pick<IApiComment, 'text'>): Promise<IComment> =>
+    requests.post(`/user-applications/${userApplicationId}/comments/`, data),
+  delete: (userApplicationId: string, id: string): Promise<string> =>
+    requests.delete(`/user-applications/${userApplicationId}/comments/${id}`),
+  get: (userApplicationId: string): Promise<IComment[]> =>
+    requests.get(`/user-applications/${userApplicationId}/comments/`),
+  getById: (userApplicationId: string, id: string): Promise<IComment[]> =>
+    requests.get(`/user-applications/${userApplicationId}/comments/${id}`),
+  update: (userApplicationId: string, id: string, updates: Pick<IApiComment, 'text'>): Promise<IComment> =>
+    requests.put(`/user-applications/${userApplicationId}/comments/${id}`, updates),
 }
 
 const lessons = {
@@ -105,6 +130,14 @@ const resources = {
     requests.put(`/resources/${id}`, updates),
 }
 
+const userApplications = {
+  create: (data: IUserApplication): Promise<IFullUserApplication> => requests.post('/user-applications', data),
+  delete: (id: string): Promise<string> => requests.delete(`/user-applications/${id}`),
+  get: (): Promise<IFullUserApplication[]> => requests.get('/user-applications'),
+  update: (id: string, updates: IUserApplication): Promise<IFullUserApplication> =>
+    requests.put(`/user-applications/${id}`, updates),
+}
+
 const users = {
   checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
   create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
@@ -136,8 +169,10 @@ function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOpti
 
 const restApi = {
   admin,
+  applications,
   campDates,
   camps,
+  comments,
   init,
   lessons,
   liaisons,
@@ -146,6 +181,7 @@ const restApi = {
   reports,
   research,
   resources,
+  userApplications,
   users,
   webinars,
 }

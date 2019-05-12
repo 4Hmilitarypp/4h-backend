@@ -16,7 +16,14 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { admin, affiliation, confirmPassword, email, name, password } = e.currentTarget.elements as any
+    const { admin, affiliation, applicationUser, confirmPassword, email, name, password, university } = e.currentTarget
+      .elements as any
+
+    const roles = []
+
+    if (admin.checked) roles.push('admin')
+    if (applicationUser.checked) roles.push('application-user')
+
     const updateUser = {
       _id: user ? user._id : undefined,
       affiliation: affiliation.value,
@@ -24,7 +31,8 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
       email: email.value,
       name: name.value,
       password: action === 'create' ? password.value : undefined,
-      permissions: admin.checked ? ['admin'] : [],
+      roles,
+      university: university.value,
     }
 
     if (action === 'update') {
@@ -49,32 +57,42 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
     <Form onSubmit={handleSubmit} id="UserForm">
       <InputGroup>
         <label htmlFor="name">Name</label>
-        <input type="text" id="name" defaultValue={(user && user.name) || ''} autoFocus={true} />
+        <input type="text" id="name" defaultValue={(user && user.name) || ''} autoFocus={true} required={true} />
       </InputGroup>
       <InputGroup>
         <label htmlFor="email">Email</label>
-        <input type="email" id="email" defaultValue={(user && user.email) || ''} />
+        <input type="email" id="email" defaultValue={(user && user.email) || ''} required={true} />
       </InputGroup>
       <InputGroup>
         <label htmlFor="affiliation">Affiliation</label>
-        <input type="text" id="affiliation" defaultValue={(user && user.affiliation) || ''} />
+        <input type="text" id="affiliation" defaultValue={(user && user.affiliation) || ''} required={true} />
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="university">University</label>
+        <input type="text" id="university" defaultValue={(user && user.university) || ''} required={true} />
       </InputGroup>
       {!user && (
         <InputGroup>
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" />
+          <input type="password" id="password" required={true} />
         </InputGroup>
       )}
       {!user && (
         <InputGroup>
           <label htmlFor="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" />
+          <input type="password" id="confirmPassword" required={true} />
         </InputGroup>
       )}
       <CustomSubHeading>Permissions</CustomSubHeading>
       <PermissionGroup>
         <label htmlFor="admin">Admin</label>
-        <CheckBox type="checkbox" id="admin" defaultChecked={user && user.permissions.includes('admin')} />
+        <CheckBox type="checkbox" id="admin" defaultChecked={user && user.roles.includes('admin')} />
+        <label htmlFor="applicationUser">Application User</label>
+        <CheckBox
+          type="checkbox"
+          id="applicationUser"
+          defaultChecked={user && user.roles.includes('application-user')}
+        />
       </PermissionGroup>
     </Form>
   )

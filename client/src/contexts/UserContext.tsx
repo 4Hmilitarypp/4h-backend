@@ -7,7 +7,7 @@ interface IUserState {
   _id?: string
   email: string
   name: string
-  permissions: string[]
+  roles: string[]
 }
 
 export interface IUserContext {

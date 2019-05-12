@@ -1,6 +1,6 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import usePermission from '../../hooks/usePermission'
+import usePermission from '../../hooks/useRole'
 import { IPartnerSection } from '../../sharedTypes'
 import Partner from './Partner'
 import PartnerTable from './PartnerTable'

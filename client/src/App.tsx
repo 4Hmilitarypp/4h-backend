@@ -7,6 +7,7 @@ import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
 import Admin from './pages/admin/Admin'
+import BaseApplications from './pages/baseApplications/BaseApplications'
 import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
@@ -16,6 +17,7 @@ import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
 import EducatorResources from './pages/resources/EducatorResources'
+import Applications from './pages/userApplications/UserApplications'
 import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
 import { media } from './utils/mixins'
@@ -58,15 +60,17 @@ const App: React.FC<{}> = () => {
                 <Sidebar path="/*" />
               </SidebarContainer>
               <Router primary={false}>
-                <Home path="/" />
+                <Admin path="/admin/*" />
+                <Applications path="applications/*" />
+                <BaseApplications path="applications-admin/*" />
                 <Camps path="/camps/*" />
-                <Liaisons path="/liaisons" />
+                <EducatorResources path="/educator-resources/*" />
                 <Partners path="/partners/*" />
+                <Home path="/" />
+                <Liaisons path="/liaisons" />
                 <Register path="/register" />
                 <Researches path="/research" />
-                <EducatorResources path="/educator-resources/*" />
                 <Webinars path="/webinars" />
-                <Admin path="/admin/*" />
                 <HomeInfo path="page-info/home" />
                 <NotFound default={true} />
               </Router>

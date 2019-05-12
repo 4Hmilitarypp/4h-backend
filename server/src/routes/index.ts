@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import { notFoundError } from '../utils/errors'
 import setupAdminRoutes from './admin'
+import setupApplicationRoutes from './applications'
 import setupCampRoutes from './camps'
 import setupEmailRoutes from './emails'
 import setupLiaisonRoutes from './liaisons'
@@ -8,6 +9,7 @@ import setupPageInfoRoutes from './pageInfo'
 import setupPartnerRoutes from './partners'
 import setupResearchRoutes from './research'
 import setupResourceRoutes from './resources'
+import setupUserApplicationRoutes from './userApplications'
 import setupUserRoutes from './users'
 import setupWebinarRoutes from './webinars'
 
@@ -51,6 +53,14 @@ const setupRoutes = (app: Express) => {
   const pageInfoRouter = express.Router()
   setupPageInfoRoutes(pageInfoRouter)
   app.use('/api/page-info', pageInfoRouter)
+
+  const userApplicationRouter = express.Router()
+  setupUserApplicationRoutes(userApplicationRouter)
+  app.use('/api/user-applications', userApplicationRouter)
+
+  const applicationRouter = express.Router()
+  setupApplicationRoutes(applicationRouter)
+  app.use('/api/applications', applicationRouter)
 
   // Docker check to tell whether the app is ready or not
   app.get('/api/docker-check', (_, res) => res.send('app is ready'))

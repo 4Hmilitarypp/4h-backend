@@ -10,10 +10,10 @@ const setupWebinarRoutes = (router: Router) => {
   router
     .route('/')
     .get(auth.optional, catchErrors(webinarController.getWebinars))
-    .post(auth.required, guard({}).check('admin'), catchErrors(webinarController.createWebinar))
+    .post(auth.required, guard().check('admin'), catchErrors(webinarController.createWebinar))
   router
     .route('/:_id')
-    .delete(auth.required, guard({}).check('admin'), catchErrors(webinarController.deleteWebinar))
-    .put(auth.required, guard({}).check('admin'), catchErrors(webinarController.updateWebinar))
+    .delete(auth.required, guard().check('admin'), catchErrors(webinarController.deleteWebinar))
+    .put(auth.required, guard().check('admin'), catchErrors(webinarController.updateWebinar))
 }
 export default setupWebinarRoutes

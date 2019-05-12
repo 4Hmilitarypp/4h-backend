@@ -1,6 +1,6 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import usePermission from '../../hooks/usePermission'
+import usePermission from '../../hooks/useRole'
 import { IResource } from '../../sharedTypes'
 import EducatorResource from './resource/EducatorResource'
 import EducatorResourceTable from './resource/EducatorResourceTable'

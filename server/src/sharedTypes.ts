@@ -1,6 +1,6 @@
 export interface IApplication {
   _id: string
-  dueDate: Date
+  dueDate: string
   name: string
   url: string
   userGroups: string[]
@@ -155,7 +155,7 @@ export interface IUserApplication {
   _id: string
   baseId: string
   comments: IComment[]
-  dueDate: Date
+  dueDate: string
   name: string
   status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
   url: string

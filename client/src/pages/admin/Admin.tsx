@@ -1,6 +1,6 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import usePermission from '../../hooks/usePermission'
+import usePermission from '../../hooks/useRole'
 import AdminHome from './AdminHome'
 import CloudinaryReports from './CloudinaryReports'
 import Users from './users/Users'
