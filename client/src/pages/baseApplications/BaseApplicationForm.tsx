@@ -2,18 +2,8 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
-import {
-  BlankUploadBox,
-  InputGroup,
-  LeftSubHeading,
-  ResourceSection,
-  SubHeading,
-  TextUploadBox,
-  TrashCan,
-  UploadButton,
-  UploadInput,
-  UploadLabel,
-} from '../../components/Elements'
+import { Button, InputGroup, LeftSubHeading, SubHeading, UploadInput, UploadLabel } from '../../components/Elements'
+import EmbedDocument from '../../components/EmbedDocument'
 import { createError } from '../../hooks/useErrorHandler'
 import { IApiError, IApplication } from '../../sharedTypes'
 import api from '../../utils/api'
@@ -61,7 +51,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
 
     if (!applicationUrl) return handleError(createError('application url is required', 400))
 
-    const { dueDate, name, applicationUser } = e.currentTarget.elements as any
+    const { dueDate, title, applicationUser } = e.currentTarget.elements as any
 
     const userGroups = []
 
@@ -70,7 +60,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
     const updateBaseApplication = {
       _id: baseApplication ? baseApplication._id : undefined,
       dueDate: dueDate.value,
-      name: name.value,
+      title: title.value,
       url: applicationUrl,
       userGroups,
     }
@@ -100,8 +90,13 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
     <Form onSubmit={handleSubmit} id="BaseApplicationForm" ref={formRef}>
       <SubHeading>Application Information</SubHeading>
       <CustomInputGroup>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" defaultValue={(baseApplication && baseApplication.name) || ''} autoFocus={true} />
+        <label htmlFor="title">Name</label>
+        <input
+          type="text"
+          id="title"
+          defaultValue={(baseApplication && baseApplication.title) || ''}
+          autoFocus={true}
+        />
       </CustomInputGroup>
       <CustomInputGroup>
         <label htmlFor="city">Due Date</label>
@@ -117,20 +112,22 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
         <CheckBox type="checkbox" id="applicationUser" defaultChecked={true} />
       </PermissionGroup>
       <BaseApplicationResources>
-        <ResourceSection>
-          <UploadLabel hasImage={applicationUrl}>
-            Application Upload
-            {applicationUrl && <TrashCan onClick={() => setApplicationUrl(undefined)} />}
-          </UploadLabel>
-          {applicationUrl ? (
-            <TextUploadBox>{applicationUrl}</TextUploadBox>
-          ) : (
-            <BlankUploadBox onClick={uploadApplication}>
-              <UploadButton>Upload Application</UploadButton>
-            </BlankUploadBox>
-          )}
+        <HeadingUploadLabel hasImage={applicationUrl}>Application Upload</HeadingUploadLabel>
+        {baseApplication && (
+          <EmbedDocument
+            inPage={true}
+            url={applicationUrl as string}
+            title={baseApplication.title}
+            open={true}
+            setOpen={() => null}
+          />
+        )}
+        <UploadApplicationButton type="button" onClick={uploadApplication}>
+          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
+        </UploadApplicationButton>
+        <InputSection>
           <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
-        </ResourceSection>
+        </InputSection>
       </BaseApplicationResources>
     </Form>
   )
@@ -154,6 +151,7 @@ const BaseApplicationResources = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `
 const CustomSubHeading = styled(LeftSubHeading)`
   font-size: 2rem;
@@ -168,4 +166,17 @@ const PermissionGroup = styled.div`
 `
 const CheckBox = styled.input`
   margin-left: 1.6rem;
+`
+const UploadApplicationButton = styled(Button)`
+  margin-top: 3.6rem;
+`
+const HeadingUploadLabel = styled(UploadLabel)`
+  font-size: 2.4rem;
+  padding-bottom: 3.6rem;
+`
+const InputSection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `

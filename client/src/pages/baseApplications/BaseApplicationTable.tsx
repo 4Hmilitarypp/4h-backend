@@ -14,7 +14,7 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
   const filterAndSortBaseApplications = () =>
     context.baseApplications
-      .filter(baseApplication => !filterText || isFound(baseApplication.name))
+      .filter(baseApplication => !filterText || isFound(baseApplication.title))
       .sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1))
 
   return (
@@ -32,7 +32,7 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
       <div>
         {map(filterAndSortBaseApplications(), p => (
           <Wrapper to={p._id} key={p._id}>
-            <CityAndState>{`${p.name}`}</CityAndState>
+            <CityAndState>{`${p.title}`}</CityAndState>
             <DueDate>{`${format(p.dueDate, 'MMMM D YYYY')}`}</DueDate>
           </Wrapper>
         ))}

@@ -4,11 +4,11 @@ import { IApplicationDocument } from '../models/Application'
 import { IUserApplicationDocument } from '../models/UserApplication'
 import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
-import { notFoundError } from '../utils/errors'
+import { forbiddenError, notFoundError } from '../utils/errors'
 
 type TCreateUserApplication = Pick<
   IUserApplication,
-  'baseId' | 'createdBy' | 'updatedBy' | 'dueDate' | 'name' | 'url' | 'userId' | 'userGroups'
+  'baseId' | 'createdBy' | 'updatedBy' | 'dueDate' | 'title' | 'url' | 'userId' | 'userGroups'
 >
 
 const Application = mongoose.model<IApplicationDocument>('Application')
@@ -33,7 +33,7 @@ export const getUserApplications: Controller = async (req, res) => {
         baseId: baseApplication._id,
         createdBy: 'system',
         dueDate: baseApplication.dueDate,
-        name: baseApplication.name,
+        title: baseApplication.title,
         updatedBy: 'system',
         url: baseApplication.url,
         userGroups: baseApplication.userGroups,
@@ -88,14 +88,21 @@ export const deleteUserApplication: Controller = async (req, res) => {
   throw notFoundError
 }
 
-const cleanComment = (obj: any) => pick(obj, ['title', 'links', 'category'])
+const cleanComment = (obj: any) => pick(obj, ['text'])
 
 export const createComment: Controller = async (req, res) => {
   const { userApplicationId } = req.params
   const updatedUserApplication = (await UserApplication.findByIdAndUpdate(
     userApplicationId,
     {
-      $push: { comments: { ...cleanComment(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
+      $push: {
+        comments: {
+          ...cleanComment(req.body),
+          createdBy: req.user.email,
+          updatedBy: req.user.email,
+          userId: req.user._id,
+        },
+      },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -108,12 +115,36 @@ export const createComment: Controller = async (req, res) => {
 }
 
 export const getComments: Controller = async (req, res) => {
-  const userApplication = await UserApplication.findById(req.params.userApplicationId)
-    .select('comments')
-    .sort('comments.$.title')
-  if (userApplication) {
-    const { comments } = userApplication
-    return res.json(comments)
+  const userApplications = await UserApplication.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.params.userApplicationId),
+      },
+    },
+    {
+      $lookup: {
+        as: 'users',
+        foreignField: '_id',
+        from: 'users',
+        localField: 'comments.userId',
+      },
+    },
+    {
+      $project: {
+        'comments._id': 1,
+        'comments.text': 1,
+        'comments.userId': 1,
+        'users._id': 1,
+        'users.name': 1,
+      },
+    },
+  ])
+  if (userApplications) {
+    const result = userApplications[0].comments.map((comment: any) => ({
+      ...comment,
+      userName: userApplications[0].users.find((user: any) => user._id.equals(comment.userId)).name,
+    }))
+    return res.json(result)
   }
   throw notFoundError
 }
@@ -127,16 +158,23 @@ const findCommentById = (id: string, comments?: any) => {
 
 export const updateComment: Controller = async (req, res) => {
   const { userApplicationId, _id } = req.params
-  const userApplication = await UserApplication.findOneAndUpdate(
-    { _id: userApplicationId, 'comments._id': _id },
-    {
-      $set: { 'comments.$': { ...cleanComment(req.body), _id, updatedBy: req.user.email } },
-    },
-    { new: true }
-  )
-  if (userApplication) {
-    const updatedComment = findCommentById(_id, userApplication.comments)
-    return res.status(200).json(updatedComment)
+
+  const firstUserApplication = await UserApplication.findById(userApplicationId).select('comments')
+
+  if (firstUserApplication) {
+    const dbComment = findCommentById(_id, firstUserApplication.comments)
+    if (dbComment.userId.toString() !== req.user._id) throw forbiddenError
+    const userApplication = await UserApplication.findOneAndUpdate(
+      { _id: userApplicationId, 'comments._id': _id },
+      {
+        $set: { 'comments.$': { ...cleanComment(req.body), _id, userId: dbComment.userId, updatedBy: req.user.email } },
+      },
+      { new: true }
+    )
+    if (userApplication) {
+      const updatedComment = findCommentById(_id, userApplication.comments)
+      return res.status(200).json(updatedComment)
+    }
   }
   throw notFoundError
 }

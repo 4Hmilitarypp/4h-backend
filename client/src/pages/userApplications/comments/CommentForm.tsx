@@ -15,7 +15,6 @@ const CommentForm: React.FC<IProps> = ({ modalController }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
     const { text } = e.currentTarget.elements
-
     const updateComment = {
       _id: comment ? comment._id : undefined,
       text: text.value,
@@ -32,7 +31,7 @@ const CommentForm: React.FC<IProps> = ({ modalController }) => {
       api.comments
         .update(modalController.state.applicationId, updateComment._id as string, updateComment)
         .then(newComment => {
-          updateComments({ comment: newComment, action })
+          updateComments({ comment: { ...newComment, userName: (comment as any).userName }, action })
           resetModalState()
         })
         .catch(handleError)

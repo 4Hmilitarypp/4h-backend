@@ -1,8 +1,18 @@
 import { navigate, RouteComponentProps } from '@reach/router'
+import { format } from 'date-fns'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, CreateButton, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
-import FormHeading from '../../components/FormHeading'
+import UnstyledBackButton from '../../components/BackButton'
+import {
+  Button,
+  CreateButton,
+  DeleteButton,
+  HighSevDeleteButton,
+  OutlineButton,
+  P,
+  Section,
+  SubHeading,
+} from '../../components/Elements'
 import { IApiError, IFullUserApplication } from '../../sharedTypes'
 import api from '../../utils/api'
 import Comments from './comments/Comments'
@@ -59,14 +69,27 @@ const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
   }
   return (
     <div>
-      <FormHeading _id={_id} action={action} singular="Application" plural="Applications" route="/applications" />
-      <DownloadSection>
-        {userApplication && (
-          <CreateButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
-            Download Application
-          </CreateButton>
-        )}
-      </DownloadSection>
+      {userApplication && (
+        <>
+          <HeaderWrapper>
+            <UnstyledBackButton route={'/applications'} title={'Applications'} />
+            <ApplicationHeading>{userApplication.title}</ApplicationHeading>
+            <DueDate>Due {format(userApplication.dueDate, 'MMMM D YYYY')}</DueDate>
+          </HeaderWrapper>
+          <Section>
+            <SubHeading>Application Information</SubHeading>
+            <CustomP>Status: {userApplication.status}</CustomP>
+            <DownloadSection>
+              <CreateButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
+                Download Application
+              </CreateButton>
+            </DownloadSection>
+            {_id !== 'new' && action === 'update' && userApplication && (
+              <Comments applicationId={userApplication._id || ''} handleError={handleError} />
+            )}
+          </Section>
+        </>
+      )}
       <UserApplicationForm
         action={action}
         handleError={handleError}
@@ -85,15 +108,37 @@ const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
           <Button form="UserApplicationForm">{action === 'update' ? 'Update' : 'Create'} Application</Button>
         </RightButtons>
       </Buttons>
-      {_id !== 'new' && action === 'update' && userApplication && (
-        <Comments applicationId={userApplication._id || ''} handleError={handleError} />
-      )}
     </div>
   )
 }
 
 export default UserApplication
-
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3.2rem;
+`
+const ApplicationHeading = styled.h1`
+  text-align: center;
+  padding: 3.6rem 0;
+  color: ${props => props.theme.primaryBlack};
+`
+const DueDate = styled.div`
+  width: 25.5rem;
+  font-weight: 500;
+  font-size: 1.8rem;
+  color: ${props => props.theme.primaryBlack};
+`
+/* const SplitSections = styled(Section)`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding-bottom: 6rem;
+` */
+const CustomP = styled(P)`
+  padding-bottom: 0.8rem;
+`
 const DownloadSection = styled.div``
 const Buttons = styled.div`
   display: flex;

@@ -1,7 +1,7 @@
 export interface IApplication {
   _id: string
   dueDate: string
-  name: string
+  title: string
   url: string
   userGroups: string[]
 }
@@ -157,7 +157,7 @@ export interface IUserApplication {
   comments: IComment[]
   createdBy: string
   dueDate: string
-  name: string
+  title: string
   status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
   updatedBy: string
   url: string

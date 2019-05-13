@@ -9,8 +9,8 @@ const Application = mongoose.model<IApplicationDocument>('Application')
 // const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
 const Archive = mongoose.model('Archive')
 
-const cleanApplication = (obj: any) => pick(obj, ['dueDate', 'name', 'url', 'userGroups'])
-const cleanApplicationWithId = (obj: any) => pick(obj, ['_id', 'dueDate', 'name', 'url', 'userGroups'])
+const cleanApplication = (obj: any) => pick(obj, ['dueDate', 'title', 'url', 'userGroups'])
+const cleanApplicationWithId = (obj: any) => pick(obj, ['_id', 'dueDate', 'title', 'url', 'userGroups'])
 
 export const createApplication: Controller = async (req, res) => {
   const application = await new Application({

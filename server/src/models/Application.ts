@@ -7,7 +7,7 @@ const applicationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   createdBy: String,
   dueDate: { type: Date, required: 'due date is required' },
-  name: { type: String, required: 'application name is required' },
+  title: { type: String, required: 'application title is required' },
   updatedAt: { type: Date, default: Date.now },
   updatedBy: String,
   url: String,

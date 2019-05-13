@@ -17,9 +17,9 @@ const Comments: React.FC<IProps> = ({ applicationId, handleError }) => {
   return (
     <Wrapper>
       <TableHeader>
-        <CustomHeading>Camp Dates</CustomHeading>
+        <CustomHeading>Comments</CustomHeading>
         <CreateButton onClick={() => modalController.set({ action: 'create', applicationId })}>
-          + New Camp Date
+          + New Comment
         </CreateButton>
       </TableHeader>
       <div>
@@ -36,7 +36,7 @@ const Comments: React.FC<IProps> = ({ applicationId, handleError }) => {
 export default Comments
 const Wrapper = styled.div`
   margin-top: 3.2rem;
-  background: ${props => props.theme.primaryLight};
+  /* background: ${props => props.theme.primaryLight}; */
 `
 const TableHeader = styled.div`
   display: flex;
@@ -48,9 +48,9 @@ const CustomHeading = styled(Heading)`
   font-size: 2.4rem;
 `
 const CreateButton = styled.button`
-  background: ${props => props.theme.primaryBackground};
+  background: ${props => props.theme.white};
   border: none;
-  color: ${props => props.theme.primaryLink};
+  color: ${props => props.theme.primary};
   font-weight: 500;
   padding: 0.8rem 1.2rem;
   border-radius: 20px;

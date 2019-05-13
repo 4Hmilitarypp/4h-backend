@@ -14,7 +14,7 @@ import {
   UploadLabel,
 } from '../../components/Elements'
 import useErrorHandler from '../../hooks/useErrorHandler'
-import usePermission from '../../hooks/useRole'
+import usePermission from '../../hooks/usePermission'
 import api from '../../utils/api'
 
 const HomeInfo: React.FC<RouteComponentProps> = () => {

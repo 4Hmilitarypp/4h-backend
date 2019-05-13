@@ -2,23 +2,17 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
-import {
-  BlankUploadBox,
-  ResourceSection,
-  TextUploadBox,
-  TrashCan,
-  UploadButton,
-  UploadLabel,
-} from '../../components/Elements'
+import { Button, UploadInput, UploadLabel } from '../../components/Elements'
+import EmbedDocument from '../../components/EmbedDocument'
 import { createError } from '../../hooks/useErrorHandler'
-import { IApiError, IUserApplication } from '../../sharedTypes'
+import { IApiError, IFullUserApplication } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateUserApplications } from './useUserApplications'
 
 interface IProps {
   action: 'create' | 'update'
   handleError: (err: IApiError) => void
-  userApplication?: IUserApplication
+  userApplication?: IFullUserApplication
   updateUserApplications: TUpdateUserApplications
 }
 
@@ -80,23 +74,28 @@ const UserApplicationForm: React.FC<IProps> = ({ action, userApplication, handle
     }
   }
 
+  const handleUrlChange = (e: any) => setApplicationUrl(e.target.value)
+
   return (
     // the id on the form must be what the corresponding submit button's formId is
     <Form onSubmit={handleSubmit} id="UserApplicationForm" ref={formRef}>
       <UserApplicationResources>
-        <ResourceSection>
-          <HeadingUploadLabel hasImage={applicationUrl}>
-            Application Upload
-            {applicationUrl && <TrashCan onClick={() => setApplicationUrl(undefined)} />}
-          </HeadingUploadLabel>
-          {applicationUrl ? (
-            <TextUploadBox>{applicationUrl}</TextUploadBox>
-          ) : (
-            <BlankUploadBox onClick={uploadApplication}>
-              <UploadButton>Upload Application</UploadButton>
-            </BlankUploadBox>
-          )}
-        </ResourceSection>
+        <HeadingUploadLabel hasImage={applicationUrl}>Application Upload</HeadingUploadLabel>
+        {userApplication && (
+          <EmbedDocument
+            inPage={true}
+            url={applicationUrl as string}
+            title={userApplication.title}
+            open={true}
+            setOpen={() => null}
+          />
+        )}
+        <UploadApplicationButton type="button" onClick={uploadApplication}>
+          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
+        </UploadApplicationButton>
+        <InputSection>
+          <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
+        </InputSection>
       </UserApplicationResources>
     </Form>
   )
@@ -113,8 +112,22 @@ const UserApplicationResources = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `
 const HeadingUploadLabel = styled(UploadLabel)`
-  font-size: 2.4rem;
-  padding-bottom: 3.6rem;
+  font-size: 2.7rem;
+  padding: 3.6rem 0;
+  color: ${props => props.theme.primaryBlack};
+  width: auto;
+  font-weight: 600;
+  font-family: Raleway;
+`
+const UploadApplicationButton = styled(Button)`
+  margin-top: 3.6rem;
+`
+const InputSection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `

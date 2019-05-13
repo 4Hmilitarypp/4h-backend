@@ -12,7 +12,8 @@ interface IProps {
 
 const Comment: React.FC<IProps> = ({ comment, setModalState, applicationId }) => (
   <Wrapper onClick={() => setModalState({ action: 'update', comment, applicationId })}>
-    <Title>{`${comment.text} ${comment.user}`}</Title>
+    <Name>{comment.userName}</Name>
+    <Text>{comment.text}</Text>
   </Wrapper>
 )
 
@@ -21,12 +22,17 @@ export default Comment
 const Wrapper = styled.div`
   padding: 2rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
   ${hoveredRow()};
   &:nth-child(2n - 1) {
     background: ${props => props.theme.white};
   }
 `
-const Title = styled.span`
+const Name = styled.span`
   font-weight: 500;
+  color: ${props => props.theme.primaryGrey};
+`
+const Text = styled.span`
   color: ${props => props.theme.primaryGrey};
 `

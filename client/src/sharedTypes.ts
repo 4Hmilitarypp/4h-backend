@@ -5,7 +5,7 @@ export interface IApiError {
 export interface IApplication {
   _id?: string
   dueDate: string
-  name: string
+  title: string
   url: string
   userGroups: string[]
 }
@@ -145,7 +145,8 @@ export interface IUser {
 export interface IComment {
   _id?: string
   text: string
-  user: string
+  userId: string
+  userName: string
 }
 export interface IApiComment {
   _id?: string
@@ -162,7 +163,7 @@ export interface IFullUserApplication extends IUserApplication {
   baseId: string
   comments: IComment[]
   dueDate: string
-  name: string
+  title: string
   status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
   userGroups: string[]
 }

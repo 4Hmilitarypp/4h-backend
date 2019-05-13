@@ -16,11 +16,6 @@ const setupUserApplicationRoutes = (router: Router) => {
       guard({}).check([['admin'], ['application-user']]),
       catchErrors(userApplicationController.getUserApplications)
     )
-    .post(
-      auth.required,
-      guard({}).check([['admin'], ['application-user']]),
-      catchErrors(userApplicationController.createUserApplication)
-    )
   router
     .route('/:_id')
     .get(auth.optional, catchErrors(userApplicationController.getUserApplication))

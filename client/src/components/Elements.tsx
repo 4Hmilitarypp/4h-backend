@@ -79,6 +79,10 @@ export const A = styled.a`
     opacity: 0.8;
   }
 `
+export const B = styled.b`
+  font-weight: 500;
+  color: ${props => props.theme.primaryBlack};
+`
 // Have to do the props thing because of a jest error
 export const Link = styled(props => <UnstyledLink {...props} />)`
   font-weight: 500;
