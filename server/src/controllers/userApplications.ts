@@ -4,19 +4,19 @@ import { IApplicationDocument } from '../models/Application'
 import { IUserApplicationDocument } from '../models/UserApplication'
 import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
-import { forbiddenError, notFoundError } from '../utils/errors'
+import { createValidationError, forbiddenError, notFoundError } from '../utils/errors'
 
 type TCreateUserApplication = Pick<
   IUserApplication,
-  'baseId' | 'createdBy' | 'updatedBy' | 'dueDate' | 'title' | 'url' | 'userId' | 'userGroups'
+  'baseId' | 'createdBy' | 'updatedBy' | 'dueDate' | 'title' | 'userId' | 'userGroups'
 >
 
 const Application = mongoose.model<IApplicationDocument>('Application')
 const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
 const Archive = mongoose.model('Archive')
 
-const cleanUserApplication = (obj: any) => pick(obj, ['url'])
-const cleanUserApplicationWithId = (obj: any) => pick(obj, ['_id', 'url'])
+const cleanUserApplication = (obj: any) => pick(obj, ['status', 'url'])
+const cleanUserApplicationWithId = (obj: any) => pick(obj, ['_id', 'status', 'url'])
 
 /**
  * Shows a user their applications. If a user has not seen a a base application before, it should be created for them.
@@ -35,7 +35,6 @@ export const getUserApplications: Controller = async (req, res) => {
         dueDate: baseApplication.dueDate,
         title: baseApplication.title,
         updatedBy: 'system',
-        url: baseApplication.url,
         userGroups: baseApplication.userGroups,
         userId: req.user._id,
       })
@@ -57,8 +56,28 @@ export const getUserApplication: Controller = async (req, res) => {
   return res.json(userApplication)
 }
 
+export const getByUserId: Controller = async (req, res) => {
+  const userApplications = await UserApplication.find({ userId: req.params.userId })
+  return res.json(userApplications)
+}
+
+export const getByBaseId: Controller = async (req, res) => {
+  const userApplications = await UserApplication.find({ baseId: req.params.baseId })
+  return res.json(userApplications)
+}
+
 export const updateUserApplication: Controller = async (req, res) => {
   const { _id } = req.params
+  if (req.body.status !== 'Submitted' || req.body.status !== 'Not Submitted') {
+    if (!req.user.permissions.includes('admin')) throw forbiddenError
+  }
+
+  const oldUserApplication = await UserApplication.findById(_id)
+  if (!oldUserApplication) throw notFoundError
+  if (oldUserApplication.status === 'Submitted' && req.body.status === 'Submitted') {
+    throw createValidationError('the status was already "Submitted"')
+  }
+
   const userApplication = await UserApplication.findByIdAndUpdate(
     _id,
     { ...cleanUserApplication(req.body), updatedBy: req.user.email },
@@ -68,9 +87,7 @@ export const updateUserApplication: Controller = async (req, res) => {
       runValidators: true,
     }
   )
-  if (userApplication) {
-    return res.status(200).json(cleanUserApplicationWithId(userApplication))
-  }
+  if (userApplication) return res.status(200).json(cleanUserApplicationWithId(userApplication))
   throw notFoundError
 }
 

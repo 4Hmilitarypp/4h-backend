@@ -1,11 +1,11 @@
 import { filter, map } from 'lodash'
 import * as React from 'react'
-import FlashContext from '../../contexts/FlashContext'
-import useErrorHandler from '../../hooks/useErrorHandler'
-import usePermission from '../../hooks/usePermission'
-import { IApplication } from '../../sharedTypes'
-import api from '../../utils/api'
-import { numericSort } from '../../utils/string'
+import FlashContext from '../../../contexts/FlashContext'
+import useErrorHandler from '../../../hooks/useErrorHandler'
+import usePermission from '../../../hooks/usePermission'
+import { IApplication } from '../../../sharedTypes'
+import api from '../../../utils/api'
+import { numericSort } from '../../../utils/string'
 
 export type TUpdateBaseApplications = ({
   _id,

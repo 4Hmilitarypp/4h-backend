@@ -14,7 +14,11 @@ const userApplicationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   createdBy: String,
   dueDate: { type: Date, required: 'due date is required' },
-  status: { type: String, enum: ['Not Submitted', 'Late', 'Rejected', 'Approved'], default: 'Not Submitted' },
+  status: {
+    default: 'Not Submitted',
+    enum: ['Not Submitted', 'Submitted', 'Late', 'Rejected', 'Approved'],
+    type: String,
+  },
   title: { type: String, required: 'application title is required' },
   updatedAt: { type: Date, default: Date.now },
   updatedBy: String,

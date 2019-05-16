@@ -1,8 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { IForm } from '../../../clientTypes'
-import { InputGroup, ModalForm } from '../../../components/Elements'
-import api from '../../../utils/api'
+import { IForm } from '../../../../clientTypes'
+import { InputGroup, ModalForm } from '../../../../components/Elements'
+import api from '../../../../utils/api'
 import { IModalController } from './useComments'
 
 interface IProps {

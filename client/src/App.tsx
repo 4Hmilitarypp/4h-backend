@@ -1,13 +1,13 @@
 import { Router } from '@reach/router'
 import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
-import ErrorBoundary from './components/ErrorBoundry'
+import ErrorBoundary from './components/ErrorBoundary'
 import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
 import Admin from './pages/admin/Admin'
-import BaseApplications from './pages/baseApplications/BaseApplications'
+import ApplicationsAdmin from './pages/applicationsAdmin/ApplicationsAdmin'
 import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
@@ -62,7 +62,7 @@ const App: React.FC<{}> = () => {
               <Router primary={false}>
                 <Admin path="/admin/*" />
                 <Applications path="applications/*" />
-                <BaseApplications path="applications-admin/*" />
+                <ApplicationsAdmin path="applications-admin/*" />
                 <Camps path="/camps/*" />
                 <EducatorResources path="/educator-resources/*" />
                 <Partners path="/partners/*" />

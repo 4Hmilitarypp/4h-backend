@@ -6,6 +6,7 @@ import UserApplicationTable from './UserApplicationTable'
 import useUserApplications, { TUpdateUserApplications } from './useUserApplications'
 
 export interface IUserApplicationContext {
+  isLoaded: boolean
   userApplications: IFullUserApplication[]
   updateUserApplications: TUpdateUserApplications
   findById: (id: string) => IFullUserApplication | undefined
@@ -18,7 +19,7 @@ const UserApplications: React.FC<RouteComponentProps> = () => {
   const findById = (id: string) => (userApplications ? userApplications.find(r => r._id === id) : undefined)
 
   return (
-    <UserApplicationContext.Provider value={{ userApplications, updateUserApplications, findById }}>
+    <UserApplicationContext.Provider value={{ isLoaded: false, userApplications, updateUserApplications, findById }}>
       {userApplications.length > 0 && <div data-testid="UserApplications" />}
       <Router>
         <UserApplicationTable path="/" />

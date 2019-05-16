@@ -1,4 +1,3 @@
-import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
@@ -10,13 +9,12 @@ import api from '../../utils/api'
 import { TUpdateUserApplications } from './useUserApplications'
 
 interface IProps {
-  action: 'create' | 'update'
   handleError: (err: IApiError) => void
-  userApplication?: IFullUserApplication
+  userApplication: IFullUserApplication
   updateUserApplications: TUpdateUserApplications
 }
 
-const UserApplicationForm: React.FC<IProps> = ({ action, userApplication, handleError, updateUserApplications }) => {
+const UserApplicationForm: React.FC<IProps> = ({ userApplication, handleError, updateUserApplications }) => {
   const [applicationUrl, setApplicationUrl] = React.useState<string | undefined>(undefined)
   const formRef = React.useRef<HTMLFormElement>(null)
 
@@ -39,6 +37,13 @@ const UserApplicationForm: React.FC<IProps> = ({ action, userApplication, handle
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
           setApplicationUrl(res.info.secure_url)
+          api.userApplications
+            .update(userApplication._id as string, { url: res.info.secure_url, status: 'Not Submitted' })
+            .then(newUserApplication => {
+              updateUserApplications({ userApplication: newUserApplication, action: 'update' })
+              window.location.reload()
+            })
+            .catch(handleError)
         }
         if (err) handleError(err)
       }
@@ -50,53 +55,36 @@ const UserApplicationForm: React.FC<IProps> = ({ action, userApplication, handle
     e.preventDefault()
 
     if (!applicationUrl) return handleError(createError('application url is required', 400))
-
-    const updateUserApplication = {
-      _id: userApplication ? userApplication._id : undefined,
-      url: applicationUrl,
-    }
-    if (action === 'update') {
-      api.userApplications
-        .update(updateUserApplication._id as string, updateUserApplication)
-        .then(newUserApplication => {
-          updateUserApplications({ userApplication: newUserApplication, action })
-          navigate(`/applications/${newUserApplication._id}`)
-        })
-        .catch(handleError)
-    } else if (action === 'create') {
-      api.userApplications
-        .create(updateUserApplication)
-        .then(newUserApplication => {
-          updateUserApplications({ userApplication: newUserApplication, action })
-          navigate(`/applications/${newUserApplication._id}`)
-        })
-        .catch(handleError)
-    }
+    if (!userApplication) return
+    api.userApplications
+      .update(userApplication._id as string, { url: applicationUrl, status: 'Submitted' })
+      .then(newUserApplication => {
+        updateUserApplications({ userApplication: newUserApplication, action: 'update' })
+        window.location.reload()
+      })
+      .catch(handleError)
   }
 
   const handleUrlChange = (e: any) => setApplicationUrl(e.target.value)
-
   return (
     // the id on the form must be what the corresponding submit button's formId is
     <Form onSubmit={handleSubmit} id="UserApplicationForm" ref={formRef}>
       <UserApplicationResources>
         <HeadingUploadLabel hasImage={applicationUrl}>Application Upload</HeadingUploadLabel>
-        {userApplication && (
-          <EmbedDocument
-            inPage={true}
-            url={applicationUrl as string}
-            title={userApplication.title}
-            open={true}
-            setOpen={() => null}
-          />
-        )}
-        <UploadApplicationButton type="button" onClick={uploadApplication}>
-          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
-        </UploadApplicationButton>
         <InputSection>
           <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
         </InputSection>
+        <UploadApplicationButton type="button" onClick={uploadApplication}>
+          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
+        </UploadApplicationButton>
       </UserApplicationResources>
+      <EmbedDocument
+        inPage={true}
+        url={applicationUrl as string}
+        title={userApplication.title}
+        open={true}
+        setOpen={() => null}
+      />
     </Form>
   )
 }
@@ -123,11 +111,14 @@ const HeadingUploadLabel = styled(UploadLabel)`
   font-family: Raleway;
 `
 const UploadApplicationButton = styled(Button)`
-  margin-top: 3.6rem;
+  margin-bottom: 3.6rem;
 `
 const InputSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  input {
+    margin: 0 0 2.4rem;
+  }
 `

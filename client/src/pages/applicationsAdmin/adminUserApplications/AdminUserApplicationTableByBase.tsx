@@ -3,27 +3,29 @@ import { format } from 'date-fns'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { CreateButton, Heading, InputGroup } from '../../components/Elements'
-import { hoveredRow } from '../../utils/mixins'
-import { BaseApplicationContext } from './BaseApplications'
+import BackButton from '../../../components/BackButton'
+import { B, Heading, InputGroup } from '../../../components/Elements'
+import { hoveredRow } from '../../../utils/mixins'
+import { AdminUserApplicationContextByBase } from './AdminUserApplicationsByBase'
 
-const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
-  const context = React.useContext(BaseApplicationContext)
-
+const BaseApplicationTableByBase: React.FC<RouteComponentProps> = () => {
+  const context = React.useContext(AdminUserApplicationContextByBase)
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
   const filterAndSortBaseApplications = () =>
-    context.baseApplications
-      .filter(baseApplication => !filterText || isFound(baseApplication.title))
+    context.adminUserApplications
+      .filter(adminUserApplication => !filterText || isFound(adminUserApplication.title))
       .sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1))
 
   return (
     <div>
       <TableHeader>
-        <BaseApplicationHeading>Applications</BaseApplicationHeading>
-        <CreateButton as={Link} to="new">
-          + New Application
-        </CreateButton>
+        <BackButton
+          route={'/applications-admin'}
+          backText={'Applications Dashboard'}
+          title={'Applications Dashboard'}
+        />
+        <BaseApplicationHeading>User Applications By Base</BaseApplicationHeading>
       </TableHeader>
       <CustomInputGroup color="white">
         <label>Filter Applications</label>
@@ -32,8 +34,11 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
       <div>
         {map(filterAndSortBaseApplications(), p => (
           <Wrapper to={p._id} key={p._id}>
-            <CityAndState>{`${p.title}`}</CityAndState>
-            <DueDate>{`${format(p.dueDate, 'MMMM D YYYY')}`}</DueDate>
+            <TitleAndDate>
+              <Title>{p.title}</Title>
+              <span>{format(p.dueDate, 'MMMM D YYYY')}</span>
+            </TitleAndDate>
+            <B>{p.status}</B>
           </Wrapper>
         ))}
       </div>
@@ -41,35 +46,40 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
   )
 }
 
-export default BaseApplicationTable
+export default BaseApplicationTableByBase
 
 const TableHeader = styled.div`
   padding: 0rem 4rem 3.2rem;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
   align-items: baseline;
 `
 const BaseApplicationHeading = styled(Heading)`
   padding: 4rem 0 0;
 `
 const Wrapper = styled(Link)`
-  padding: 2rem;
+  padding: 1.2rem 4rem;
   position: relative;
   display: grid;
   grid-template-columns: 1fr 3fr;
+  justify-content: center;
+  align-items: center;
   ${hoveredRow()};
   &:nth-child(2n - 1) {
     background: ${props => props.theme.white};
   }
 `
-const CityAndState = styled.span`
+const TitleAndDate = styled.span`
   color: ${props => props.theme.primaryGrey};
   padding-right: 2.4rem;
+  display: flex;
+  flex-direction: column;
 `
-const DueDate = styled.span`
+const Title = styled.span`
   font-weight: 500;
-  color: ${props => props.theme.primaryGrey};
 `
+
 const CustomInputGroup = styled(InputGroup)`
   margin: 0 2.4rem 2rem;
 `

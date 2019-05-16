@@ -5,16 +5,17 @@ import { media } from '../utils/mixins'
 import Icon from './Icon'
 
 interface IProps {
+  backText?: string
   navigate?: any
   route: string
   title: string
 }
 
-const UnstyledBackButton: React.FC<IProps> = ({ navigate = reachNavigate, route, title }) => {
+const UnstyledBackButton: React.FC<IProps> = ({ backText, navigate = reachNavigate, route, title }) => {
   return (
     <BackButton onClick={() => navigate(route)}>
       <BackIcon name="back" circleColor="#339966" arrowColor="#fff" />
-      <BackText>Back To {title}</BackText>
+      <BackText>{backText ? backText : `Back To ${title}`}</BackText>
     </BackButton>
   )
 }

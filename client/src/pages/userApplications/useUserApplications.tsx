@@ -5,7 +5,6 @@ import useErrorHandler from '../../hooks/useErrorHandler'
 import usePermission from '../../hooks/usePermission'
 import { IFullUserApplication } from '../../sharedTypes'
 import api from '../../utils/api'
-import { numericSort } from '../../utils/string'
 
 export type TUpdateUserApplications = ({
   _id,
@@ -13,7 +12,7 @@ export type TUpdateUserApplications = ({
   userApplication,
 }: {
   _id?: string
-  action: 'create' | 'update' | 'delete'
+  action: 'update' | 'delete'
   userApplication?: IFullUserApplication
 }) => void
 
@@ -22,10 +21,14 @@ const useUserApplications = () => {
   const handleError = useErrorHandler()
 
   const [userApplications, setUserApplications] = React.useState<IFullUserApplication[]>([])
+  const [isLoaded, setIsLoaded] = React.useState(false)
   React.useEffect(() => {
     api.userApplications
       .get()
-      .then(c => setUserApplications(c))
+      .then(c => {
+        setUserApplications(c)
+        setIsLoaded(true)
+      })
       .catch(handleError)
   }, [])
 
@@ -36,16 +39,12 @@ const useUserApplications = () => {
     if (action === 'update' && userApplication) {
       newUserApplications = map(userApplications, r => (r._id === userApplication._id ? userApplication : r))
       flashContext.set({ message: 'Application Updated Successfully' })
-    } else if (action === 'create' && userApplication) {
-      const unsorted = [userApplication, ...userApplications]
-      newUserApplications = numericSort(unsorted, 'dueDate')
-      flashContext.set({ message: 'Application Created Successfully' })
     } else if (action === 'delete') {
       newUserApplications = filter(userApplications, c => c._id !== _id)
       flashContext.set({ message: 'Application Deleted Successfully' })
     }
     setUserApplications(newUserApplications)
   }
-  return { handleError, userApplications, updateUserApplications }
+  return { handleError, isLoaded, userApplications, updateUserApplications }
 }
 export default useUserApplications

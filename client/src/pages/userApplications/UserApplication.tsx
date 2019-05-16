@@ -2,17 +2,9 @@ import { navigate, RouteComponentProps } from '@reach/router'
 import { format } from 'date-fns'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import UnstyledBackButton from '../../components/BackButton'
-import {
-  Button,
-  CreateButton,
-  DeleteButton,
-  HighSevDeleteButton,
-  OutlineButton,
-  P,
-  Section,
-  SubHeading,
-} from '../../components/Elements'
+import BackButton from '../../components/BackButton'
+import { Button, DeleteButton, HighSevDeleteButton, OutlineButton, Section } from '../../components/Elements'
+import { createError } from '../../hooks/useErrorHandler'
 import { IApiError, IFullUserApplication } from '../../sharedTypes'
 import api from '../../utils/api'
 import Comments from './comments/Comments'
@@ -24,43 +16,33 @@ interface IProps extends RouteComponentProps {
   handleError: (err: IApiError) => void
 }
 
-const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
+const UserApplication: React.FC<IProps> = ({ _id, handleError }) => {
   const [userApplication, setUserApplication] = React.useState<IFullUserApplication | undefined>(undefined)
-  const [action, setAction] = React.useState<'create' | 'update'>(_id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
 
   const userApplicationContext = React.useContext(UserApplicationContext)
 
   React.useEffect(() => {
-    if (_id !== 'new') {
-      // If the action is not already update set it to be update
-      if (action !== 'update') {
-        setAction('update')
-      }
-      const updateUserApplication = userApplicationContext.findById(_id)
-      if (updateUserApplication) {
-        setUserApplication(updateUserApplication)
-      } else {
-        navigate('/applications')
-      }
-    } else {
-      setUserApplication(undefined)
-      setAction('create')
+    const updateUserApplication = userApplicationContext.findById(_id as string)
+    if (userApplicationContext.isLoaded && !updateUserApplication) {
+      handleError(createError('The requested Application could not be found', 400))
     }
-  }, [_id])
+    setUserApplication(updateUserApplication)
+  }, [userApplicationContext.userApplications])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
     navigate('/applications')
   }
 
-  const handleDeleteClicked = () => {
+  const handleResetClicked = () => {
     if (userApplication && timesDeleteClicked === 1) {
       api.userApplications
         .delete(userApplication._id as string)
         .then(() => {
           userApplicationContext.updateUserApplications({ _id: userApplication._id, action: 'delete' })
           navigate('/applications')
+          window.location.reload()
         })
         .catch(handleError)
     } else {
@@ -72,42 +54,37 @@ const UserApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
       {userApplication && (
         <>
           <HeaderWrapper>
-            <UnstyledBackButton route={'/applications'} title={'Applications'} />
-            <ApplicationHeading>{userApplication.title}</ApplicationHeading>
+            <BackButton route={'/applications'} title={'Applications'} />
+            <Title>
+              <ApplicationHeading>{userApplication.title}</ApplicationHeading>
+              <StatusButton>{userApplication.status}</StatusButton>
+            </Title>
             <DueDate>Due {format(userApplication.dueDate, 'MMMM D YYYY')}</DueDate>
           </HeaderWrapper>
           <Section>
-            <SubHeading>Application Information</SubHeading>
-            <CustomP>Status: {userApplication.status}</CustomP>
-            <DownloadSection>
-              <CreateButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
-                Download Application
-              </CreateButton>
-            </DownloadSection>
-            {_id !== 'new' && action === 'update' && userApplication && (
-              <Comments applicationId={userApplication._id || ''} handleError={handleError} />
-            )}
+            <DownloadButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
+              Download Application Template
+            </DownloadButton>
+            <Comments applicationId={userApplication._id || ''} handleError={handleError} />
           </Section>
+          <UserApplicationForm
+            handleError={handleError}
+            userApplication={userApplication}
+            updateUserApplications={userApplicationContext.updateUserApplications}
+          />
+          <Buttons>
+            {timesDeleteClicked === 0 ? (
+              <DeleteButton onClick={handleResetClicked}>Reset Application</DeleteButton>
+            ) : (
+              <HighSevDeleteButton onClick={handleResetClicked}>CONFIRM RESET</HighSevDeleteButton>
+            )}
+            <RightButtons>
+              <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
+              <Button form="UserApplicationForm">Submit Application</Button>
+            </RightButtons>
+          </Buttons>
         </>
       )}
-      <UserApplicationForm
-        action={action}
-        handleError={handleError}
-        userApplication={userApplication}
-        updateUserApplications={userApplicationContext.updateUserApplications}
-      />
-      <Buttons>
-        {action === 'update' &&
-          (timesDeleteClicked === 0 ? (
-            <DeleteButton onClick={handleDeleteClicked}>Delete Application</DeleteButton>
-          ) : (
-            <HighSevDeleteButton onClick={handleDeleteClicked}>CONFIRM DELETE</HighSevDeleteButton>
-          ))}
-        <RightButtons>
-          <OutlineButton onClick={handleCancel}>Cancel</OutlineButton>
-          <Button form="UserApplicationForm">{action === 'update' ? 'Update' : 'Create'} Application</Button>
-        </RightButtons>
-      </Buttons>
     </div>
   )
 }
@@ -124,22 +101,32 @@ const ApplicationHeading = styled.h1`
   padding: 3.6rem 0;
   color: ${props => props.theme.primaryBlack};
 `
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+`
+const StatusButton = styled.span`
+  font-size: 1.2rem;
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  margin-left: 1.6rem;
+  font-weight: 500;
+  background: ${props => props.theme.primaryLink};
+  color: ${props => props.theme.white};
+`
 const DueDate = styled.div`
   width: 25.5rem;
   font-weight: 500;
   font-size: 1.8rem;
   color: ${props => props.theme.primaryBlack};
 `
-/* const SplitSections = styled(Section)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  padding-bottom: 6rem;
-` */
-const CustomP = styled(P)`
-  padding-bottom: 0.8rem;
+const DownloadButton = styled(Button)`
+  margin-top: 4.8rem;
+  display: block;
+  margin-bottom: 4.8rem;
+  text-align: center;
+  padding: 1.6rem 2rem;
 `
-const DownloadSection = styled.div``
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

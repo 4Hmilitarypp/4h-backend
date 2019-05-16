@@ -41,7 +41,7 @@ const EmbedDocument: React.FC<IProps> = ({ inPage = false, open, setOpen, title,
     return inPage ? (
       <InPageWrapper>
         <DocumentCommands>
-          <DocumentCloseButton as="a" href={url} download={title}>
+          <DocumentCloseButton as="a" href={url} download={title} target="_blank">
             Download
           </DocumentCloseButton>
         </DocumentCommands>
@@ -75,12 +75,13 @@ export default EmbedDocument
 const Doc: any = styled.iframe`
   height: 100%;
   width: 100%;
-  padding-bottom: 6.5rem;
 `
 const InPageWrapper = styled.div`
   background: hsl(206, 7%, 21%);
   width: 90%;
   height: 80rem;
+  margin: 0 auto;
+  padding-bottom: 6.5rem;
 `
 const EmbedWrapper = styled.div`
   position: fixed;

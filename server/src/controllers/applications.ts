@@ -26,6 +26,11 @@ export const getApplications: Controller = async (_, res) => {
   return res.json(applications)
 }
 
+export const getApplicationIds: Controller = async (_, res) => {
+  const applications = await Application.find().select(['_id', 'title', 'dueDate'])
+  return res.json(applications)
+}
+
 export const updateApplication: Controller = async (req, res) => {
   const { _id } = req.params
   const application = await Application.findByIdAndUpdate(

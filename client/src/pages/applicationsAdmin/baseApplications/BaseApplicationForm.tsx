@@ -1,12 +1,12 @@
 import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { IForm } from '../../clientTypes'
-import { Button, InputGroup, LeftSubHeading, SubHeading, UploadInput, UploadLabel } from '../../components/Elements'
-import EmbedDocument from '../../components/EmbedDocument'
-import { createError } from '../../hooks/useErrorHandler'
-import { IApiError, IApplication } from '../../sharedTypes'
-import api from '../../utils/api'
+import { IForm } from '../../../clientTypes'
+import { Button, InputGroup, LeftSubHeading, SubHeading, UploadInput, UploadLabel } from '../../../components/Elements'
+import EmbedDocument from '../../../components/EmbedDocument'
+import { createError } from '../../../hooks/useErrorHandler'
+import { IApiError, IApplication } from '../../../sharedTypes'
+import api from '../../../utils/api'
 import { TUpdateBaseApplications } from './useBaseApplications'
 
 interface IProps {
@@ -113,6 +113,12 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
       </PermissionGroup>
       <BaseApplicationResources>
         <HeadingUploadLabel hasImage={applicationUrl}>Application Upload</HeadingUploadLabel>
+        <UploadApplicationButton type="button" onClick={uploadApplication}>
+          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
+        </UploadApplicationButton>
+        <InputSection>
+          <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
+        </InputSection>
         {baseApplication && (
           <EmbedDocument
             inPage={true}
@@ -122,12 +128,6 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
             setOpen={() => null}
           />
         )}
-        <UploadApplicationButton type="button" onClick={uploadApplication}>
-          {applicationUrl ? 'Upload Different Application' : 'Upload New Application'}
-        </UploadApplicationButton>
-        <InputSection>
-          <UploadInput type="url" value={applicationUrl || ''} onChange={e => handleUrlChange(e)} />
-        </InputSection>
       </BaseApplicationResources>
     </Form>
   )
@@ -168,15 +168,22 @@ const CheckBox = styled.input`
   margin-left: 1.6rem;
 `
 const UploadApplicationButton = styled(Button)`
-  margin-top: 3.6rem;
+  margin-bottom: 3.6rem;
 `
 const HeadingUploadLabel = styled(UploadLabel)`
-  font-size: 2.4rem;
-  padding-bottom: 3.6rem;
+  font-size: 2.7rem;
+  padding: 3.6rem 0;
+  color: ${props => props.theme.primaryBlack};
+  width: auto;
+  font-weight: 600;
+  font-family: Raleway;
 `
 const InputSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  input {
+    margin: 0 0 2.4rem;
+  }
 `

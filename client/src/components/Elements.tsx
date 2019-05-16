@@ -245,7 +245,7 @@ export const ResourceSection = styled.div`
   align-items: center;
 `
 export const UploadInput = styled.input`
-  width: 100%;
+  width: 90%;
   border-radius: 5px;
   padding: 0.9rem 1.5rem;
   border: none;

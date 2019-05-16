@@ -225,3 +225,9 @@ export const me: Controller = async (req, res) => {
     return res.send()
   }
 }
+
+export const getApplicationUserIds: Controller = async (_, res) => {
+  const users = await User.find({ permissions: { $in: 'application-user' } }).select(['_id', 'name', 'email'])
+  if (!users) throw notFoundError
+  return res.json(users)
+}

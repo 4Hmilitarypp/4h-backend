@@ -155,6 +155,7 @@ export interface IApiComment {
 
 export interface IUserApplication {
   _id?: string
+  status: 'Not Submitted' | 'Submitted' | 'Late' | 'Rejected' | 'Approved'
   url: string
 }
 
@@ -164,8 +165,9 @@ export interface IFullUserApplication extends IUserApplication {
   comments: IComment[]
   dueDate: string
   title: string
-  status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
   userGroups: string[]
+  userId: string
+  user: string
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

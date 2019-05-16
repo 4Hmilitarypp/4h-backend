@@ -45,8 +45,7 @@ export const captchaError: ErrorHandler = (err, _, res, next) => {
 export const validationErrors: ErrorHandler = (err, _, res, next) => {
   if (!isValidationError(err)) return next(err)
   const errorMessages: string[] = []
-  const errorKeys = Object.keys(err.errors)
-  errorKeys.forEach(key => errorMessages.push(err.errors[key].message))
+  Object.values(err.errors).forEach(val => errorMessages.push(val.message))
   const error = { message: `Failed to save data: ${errorMessages.join(' | ').replace('..', '.')}` }
   return res.status(400).json(error)
 }

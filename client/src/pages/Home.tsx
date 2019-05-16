@@ -13,5 +13,5 @@ const Home: React.FC<RouteComponentProps> = () => {
 export default Home
 
 const HomeContainer = styled.div`
-  padding: 1rem;
+  padding: 1.2rem 3.6rem;
 `

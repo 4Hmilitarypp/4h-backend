@@ -17,6 +17,20 @@ const setupUserApplicationRoutes = (router: Router) => {
       catchErrors(userApplicationController.getUserApplications)
     )
   router
+    .route('/user/:userId')
+    .get(
+      auth.required,
+      guard({}).check([['admin'], ['application-user']]),
+      catchErrors(userApplicationController.getByUserId)
+    )
+  router
+    .route('/base/:baseId')
+    .get(
+      auth.required,
+      guard({}).check([['admin'], ['application-user']]),
+      catchErrors(userApplicationController.getByBaseId)
+    )
+  router
     .route('/:_id')
     .get(auth.optional, catchErrors(userApplicationController.getUserApplication))
     .delete(

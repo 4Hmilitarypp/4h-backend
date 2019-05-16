@@ -1,6 +1,6 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
-import { IApplication } from '../../sharedTypes'
+import { IApplication } from '../../../sharedTypes'
 import BaseApplication from './BaseApplication'
 import BaseApplicationTable from './BaseApplicationTable'
 import useBaseApplications, { TUpdateBaseApplications } from './useBaseApplications'

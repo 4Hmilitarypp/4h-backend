@@ -158,7 +158,7 @@ export interface IUserApplication {
   createdBy: string
   dueDate: string
   title: string
-  status: 'Not Submitted' | 'Late' | 'Rejected' | 'Approved'
+  status: 'Not Submitted' | 'Submitted' | 'Late' | 'Rejected' | 'Approved'
   updatedBy: string
   url: string
   userGroups: string[]

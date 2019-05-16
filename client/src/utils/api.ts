@@ -21,16 +21,16 @@ import {
   Omit,
 } from '../sharedTypes'
 
-let api: axios.AxiosInstance
+let restApi: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
 
 const getData = (res: { data: object }) => res.data
 
 const requests = {
-  delete: (url: string): Promise<any> => api.delete(url).then(getData),
-  get: (url: string): Promise<any> => api.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => api.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
+  delete: (url: string): Promise<any> => restApi.delete(url).then(getData),
+  get: (url: string): Promise<any> => restApi.get(url).then(getData),
+  post: (url: string, body: object): Promise<any> => restApi.post(url, body).then(getData),
+  put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
 }
 
 const admin = {
@@ -43,6 +43,7 @@ const applications = {
   create: (data: Omit<IApplication, '_id'>): Promise<IApplication> => requests.post('/applications', data),
   delete: (id: string): Promise<string> => requests.delete(`/applications/${id}`),
   get: (): Promise<IApplication[]> => requests.get('/applications'),
+  getIds: (): Promise<string[]> => requests.get('/applications/ids'),
   update: (id: string, updates: IApplication): Promise<IApplication> => requests.put(`/applications/${id}`, updates),
 }
 
@@ -134,6 +135,9 @@ const userApplications = {
   create: (data: IUserApplication): Promise<IFullUserApplication> => requests.post('/user-applications', data),
   delete: (id: string): Promise<string> => requests.delete(`/user-applications/${id}`),
   get: (): Promise<IFullUserApplication[]> => requests.get('/user-applications'),
+  getByBaseId: (baseId: string): Promise<IFullUserApplication[]> => requests.get(`/user-applications/base/${baseId}`),
+  getById: (id: string): Promise<IFullUserApplication> => requests.get(`/user-applications/${id}`),
+  getByUserId: (userId: string): Promise<IFullUserApplication[]> => requests.get(`/user-applications/user/${userId}`),
   update: (id: string, updates: IUserApplication): Promise<IFullUserApplication> =>
     requests.put(`/user-applications/${id}`, updates),
 }
@@ -143,6 +147,7 @@ const users = {
   create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
   delete: (id: string): Promise<string> => requests.delete(`/users/${id}`),
   get: (): Promise<IUser[]> => requests.get('/users'),
+  getApplicationUserIds: (): Promise<string[]> => requests.get('/users/application-users'),
   login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
   logout: (): Promise<string> => requests.post('/users/logout', {}),
   me: (): Promise<IUser> => requests.get('/users/me'),
@@ -157,8 +162,8 @@ const webinars = {
   update: (id: string, updates: IWebinar): Promise<IWebinar> => requests.put(`/webinars/${id}`, updates),
 }
 
-function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
-  api = (axios as any).create({
+function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
+  restApi = (axios as any).create({
     baseURL,
     ...axiosOptions,
     headers: {
@@ -167,7 +172,7 @@ function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOpti
   })
 }
 
-const restApi = {
+const api = {
   admin,
   applications,
   campDates,
@@ -186,4 +191,4 @@ const restApi = {
   webinars,
 }
 
-export default restApi
+export default api
