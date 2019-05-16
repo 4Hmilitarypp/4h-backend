@@ -30,7 +30,7 @@ const BaseApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
       if (updateBaseApplication) {
         setBaseApplication(updateBaseApplication)
       } else {
-        navigate('/applications-admin')
+        navigate('/applications-admin/applications')
       }
     } else {
       setBaseApplication(undefined)
@@ -40,7 +40,7 @@ const BaseApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
-    navigate('/applications-admin')
+    navigate('/applications-admin/applications')
   }
 
   const handleDeleteClicked = () => {
@@ -49,7 +49,7 @@ const BaseApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
         .delete(baseApplication._id as string)
         .then(() => {
           baseApplicationContext.updateBaseApplications({ _id: baseApplication._id, action: 'delete' })
-          navigate('/applications-admin')
+          navigate('/applications-admin/applications')
         })
         .catch(handleError)
     } else {

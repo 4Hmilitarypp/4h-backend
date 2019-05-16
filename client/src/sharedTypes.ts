@@ -167,7 +167,7 @@ export interface IFullUserApplication extends IUserApplication {
   title: string
   userGroups: string[]
   userId: string
-  user: string
+  userName: string
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

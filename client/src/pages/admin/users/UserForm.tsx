@@ -85,14 +85,18 @@ const UserForm: React.FC<IProps> = ({ modalController }) => {
       )}
       <CustomSubHeading>Permissions</CustomSubHeading>
       <PermissionGroup>
-        <label htmlFor="admin">Admin</label>
-        <CheckBox type="checkbox" id="admin" defaultChecked={user && user.permissions.includes('admin')} />
-        <label htmlFor="applicationUser">Application User</label>
-        <CheckBox
-          type="checkbox"
-          id="applicationUser"
-          defaultChecked={user && user.permissions.includes('application-user')}
-        />
+        <div>
+          <label htmlFor="admin">Admin</label>
+          <CheckBox type="checkbox" id="admin" defaultChecked={user && user.permissions.includes('admin')} />
+        </div>
+        <div style={{ paddingLeft: '1.6rem' }}>
+          <label htmlFor="applicationUser">Application User</label>
+          <CheckBox
+            type="checkbox"
+            id="applicationUser"
+            defaultChecked={user && user.permissions.includes('application-user')}
+          />
+        </div>
       </PermissionGroup>
     </Form>
   )
@@ -106,6 +110,7 @@ const Form = styled.form`
 `
 const CheckBox = styled.input`
   margin-left: 1.6rem;
+  display: block;
 `
 const CustomSubHeading = styled(LeftSubHeading)`
   font-size: 2rem;

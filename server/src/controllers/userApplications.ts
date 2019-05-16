@@ -72,7 +72,7 @@ export const getByBaseId: Controller = async (req, res) => {
 
 export const updateUserApplication: Controller = async (req, res) => {
   const { _id } = req.params
-  if (req.body.status !== 'Submitted' || req.body.status !== 'Not Submitted') {
+  if (req.body.status !== 'Submitted' && req.body.status !== 'Not Submitted') {
     if (!req.user.permissions.includes('admin')) throw forbiddenError
   }
 
@@ -133,8 +133,6 @@ export const createComment: Controller = async (req, res) => {
     if (updatedUserApplication.userId.toString() !== req.user._id) {
       const user = await User.findById(updatedUserApplication.userId).select('email')
       if (!user) throw notFoundError
-      console.log(user)
-      console.log(req.user)
       try {
         await transporter.sendMail({
           from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,

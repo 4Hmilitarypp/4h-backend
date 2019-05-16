@@ -69,7 +69,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
         .update(updateBaseApplication._id as string, updateBaseApplication)
         .then(newBaseApplication => {
           updateBaseApplications({ baseApplication: newBaseApplication, action })
-          navigate(`/applications-admin/${newBaseApplication._id}`)
+          navigate(`/applications-admin/applications/${newBaseApplication._id}`)
         })
         .catch(handleError)
     } else if (action === 'create') {
@@ -77,7 +77,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
         .create(updateBaseApplication)
         .then(newBaseApplication => {
           updateBaseApplications({ baseApplication: newBaseApplication, action })
-          navigate(`/applications-admin/${newBaseApplication._id}`)
+          navigate(`/applications-admin/applications/${newBaseApplication._id}`)
         })
         .catch(handleError)
     }

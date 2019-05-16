@@ -38,6 +38,7 @@ const BaseApplicationTableByBase: React.FC<RouteComponentProps> = () => {
               <Title>{p.title}</Title>
               <span>{format(p.dueDate, 'MMMM D YYYY')}</span>
             </TitleAndDate>
+            <B>{p.userId}</B>
             <B>{p.status}</B>
           </Wrapper>
         ))}
@@ -62,7 +63,7 @@ const Wrapper = styled(Link)`
   padding: 1.2rem 4rem;
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 3fr 1fr;
   justify-content: center;
   align-items: center;
   ${hoveredRow()};

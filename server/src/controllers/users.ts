@@ -35,6 +35,7 @@ export const updateUser: Controller = async (req, res) => {
       runValidators: true,
     }
   )
+  // if (user) return res.status(200).json(createSafeUser(user))
   if (user) {
     try {
       await transporter.sendMail({
