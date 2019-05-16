@@ -3,7 +3,6 @@ import * as React from 'react'
 import FlashContext from '../../../../contexts/FlashContext'
 import { IApiError, IComment } from '../../../../sharedTypes'
 import api from '../../../../utils/api'
-import { numericSort } from '../../../../utils/string'
 
 export type IUpdateComments = ({
   _id,
@@ -53,14 +52,13 @@ const useComments = (handleError: (err: IApiError) => void, applicationId?: stri
     let newComments: IComment[] = []
     if (action === 'update' && comment) {
       newComments = map(comments, l => (l._id === comment._id ? comment : l))
-      flashContext.set({ message: 'Camp Date Updated Successfully' })
+      flashContext.set({ message: 'Comment Updated Successfully' })
     } else if (action === 'create' && comment) {
-      const unsorted = [comment, ...comments]
-      newComments = numericSort(unsorted, 'beginDate')
-      flashContext.set({ message: 'Camp Date Created Successfully' })
+      newComments = [comment, ...comments]
+      flashContext.set({ message: 'Comment Created Successfully' })
     } else if (action === 'delete') {
       newComments = filter(comments, r => r._id !== _id)
-      flashContext.set({ message: 'Camp Date Deleted Successfully' })
+      flashContext.set({ message: 'Comment Deleted Successfully' })
       modalController.reset()
     }
     setComments(newComments)

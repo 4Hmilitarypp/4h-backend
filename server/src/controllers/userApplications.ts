@@ -1,10 +1,13 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
+import applicationCommentTemplate from '../emailTemplates/applicationComment'
 import { IApplicationDocument } from '../models/Application'
+import { IUserDocument } from '../models/User'
 import { IUserApplicationDocument } from '../models/UserApplication'
 import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
-import { createValidationError, forbiddenError, notFoundError } from '../utils/errors'
+import { createValidationError, emailError, forbiddenError, notFoundError } from '../utils/errors'
+import transporter from '../utils/nodemailer'
 
 type TCreateUserApplication = Pick<
   IUserApplication,
@@ -13,6 +16,7 @@ type TCreateUserApplication = Pick<
 
 const Application = mongoose.model<IApplicationDocument>('Application')
 const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
+const User = mongoose.model<IUserDocument>('User')
 const Archive = mongoose.model('Archive')
 
 const cleanUserApplication = (obj: any) => pick(obj, ['status', 'url'])
@@ -126,6 +130,23 @@ export const createComment: Controller = async (req, res) => {
   if (updatedUserApplication) {
     // will only return the last comment in the list. If they are ordered in the db this won't work and I'll need to find a way to get the actual created comment
     const comment = updatedUserApplication.comments[updatedUserApplication.comments.length - 1]
+    if (updatedUserApplication.userId.toString() !== req.user._id) {
+      const user = await User.findById(updatedUserApplication.userId).select('email')
+      if (!user) throw notFoundError
+      console.log(user)
+      console.log(req.user)
+      try {
+        await transporter.sendMail({
+          from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
+          html: applicationCommentTemplate(req.user.name, req.body.text.substr(0, 50)),
+          subject: `Comment Made on Application ${updatedUserApplication.title}`,
+          text: '',
+          to: user.email,
+        })
+      } catch (err) {
+        throw emailError(err)
+      }
+    }
     return res.status(201).json(comment)
   }
   throw notFoundError

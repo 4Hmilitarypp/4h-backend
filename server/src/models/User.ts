@@ -67,9 +67,12 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
   return jwt.sign(
     {
       _id: this._id,
+      affiliation: this.affiliation,
       email: this.email,
       exp: expirationDate.getTime() / 1000,
+      name: this.name,
       permissions: this.permissions,
+      university: this.university,
     },
     process.env.JWT_SECRET
   )
