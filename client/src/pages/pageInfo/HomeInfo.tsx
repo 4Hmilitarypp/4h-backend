@@ -49,7 +49,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          setFeaturedImageUrl(res.info.secure_url)
+          const optimizedUrl = res.info.secure_url.split('/upload/').join('/upload/f_auto,q_80/')
+          setFeaturedImageUrl(optimizedUrl)
         }
         if (err) handleError(err)
       }
