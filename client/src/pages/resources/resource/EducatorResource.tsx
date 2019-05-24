@@ -31,7 +31,7 @@ const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
       if (updatedResource) {
         setResource(updatedResource)
       } else {
-        navigate('/curriculum-resources')
+        navigate('/educator-resources')
       }
     } else {
       setResource(undefined)
@@ -41,7 +41,7 @@ const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
-    navigate('/curriculum-resources')
+    navigate('/educator-resources')
   }
 
   const handleDeleteClicked = () => {
@@ -50,7 +50,7 @@ const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
         .delete(resource._id as string)
         .then(() => {
           resourceContext.updateResources({ _id: resource._id, action: 'delete' })
-          navigate('/curriculum-resources')
+          navigate('/educator-resources')
         })
         .catch(handleError)
     } else {
@@ -60,7 +60,7 @@ const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
 
   return (
     <div>
-      <FormHeading _id={_id} action={action} singular="Resource" plural="Resources" route="/curriculum-resources" />
+      <FormHeading _id={_id} action={action} singular="Resource" plural="Resources" route="/educator-resources" />
       <ResourceForm
         action={action}
         handleError={handleError}
