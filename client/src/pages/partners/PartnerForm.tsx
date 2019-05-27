@@ -146,10 +146,16 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
         {/* Had to do the following because the shortDescription was not showing up for some reason */}
         {partner ? (
           <>
-            <textarea id="shortDescription" defaultValue={partner.shortDescription || ''} cols={100} rows={5} />
+            <textarea
+              id="shortDescription"
+              defaultValue={partner.shortDescription || ''}
+              cols={100}
+              rows={5}
+              maxLength={515}
+            />
           </>
         ) : (
-          <textarea id="shortDescription" cols={100} rows={5} />
+          <textarea id="shortDescription" cols={100} rows={5} maxLength={515} />
         )}
       </CustomInputGroup>
       <CustomInputGroup>
