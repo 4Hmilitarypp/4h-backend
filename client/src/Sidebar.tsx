@@ -11,8 +11,9 @@ interface IConditionalLinkGroupProps {
 }
 
 const ConditionalLinkGroup: React.FC<IConditionalLinkGroupProps> = ({ children, permissions, userContext }) =>
-  userContext.user && userContext.user.permissions.includes(permissions[0]) ? <LinkGroup>{children}</LinkGroup> : null
-
+  userContext.user && userContext.user.permissions.some(p => permissions.some(p2 => p2 === p)) ? (
+    <LinkGroup>{children}</LinkGroup>
+  ) : null
 interface IActiveLinkProps {
   exact?: boolean
   path: string

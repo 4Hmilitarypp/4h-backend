@@ -4,9 +4,10 @@ import { IResourceDocument } from '../models/Resource'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
 
-const cleanResource = (obj: any) => pick(obj, ['title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+const cleanResource = (obj: any) =>
+  pick(obj, ['featuredImage', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithLessons = (obj: any) =>
-  pick(obj, ['lessons', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+  pick(obj, ['featuredImage', 'lessons', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithId = (obj: any) =>
   pick(obj, ['_id', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
 
@@ -29,7 +30,7 @@ export const getResources: Controller = async (_, res) => {
   return res.json(resources)
 }
 export const getNestedResources: Controller = async (req, res) => {
-  const resources = await Resource.find({ nested: req.params.parent })
+  const resources = await Resource.find({ parent: req.params.parent })
     .select('-lessons')
     .sort('title')
   return res.json(resources)

@@ -17,6 +17,7 @@ import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
 import EducatorResources from './pages/resources/EducatorResources'
+import TechCurriculum from './pages/techCurriculum/TechCurriculum'
 import Applications from './pages/userApplications/UserApplications'
 import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
@@ -65,6 +66,7 @@ const App: React.FC<{}> = () => {
                 <ApplicationsAdmin path="applications-admin/*" />
                 <Camps path="/camps/*" />
                 <EducatorResources path="/educator-resources/*" />
+                <TechCurriculum path="/tech-curriculum/*" />
                 <Partners path="/partners/*" />
                 <Home path="/" />
                 <Liaisons path="/liaisons" />

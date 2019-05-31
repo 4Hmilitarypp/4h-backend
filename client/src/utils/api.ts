@@ -127,6 +127,7 @@ const resources = {
   delete: (id: string): Promise<string> => requests.delete(`/resources/${id}`),
   get: (): Promise<IResource[]> => requests.get('/resources'),
   getById: (id: string): Promise<IResource> => requests.get(`/resources/${id}`),
+  getByParent: (parent: string): Promise<IResource[]> => requests.get(`/resources/nested/${parent}`),
   update: (id: string, updates: Omit<IResource, 'slug'>): Promise<IResource> =>
     requests.put(`/resources/${id}`, updates),
 }
