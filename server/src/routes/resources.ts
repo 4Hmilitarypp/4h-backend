@@ -8,6 +8,7 @@ import { catchErrors } from '../utils/errorHandlers'
 
 const setupResourceRoutes = (router: Router) => {
   router.route('/slug/:slug').get(catchErrors(resourceController.getResourceBySlug))
+  router.route('/nested/:parent').get(catchErrors(resourceController.getNestedResources))
   router
     .route('/')
     .get(auth.optional, catchErrors(resourceController.getResources))

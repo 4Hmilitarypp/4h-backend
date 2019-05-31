@@ -28,6 +28,12 @@ export const getResources: Controller = async (_, res) => {
     .sort('title')
   return res.json(resources)
 }
+export const getNestedResources: Controller = async (req, res) => {
+  const resources = await Resource.find({ nested: req.params.parent })
+    .select('-lessons')
+    .sort('title')
+  return res.json(resources)
+}
 
 export const getResource: Controller = async (req, res) => {
   const { _id } = req.params

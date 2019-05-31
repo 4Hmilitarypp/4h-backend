@@ -2,91 +2,77 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Link } from './components/Elements'
-import UserContext from './contexts/UserContext'
+import UserContext, { IUserContext } from './contexts/UserContext'
 import { elevation } from './utils/mixins'
+
+interface IConditionalLinkGroupProps {
+  permissions: string[]
+  userContext: IUserContext
+}
+
+const ConditionalLinkGroup: React.FC<IConditionalLinkGroupProps> = ({ children, permissions, userContext }) =>
+  userContext.user && userContext.user.permissions.includes(permissions[0]) ? <LinkGroup>{children}</LinkGroup> : null
+
+interface IActiveLinkProps {
+  exact?: boolean
+  path: string
+  text: string
+  to: string
+}
+
+const ActiveLink: React.FC<IActiveLinkProps> = ({ exact, path, text, to }) => {
+  const isActive = exact ? path === to : path.includes(to)
+  return (
+    <SideBarLink to={to} className={isActive ? 'active' : ''}>
+      {text}
+    </SideBarLink>
+  )
+}
 
 const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '' } = {} }: { location?: any }) => {
   const userContext = React.useContext(UserContext)
   return (
     <SidebarWrapper>
-      {userContext.user && userContext.user.permissions.includes('admin') && (
-        <LinkGroup>
-          <GroupHeader>Family Content</GroupHeader>
-          <Links>
-            <SideBarLink to="/camps" className={path.includes('/camps') ? 'active' : ''}>
-              Camps
-            </SideBarLink>
-            <SideBarLink to="/partners" className={path.includes('/partners') ? 'active' : ''}>
-              Partners
-            </SideBarLink>
-            <SideBarLink to="/liaisons" className={path.includes('/liaisons') ? 'active' : ''}>
-              Liaisons
-            </SideBarLink>
-          </Links>
-        </LinkGroup>
-      )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
-        <LinkGroup>
-          <GroupHeader>Dynamic Pages</GroupHeader>
-          <Links>
-            <SideBarLink to="/page-info/home" className={path.includes('/page-info/home') ? 'active' : ''}>
-              Home
-            </SideBarLink>
-          </Links>
-        </LinkGroup>
-      )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
-        <LinkGroup>
-          <GroupHeader>Resources</GroupHeader>
-          <Links>
-            <SideBarLink to="/webinars" className={path.includes('/webinars') ? 'active' : ''}>
-              Webinars
-            </SideBarLink>
-            <SideBarLink to="/research" className={path.includes('/research') ? 'active' : ''}>
-              Research
-            </SideBarLink>
-            <SideBarLink to="/educator-resources" className={path.includes('/educator-resources') ? 'active' : ''}>
-              Educator Resources
-            </SideBarLink>
-          </Links>
-        </LinkGroup>
-      )}
-      {userContext.user && userContext.user.permissions.includes('admin') && (
-        <LinkGroup>
-          <GroupHeader>Website Admin</GroupHeader>
-          <Links>
-            <SideBarLink
-              to="/admin/cloudinary-reports"
-              className={path.includes('/admin/cloudinary-reports') ? 'active' : ''}
-            >
-              Cloudinary Reports
-            </SideBarLink>
-            <SideBarLink to="/admin/users" className={path.includes('/admin/users') ? 'active' : ''}>
-              Manage Users
-            </SideBarLink>
-          </Links>
-        </LinkGroup>
-      )}
-      {userContext.user &&
-        (userContext.user.permissions.includes('admin') ||
-          userContext.user.permissions.includes('application-user')) && (
-          <LinkGroup>
-            <GroupHeader>Grant Applications</GroupHeader>
-            <Links>
-              <SideBarLink
-                to="/applications"
-                className={path.includes('/applications') && !path.includes('/applications-admin') ? 'active' : ''}
-              >
-                Applications
-              </SideBarLink>
-              {userContext.user.permissions.includes('admin') && (
-                <SideBarLink to="/applications-admin" className={path.includes('/applications-admin') ? 'active' : ''}>
-                  Applications Admin
-                </SideBarLink>
-              )}
-            </Links>
-          </LinkGroup>
-        )}
+      <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
+        <GroupHeader>Family Content</GroupHeader>
+        <Links>
+          <ActiveLink to="/camps" text="Camps" path={path} />
+          <ActiveLink to="/partners" text="Partners" path={path} />
+          <ActiveLink to="/liaisons" text="Liaisons" path={path} />
+        </Links>
+      </ConditionalLinkGroup>
+      <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
+        <GroupHeader>Dynamic Pages</GroupHeader>
+        <Links>
+          <ActiveLink to="/page-info/" text="Home" path={path} />
+        </Links>
+      </ConditionalLinkGroup>
+      <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
+        <GroupHeader>Resources</GroupHeader>
+        <Links>
+          <ActiveLink to="/webinars" text="Webinars" path={path} />
+          <ActiveLink to="/research" text="Research" path={path} />
+          <ActiveLink to="/educator-resources" text="Educator Resources" path={path} />
+          <ActiveLink to="/tech-curriculum" text="Tech Curriculum" path={path} />
+        </Links>
+      </ConditionalLinkGroup>
+      <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
+        <GroupHeader>Website Admin</GroupHeader>
+        <Links>
+          <ActiveLink to="/admin/cloudinary-reports" text="Cloudinary Reports" path={path} />
+
+          <ActiveLink to="/admin/users" text="Manage Users" path={path} />
+        </Links>
+      </ConditionalLinkGroup>
+      <ConditionalLinkGroup permissions={['application-user', 'admin']} userContext={userContext}>
+        <GroupHeader>Grant Applications</GroupHeader>
+        <Links>
+          <ActiveLink to="/applications" text="Applications" path={path} exact={true} />
+          {userContext.user && userContext.user.permissions.includes('admin') && (
+            <ActiveLink to="/applications-admin" text="Applications Admin" path={path} />
+          )}
+        </Links>
+      </ConditionalLinkGroup>
     </SidebarWrapper>
   )
 }

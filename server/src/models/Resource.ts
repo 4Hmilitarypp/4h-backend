@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
 
+import { string } from 'prop-types'
 import { ILesson, IResourceWithLessons, Omit } from '../sharedTypes'
 
 export interface IResourceDocument extends Omit<IResourceWithLessons, '_id'>, Document {
@@ -52,6 +53,7 @@ const ResourceSchema = new mongoose.Schema({
     required: 'long description is required',
     type: String,
   },
+  parent: String,
   shortDescription: {
     maxlength: 300,
     required: 'short description is required',
