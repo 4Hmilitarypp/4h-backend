@@ -24,6 +24,8 @@ export default Lesson
 const Wrapper = styled.div`
   padding: 2rem;
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   ${hoveredRow()};
   &:nth-child(2n - 1) {
     background: ${props => props.theme.white};

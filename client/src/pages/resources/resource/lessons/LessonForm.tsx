@@ -1,5 +1,5 @@
 import * as React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { IForm } from '../../../../clientTypes'
 import { CreateButton, InputGroup, ModalForm, TrashCan } from '../../../../components/Elements'
 import { ILessonLink } from '../../../../sharedTypes'
@@ -27,6 +27,7 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
   const { lesson, action } = modalController.state
 
   const [resources, setResources] = React.useState<ILessonLink[]>(lesson ? lesson.links : [])
+  const [urlInputValue, setUrlInputValue] = React.useState('')
 
   const openCloudinary = () => {
     const widget = (window as any).cloudinary.createUploadWidget(
@@ -35,14 +36,14 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
         uploadPreset: 'resources-lessons',
       },
       (err: any, res: any) => {
-        if (!err && res && res.event === 'success') {
-          setResources([...resources, { url: res.info.secure_url, type: getType(res.info.secure_url) }])
-        }
+        if (!err && res && res.event === 'success') createNewResource(res.info.secure_url)
         if (err) handleError(err)
       }
     )
     if (widget) widget.open()
   }
+
+  const createNewResource = (url: string) => setResources([...resources, { url, type: getType(url) }])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -90,8 +91,17 @@ const LessonForm: React.FC<IProps> = ({ modalController }) => {
           <TrashCan height={2.2} onClick={() => removeResource(resource.url)} />
         </Resource>
       ))}
+      <InputGroup>
+        <label>New Resource</label>
+        <InputAndPlus>
+          <input type="text" value={urlInputValue} onChange={e => setUrlInputValue(e.currentTarget.value)} />
+          <Plus onClick={() => createNewResource(urlInputValue)} type="button">
+            +
+          </Plus>
+        </InputAndPlus>
+      </InputGroup>
       <CustomCreateButton type="button" onClick={openCloudinary}>
-        + New Lesson Resource
+        + Upload New Lesson Resource
       </CustomCreateButton>
     </ModalForm>
   )
@@ -110,11 +120,29 @@ const ResourceLabel = styled.label`
 `
 const Resource = styled.p`
   padding: 0.8rem 1.2rem;
+  margin-bottom: 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
   &:nth-child(2n - 1) {
     background: ${props => props.theme.primaryLight};
+  }
+`
+const InputAndPlus = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`
+const Plus = styled.button`
+  color: ${props => props.theme.primary};
+  margin-left: -2.4rem;
+  font-weight: 600;
+  font-size: 2rem;
+  border: none;
+  background: none;
+  padding: 0;
+  &:hover {
+    cursor: pointer;
   }
 `

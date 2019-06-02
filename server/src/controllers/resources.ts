@@ -24,7 +24,7 @@ export const createResource: Controller = async (req, res) => {
 }
 
 export const getResources: Controller = async (_, res) => {
-  const resources = await Resource.find()
+  const resources = await Resource.find({ parent: { $exists: false } })
     .select('-lessons')
     .sort('title')
   return res.json(resources)
