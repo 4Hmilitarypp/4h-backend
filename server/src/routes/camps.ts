@@ -7,6 +7,7 @@ import auth from '../routes/auth'
 import { catchErrors } from '../utils/errorHandlers'
 
 const setupCampRoutes = (router: Router) => {
+  router.route('/current').get(auth.optional, catchErrors(campController.getCurrentCamps))
   router
     .route('/')
     .get(auth.optional, catchErrors(campController.getCamps))

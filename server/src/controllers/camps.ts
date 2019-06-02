@@ -47,6 +47,11 @@ export const getCamps: Controller = async (_, res) => {
   return res.json(camps)
 }
 
+export const getCurrentCamps: Controller = async (_, res) => {
+  const camps = await Camp.find({ dates: { $elemMatch: { beginDate: { $gte: new Date().toISOString() } } } })
+  return res.json(camps)
+}
+
 export const updateCamp: Controller = async (req, res) => {
   const { _id } = req.params
   const camp = await Camp.findByIdAndUpdate(
