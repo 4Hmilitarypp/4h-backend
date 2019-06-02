@@ -46,11 +46,22 @@ export const getUserApplications: Controller = async (req, res) => {
     return arr
   }, [])
   const createdApplications = await UserApplication.insertMany(applicationsToCreate)
+  let nonMatchingBaseApp = false
+  const returnApplications = [...userApplications, ...createdApplications].reduce<any>((arr, userApp) => {
+    const matchingBaseApp = baseApplications.find(app => app._id.equals(userApp.baseId))
+    if (matchingBaseApp) {
+      arr.push({
+        ...(userApp as any)._doc,
+        baseApplicationUrl: matchingBaseApp.url,
+      })
+    } else nonMatchingBaseApp = true
 
-  const returnApplications = [...userApplications, ...createdApplications].map(userApp => ({
-    ...(userApp as any)._doc,
-    baseApplicationUrl: (baseApplications.find(app => app._id.equals(userApp.baseId)) as any).url,
-  }))
+    return arr
+  }, [])
+
+  if (nonMatchingBaseApp) {
+    return res.status(500).send({ message: 'a user application did not map to a base application' })
+  }
 
   return res.json(returnApplications)
 }

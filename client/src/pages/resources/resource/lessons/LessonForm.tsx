@@ -113,6 +113,7 @@ const Resource = styled.p`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 5px;
   &:nth-child(2n - 1) {
     background: ${props => props.theme.primaryLight};
   }

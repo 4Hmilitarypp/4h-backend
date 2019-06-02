@@ -45,7 +45,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
       <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
         <GroupHeader>Dynamic Pages</GroupHeader>
         <Links>
-          <ActiveLink to="/page-info/" text="Home" path={path} />
+          <ActiveLink to="/page-info/home" text="Home" path={path} />
         </Links>
       </ConditionalLinkGroup>
       <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>

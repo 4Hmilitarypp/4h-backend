@@ -13,6 +13,9 @@ interface IProps {
 const Lesson: React.FC<IProps> = ({ lesson, setModalState, resourceId }) => (
   <Wrapper onClick={() => setModalState({ action: 'update', lesson, resourceId })}>
     <Title>{lesson.title}</Title>
+    <NumberDisplay>
+      {lesson.links.length} Link{lesson.links.length !== 1 && 's'}
+    </NumberDisplay>
   </Wrapper>
 )
 
@@ -27,6 +30,11 @@ const Wrapper = styled.div`
   }
 `
 const Title = styled.span`
+  font-weight: 500;
+  color: ${props => props.theme.primaryGrey};
+`
+const NumberDisplay = styled.span`
+  padding-left: 3.2rem;
   font-weight: 500;
   color: ${props => props.theme.primaryGrey};
 `
