@@ -2,6 +2,7 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   InputGroup,
@@ -30,9 +31,11 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
   const [flyerUrl, setFlyerUrl] = React.useState<string | undefined>(undefined)
   const [campType, setCampType] = React.useState<'Day' | 'Residential'>('Day')
   const [serviceBranch, setServiceBranch] = React.useState<'Air Force' | 'Navy' | 'Army'>('Air Force')
+  const [description, setDescription] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
+    if (camp) setDescription(camp.description)
     if (camp && camp.featuredImage) {
       setFeaturedImageUrl(camp.featuredImage.url)
       setFlyerUrl(camp.flyerUrl)
@@ -93,7 +96,6 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       contactPhoneNumber,
       contactUrl,
       contactUrlText,
-      description,
       descriptionTitle,
       state,
       title,
@@ -117,7 +119,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       ageRange: ageRange.value,
       city: city.value,
       contact,
-      description: description.value,
+      description: description || '',
       descriptionTitle: descriptionTitle.value,
       featuredImage,
       flyerUrl,
@@ -184,15 +186,8 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <input type="text" id="descriptionTitle" defaultValue={(camp && camp.descriptionTitle) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="description">Description</label>
-        {/* Had to do the following because the description was not showing up for some reason */}
-        {camp ? (
-          <>
-            <textarea id="description" defaultValue={camp.description || ''} cols={100} rows={5} />
-          </>
-        ) : (
-          <textarea id="description" cols={100} rows={5} />
-        )}
+        <label>Description</label>
+        <Editor initialData={description} handleChange={setDescription} />
       </CustomInputGroup>
       <SubHeading>Camp Resources</SubHeading>
       <CampResources>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   InputGroup,
@@ -25,17 +26,19 @@ interface IProps {
 const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePartners }) => {
   const [featuredImageUrl1, setFeaturedImageUrl1] = React.useState<string | undefined>()
   const [featuredImageUrl2, setFeaturedImageUrl2] = React.useState<string | undefined>()
+  const [longDescription, setLongDescription] = React.useState<string>()
 
   React.useEffect(() => {
     if (partner) {
       setFeaturedImageUrl1(partner.featuredImage1.url)
       setFeaturedImageUrl2(partner.featuredImage2 && partner.featuredImage2.url)
+      setLongDescription(partner.longDescription)
     }
   }, [partner])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { shortDescription, longDescription, title } = e.currentTarget.elements
+    const { shortDescription, title } = e.currentTarget.elements
 
     if (!featuredImageUrl1) return handleError(createError('Please supply a featured image', 400))
 
@@ -53,7 +56,7 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
       _id: partner ? partner._id : undefined,
       featuredImage1,
       featuredImage2,
-      longDescription: longDescription.value,
+      longDescription: longDescription || '',
       reports: partner ? partner.reports : [],
       shortDescription: shortDescription.value,
       title: title.value,
@@ -159,15 +162,8 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
         )}
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="longDescription">Long Description</label>
-        {/* Had to do the following because the longDescription was not showing up for some reason */}
-        {partner ? (
-          <>
-            <textarea id="longDescription" defaultValue={partner.longDescription} cols={100} rows={5} />
-          </>
-        ) : (
-          <textarea id="longDescription" cols={100} rows={5} />
-        )}
+        <label>Long Description</label>
+        <Editor initialData={longDescription} handleChange={setLongDescription} />
       </CustomInputGroup>
     </Form>
   )

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import { InputGroup } from '../../components/Elements'
 import { IModalController } from '../../components/table/useTable'
 import { IWebinar } from '../../sharedTypes'
@@ -13,14 +14,19 @@ interface IProps {
 const Webinar2Form: React.FC<IProps> = ({ modalController }) => {
   const { handleError, reset: resetModalState, updateItems } = modalController
   const { item: webinar, action } = modalController.state
+  const [description, setDescription] = React.useState<string>()
+
+  React.useEffect(() => {
+    if (webinar) setDescription(webinar.description)
+  }, [webinar])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { category, description, title, url } = e.currentTarget.elements
+    const { category, title, url } = e.currentTarget.elements
     const updateWebinar = {
       _id: webinar ? webinar._id : undefined,
       category: category.value,
-      description: description.value,
+      description: description || '',
       title: title.value,
       url: url.value,
     }
@@ -59,8 +65,8 @@ const Webinar2Form: React.FC<IProps> = ({ modalController }) => {
         <input type="text" id="url" defaultValue={(webinar && webinar.url) || ''} />
       </InputGroup>
       <InputGroup>
-        <label htmlFor="description">Description</label>
-        <textarea id="description" defaultValue={(webinar && webinar.description) || ''} cols={100} rows={5} />
+        <label>Description</label>
+        <Editor initialData={description} handleChange={setDescription} />
       </InputGroup>
     </Form>
   )

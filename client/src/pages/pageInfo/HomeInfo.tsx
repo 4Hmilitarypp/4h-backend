@@ -2,6 +2,7 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   Button,
@@ -29,9 +30,11 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
   }, [])
 
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
+  const [sectionText, setSectionText] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
+    if (homeInfo) setSectionText(homeInfo.text)
     if (homeInfo && homeInfo.featuredImage) {
       setFeaturedImageUrl(homeInfo.featuredImage.url)
     }
@@ -81,14 +84,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
         <input type="text" id="title" defaultValue={(homeInfo && homeInfo.title) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="text">Section Text</label>
-        {homeInfo ? (
-          <>
-            <textarea id="text" name="text" defaultValue={homeInfo.text} rows={5} />
-          </>
-        ) : (
-          <textarea id="text" name="text" rows={5} />
-        )}
+        <label>Section Text</label>
+        <Editor initialData={sectionText} handleChange={setSectionText} />
       </CustomInputGroup>
       <CustomResourceSection>
         <UploadLabel hasImage={featuredImageUrl}>

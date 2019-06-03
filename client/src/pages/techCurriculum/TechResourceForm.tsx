@@ -2,6 +2,7 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   InputGroup,
@@ -24,9 +25,11 @@ interface IProps {
 
 const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateResources }) => {
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
+  const [longDescription, setLongDescription] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
+    if (resource) setLongDescription(resource.longDescription)
     if (resource && resource.featuredImage) {
       setFeaturedImageUrl(resource.featuredImage.url)
     }
@@ -54,13 +57,13 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { longDescription, shortDescription, title } = e.currentTarget.elements
+    const { shortDescription, title } = e.currentTarget.elements
     const imageAlt = title.value
     const featuredImage = featuredImageUrl ? { url: featuredImageUrl, alt: imageAlt } : undefined
     const updateResource = {
       _id: resource ? resource._id : undefined,
       featuredImage,
-      longDescription: longDescription.value,
+      longDescription: longDescription || '',
       parent: 'tech-curriculum',
       shortDescription: shortDescription.value,
       title: title.value,
@@ -130,15 +133,8 @@ const ResourceForm: React.FC<IProps> = ({ action, resource, handleError, updateR
         )}
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="longDescription">Long Description</label>
-        {/* Had to do the following because the longDescription was not showing up for some reason */}
-        {resource ? (
-          <>
-            <textarea id="longDescription" name="longDescription" defaultValue={resource.longDescription} rows={5} />
-          </>
-        ) : (
-          <textarea id="longDescription" name="longDescription" rows={5} />
-        )}
+        <label>Long Description</label>
+        <Editor initialData={longDescription} handleChange={setLongDescription} />
       </CustomInputGroup>
     </Form>
   )
