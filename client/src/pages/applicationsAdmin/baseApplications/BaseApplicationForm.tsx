@@ -16,6 +16,12 @@ interface IProps {
   updateBaseApplications: TUpdateBaseApplications
 }
 
+const formatDate = (date: string) => {
+  const localDate = new Date(date.split('-').join(' '))
+  localDate.setUTCHours(17)
+  return localDate.toISOString()
+}
+
 const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handleError, updateBaseApplications }) => {
   const [applicationUrl, setApplicationUrl] = React.useState<string | undefined>(undefined)
   const formRef = React.useRef<HTMLFormElement>(null)
@@ -59,7 +65,7 @@ const BaseApplicationForm: React.FC<IProps> = ({ action, baseApplication, handle
 
     const updateBaseApplication = {
       _id: baseApplication ? baseApplication._id : undefined,
-      dueDate: dueDate.value,
+      dueDate: formatDate(dueDate.value),
       title: title.value,
       url: applicationUrl,
       userGroups,

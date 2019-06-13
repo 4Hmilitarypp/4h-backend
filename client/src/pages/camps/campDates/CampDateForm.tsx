@@ -8,6 +8,12 @@ interface IProps {
   modalController: IModalController
 }
 
+const formatDate = (date: string) => {
+  const localDate = new Date(date.split('-').join(' '))
+  localDate.setUTCHours(17)
+  return localDate.toISOString()
+}
+
 const CampDateForm: React.FC<IProps> = ({ modalController }) => {
   const { handleError, reset: resetModalState, updateCampDates } = modalController
   const { campDate, action } = modalController.state
@@ -15,8 +21,6 @@ const CampDateForm: React.FC<IProps> = ({ modalController }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
     const { beginDate, endDate } = e.currentTarget.elements
-
-    const formatDate = (date: string) => new Date(date.split('-').join(' ')).toISOString()
     const updateCampDate = {
       _id: campDate ? campDate._id : undefined,
       beginDate: formatDate(beginDate.value),
