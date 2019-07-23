@@ -40,7 +40,7 @@ const AdminUserApplication: React.FC<IProps> = ({ _id, handleError, refId, type 
       handleError(createError('The requested Application could not be found', 400))
     }
     setAdminUserApplication(updateAdminUserApplication)
-  }, [adminUserApplicationContext.adminUserApplications])
+  }, [_id, adminUserApplicationContext, adminUserApplicationContext.adminUserApplications, handleError])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

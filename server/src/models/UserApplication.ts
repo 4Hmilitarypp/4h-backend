@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
-import { IUserApplication, Omit } from '../sharedTypes'
+import { IUserApplication, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IUserApplicationDocument extends Omit<IUserApplication, '_id'>, mongoose.Document {}
+export interface IUserApplicationDocument extends Omit<IUserApplication, '_id'>, I4HDocument {}
 
 const userCommentSchema = new mongoose.Schema({
   text: { type: String, required: 'comment text is required' },

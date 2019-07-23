@@ -22,7 +22,7 @@ export const createApplication: Controller = async (req, res) => {
 }
 
 export const getApplications: Controller = async (_, res) => {
-  const applications = await Application.find()
+  const applications = await Application.find().select('-createdBy', '-updatedBy', '-updatedDate', '-createdDate')
   return res.json(applications)
 }
 

@@ -1,7 +1,7 @@
-import mongoose, { Document } from 'mongoose'
-import { IWebinar, Omit } from '../sharedTypes'
+import mongoose from 'mongoose'
+import { IWebinar, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IWebinarDocument extends Omit<IWebinar, '_id'>, Document {}
+export interface IWebinarDocument extends Omit<IWebinar, '_id'>, I4HDocument {}
 
 // @ts-ignore: validate causing whole schema to error
 const webinarSchema = new mongoose.Schema({

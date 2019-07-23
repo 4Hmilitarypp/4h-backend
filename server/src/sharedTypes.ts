@@ -1,3 +1,13 @@
+import { Document } from 'mongoose'
+
+export interface I4HDocument extends Document {
+  archivedBy: string
+  createdBy: string
+  updatedBy: string
+  createdAt: number
+  updatedAt: number
+}
+
 export interface IApplication {
   _id: string
   dueDate: string

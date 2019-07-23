@@ -36,7 +36,7 @@ const BaseApplication: React.FC<IProps> = ({ _id = '', handleError }) => {
       setBaseApplication(undefined)
       setAction('create')
     }
-  }, [_id])
+  }, [_id, action, baseApplicationContext])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

@@ -27,7 +27,7 @@ const useCamps = () => {
       .get()
       .then(c => setCamps(c))
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const flashContext = React.useContext(FlashContext)
 

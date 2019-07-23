@@ -24,7 +24,7 @@ const useResources = () => {
       .get()
       .then(r => setResources(r))
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const flashContext = React.useContext(FlashContext)
 

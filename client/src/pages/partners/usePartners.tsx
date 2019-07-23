@@ -24,7 +24,7 @@ const usePartners = () => {
       .get()
       .then(p => setPartners(p))
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const flashContext = React.useContext(FlashContext)
 

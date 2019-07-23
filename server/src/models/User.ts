@@ -1,16 +1,16 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import { promisify } from 'util'
-import { IUser, Omit } from '../sharedTypes'
+import { IUser, Omit, I4HDocument } from '../sharedTypes'
 
 // bcryptjs uses callbacks, and so I turn them into promises withe node's promisify util
 const bcryptSalt = promisify(bcrypt.genSalt)
 const bcryptHash = promisify(bcrypt.hash)
 const bcryptCompare = promisify(bcrypt.compare)
 
-export interface IUserDocument extends Omit<IUser, '_id'>, Document {
+export interface IUserDocument extends Omit<IUser, '_id'>, I4HDocument {
   setPassword: (password: string) => Promise<void>
   validatePassword: (password: string) => Promise<boolean>
   generateJWT: () => string

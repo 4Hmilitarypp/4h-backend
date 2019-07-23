@@ -25,7 +25,7 @@ const ApplicationDashboard: React.FC<RouteComponentProps> = () => {
       .getIds()
       .then(a => setBaseApplications(a))
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const handleClick = (type: 'user' | 'base') => {
     setReviewType(type)

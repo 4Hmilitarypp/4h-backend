@@ -1,7 +1,7 @@
-import mongoose, { Document } from 'mongoose'
-import { ICampWithDates, Omit } from '../sharedTypes'
+import mongoose from 'mongoose'
+import { ICampWithDates, Omit, I4HDocument } from '../sharedTypes'
 
-export interface ICampDocument extends Omit<ICampWithDates, '_id'>, Document {}
+export interface ICampDocument extends Omit<ICampWithDates, '_id'>, I4HDocument {}
 
 const imageSchema = new mongoose.Schema({
   _id: { auto: false },

@@ -37,7 +37,7 @@ const Camp: React.FC<IProps> = ({ _id = '', handleError }) => {
       setCamp(undefined)
       setAction('create')
     }
-  }, [_id])
+  }, [_id, action, campContext])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

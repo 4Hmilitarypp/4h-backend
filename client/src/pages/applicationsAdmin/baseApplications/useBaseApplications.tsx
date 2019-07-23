@@ -27,7 +27,7 @@ const useBaseApplications = () => {
       .get()
       .then(c => setBaseApplications(c))
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const flashContext = React.useContext(FlashContext)
 

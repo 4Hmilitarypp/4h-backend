@@ -6,10 +6,10 @@ import * as express from 'express'
 import helmet from 'helmet'
 import path from 'path'
 
-Sentry.init({ dsn: 'https://41f19f5556de47668c5bc430f3a12b08@sentry.io/1446953' })
-
 import setupRoutes from './routes'
 import * as errorHandlers from './utils/errorHandlers'
+
+Sentry.init({ dsn: 'https://41f19f5556de47668c5bc430f3a12b08@sentry.io/1446953' })
 
 // initialize the application and create the routes
 const app = express.default()

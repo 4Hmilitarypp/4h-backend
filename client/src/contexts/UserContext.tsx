@@ -36,7 +36,7 @@ export const useUser = () => {
         setIsLoaded(true)
         handleError(err)
       })
-  }, [])
+  }, [handleError])
 
   const login: IUserContext['login'] = (loginForm: ILoginForm) =>
     api.users

@@ -1,13 +1,11 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
 
-import { ILesson, IResourceWithLessons, Omit } from '../sharedTypes'
+import { ILesson, IResourceWithLessons, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IResourceDocument extends Omit<IResourceWithLessons, '_id'>, Document {
-  createdAt: number
+export interface IResourceDocument extends Omit<IResourceWithLessons, '_id'>, I4HDocument {
   lessons: ILesson[]
-  updatedAt: number
 }
 
 const featuredImageSchema = new mongoose.Schema({

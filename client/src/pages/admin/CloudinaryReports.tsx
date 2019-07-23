@@ -18,7 +18,7 @@ const CloudinaryReports: React.FC<RouteComponentProps> = () => {
       .cloudinaryUsage()
       .then(setUsage)
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const formatDate = (date: string | Date) => format(date, 'YYYY-MM-DD')
 

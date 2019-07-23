@@ -23,6 +23,6 @@ const usePermission = (orPermissions: string | string[]) => {
         }
       }
     }
-  }, [userContext.user, userContext.isLoaded])
+  }, [userContext.user, userContext.isLoaded, userContext, handleError, orPermissions])
 }
 export default usePermission

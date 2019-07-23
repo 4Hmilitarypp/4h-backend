@@ -47,7 +47,7 @@ const useLessons = (handleError: (err: IApiError) => void, resourceId?: string) 
         .then(l => setLessons(l))
         .catch(handleError)
     }
-  }, [])
+  }, [handleError, resourceId])
 
   const updateLessons: IUpdateLessons = ({ _id, action, lesson }) => {
     let newLessons: ILesson[] = []

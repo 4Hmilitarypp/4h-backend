@@ -15,7 +15,7 @@ export type IUpdateCampDates = ({
   campDate?: ICampDate
 }) => void
 
-export type TSetModalState = ({  }: IModalState) => void
+export type TSetModalState = (args: IModalState) => void
 
 export interface IModalState {
   action: 'create' | 'update' | 'close'
@@ -44,7 +44,7 @@ const useCampDates = (handleError: (err: IApiError) => void, campId?: string) =>
         .then(r => setCampDates(r))
         .catch(handleError)
     }
-  }, [])
+  }, [campId, handleError])
 
   const initialModalState = { campDate: undefined, action: 'close' as 'close', campId: '', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState>(initialModalState)

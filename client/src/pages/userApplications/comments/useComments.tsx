@@ -14,14 +14,14 @@ export type IUpdateComments = ({
   comment?: IComment
 }) => void
 
-export type TSetModalState = ({  }: IModalState) => void
-
 export interface IModalState {
   action: 'create' | 'update' | 'close'
   comment?: IComment
   applicationId: string
   timesDeleteClicked?: number
 }
+
+export type TSetModalState = (args: IModalState) => void
 
 export interface IModalController {
   handleError: (err: IApiError) => void
@@ -43,7 +43,7 @@ const useComments = (handleError: (err: IApiError) => void, applicationId?: stri
         .then(r => setComments(r))
         .catch(handleError)
     }
-  }, [])
+  }, [applicationId, handleError])
 
   const initialModalState = { comment: undefined, action: 'close' as 'close', applicationId: '', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState>(initialModalState)

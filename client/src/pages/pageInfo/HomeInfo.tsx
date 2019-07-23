@@ -27,7 +27,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       .get('home')
       .then(setHomeInfo)
       .catch(handleError)
-  }, [])
+  }, [handleError])
 
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
   const [sectionText, setSectionText] = React.useState<string>()

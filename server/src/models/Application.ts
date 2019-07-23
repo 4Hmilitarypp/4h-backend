@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
-import { IApplication, Omit } from '../sharedTypes'
+import { IApplication, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IApplicationDocument extends Omit<IApplication, '_id'>, mongoose.Document {}
+export interface IApplicationDocument extends Omit<IApplication, '_id'>, I4HDocument {}
 
 const applicationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },

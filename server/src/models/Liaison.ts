@@ -1,10 +1,10 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import validator from 'validator'
 
-import { ILiaison, Omit } from '../sharedTypes'
+import { ILiaison, Omit, I4HDocument } from '../sharedTypes'
 
-export interface ILiaisonDocument extends Omit<ILiaison, '_id'>, Document {}
+export interface ILiaisonDocument extends Omit<ILiaison, '_id'>, I4HDocument {}
 
 // @ts-ignore: validate causing whole schema to error
 const liaisonSchema = new mongoose.Schema({

@@ -28,7 +28,7 @@ const UserApplication: React.FC<IProps> = ({ _id, handleError }) => {
       handleError(createError('The requested Application could not be found', 400))
     }
     setUserApplication(updateUserApplication)
-  }, [userApplicationContext.userApplications])
+  }, [_id, handleError, userApplicationContext, userApplicationContext.userApplications])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

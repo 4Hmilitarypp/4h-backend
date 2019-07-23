@@ -37,7 +37,7 @@ const EducatorResource: React.FC<IProps> = ({ _id = '', handleError }) => {
       setResource(undefined)
       setAction('create')
     }
-  }, [resourceContext, _id])
+  }, [resourceContext, _id, action])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
