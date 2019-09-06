@@ -23,7 +23,6 @@ const usePermission = (orPermissions: string | string[]) => {
         }
       }
     }
-    console.log({ uesr: userContext.user, isLoaded: userContext.isLoaded, userContext, handleError, orPermissions })
   }, [userContext.user, userContext.isLoaded, userContext, handleError, orPermissions])
 }
 export default usePermission
