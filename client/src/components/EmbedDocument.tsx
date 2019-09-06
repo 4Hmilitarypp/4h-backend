@@ -34,7 +34,7 @@ const EmbedDocument: React.FC<IProps> = ({ inPage = false, open, setOpen, title,
       clearInterval(iframeInterval)
       window.removeEventListener('keydown', handleKeydown)
     }
-  }, [iframeInterval, open, setOpen])
+  }, [iframeInterval, open]) // eslint-disable-line
 
   if (open) {
     return inPage ? (

@@ -30,7 +30,7 @@ const useUserApplications = () => {
         setIsLoaded(true)
       })
       .catch(handleError)
-  }, [handleError])
+  }, []) // eslint-disable-line
 
   const flashContext = React.useContext(FlashContext)
 

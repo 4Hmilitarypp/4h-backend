@@ -43,7 +43,7 @@ const useComments = (handleError: (err: IApiError) => void, applicationId?: stri
         .then(r => setComments(r))
         .catch(handleError)
     }
-  }, [applicationId, handleError])
+  }, [applicationId]) // eslint-disable-line
 
   const initialModalState = { comment: undefined, action: 'close' as 'close', applicationId: '', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState>(initialModalState)

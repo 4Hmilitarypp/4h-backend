@@ -40,7 +40,7 @@ const useAdminUserApplications = (type: 'base' | 'user', refId: string) => {
         })
         .catch(handleError)
     }
-  }, [handleError, refId, type])
+  }, [refId, type]) // eslint-disable-line
 
   const flashContext = React.useContext(FlashContext)
 

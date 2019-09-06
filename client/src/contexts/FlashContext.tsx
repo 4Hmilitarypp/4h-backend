@@ -30,7 +30,7 @@ export const useFlash = () => {
       }
     }
     return undefined
-  }, [flashState.isError, flashState.message, resetFlashState])
+  }, [flashState.isError, flashState.message]) // eslint-disable-line
 
   return { flashState, setFlashState: mySetFlashState, resetFlashState }
 }

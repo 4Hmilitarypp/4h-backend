@@ -44,7 +44,7 @@ const useCampDates = (handleError: (err: IApiError) => void, campId?: string) =>
         .then(r => setCampDates(r))
         .catch(handleError)
     }
-  }, [campId, handleError])
+  }, [campId]) // eslint-disable-line
 
   const initialModalState = { campDate: undefined, action: 'close' as 'close', campId: '', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState>(initialModalState)

@@ -51,7 +51,7 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
       .get()
       .then((res: T[]) => setItems(res))
       .catch(handleError)
-  }, [api, handleError])
+  }, []) // eslint-disable-line
 
   const updateItems: TUpdateItems<T> = ({ _id, action, item }) => {
     if (items) {

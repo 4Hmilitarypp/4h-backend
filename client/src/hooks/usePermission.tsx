@@ -23,6 +23,6 @@ const usePermission = (orPermissions: string | string[]) => {
         }
       }
     }
-  }, [userContext.user, userContext.isLoaded, userContext, handleError, orPermissions])
+  }, [userContext.user, userContext.isLoaded, userContext, orPermissions]) // eslint-disable-line
 }
 export default usePermission

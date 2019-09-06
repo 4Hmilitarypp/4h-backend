@@ -40,7 +40,7 @@ const AdminUserApplication: React.FC<IProps> = ({ _id, handleError, refId, type 
       handleError(createError('The requested Application could not be found', 400))
     }
     setAdminUserApplication(updateAdminUserApplication)
-  }, [_id, adminUserApplicationContext, adminUserApplicationContext.adminUserApplications, handleError])
+  }, [_id, adminUserApplicationContext, adminUserApplicationContext.adminUserApplications]) // eslint-disable-line
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

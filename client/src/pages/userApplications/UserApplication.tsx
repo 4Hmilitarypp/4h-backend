@@ -29,7 +29,7 @@ const UserApplication: React.FC<IProps> = ({ _id, handleError }) => {
     }
     setUserApplication(updateUserApplication)
   }, [_id, handleError, userApplicationContext, userApplicationContext.userApplications])
-
+  // eslint-disable-line
   const handleCancel = () => {
     setTimesDeleteClicked(0)
     navigate('/applications')

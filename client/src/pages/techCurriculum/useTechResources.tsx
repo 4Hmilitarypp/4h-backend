@@ -24,7 +24,7 @@ const useTechResources = () => {
       .getByParent('tech-curriculum')
       .then(r => setTechResources(r))
       .catch(handleError)
-  }, [handleError])
+  }, []) // eslint-disable-line
 
   const flashContext = React.useContext(FlashContext)
 

@@ -36,7 +36,7 @@ export const useUser = () => {
         setIsLoaded(true)
         handleError(err)
       })
-  }, [handleError])
+  }, []) // eslint-disable-line
 
   const login: IUserContext['login'] = (loginForm: ILoginForm) =>
     api.users

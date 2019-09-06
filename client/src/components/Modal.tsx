@@ -23,7 +23,7 @@ const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }
     } else {
       window.removeEventListener('keydown', handleKeydown)
     }
-  }, [open, setOpen])
+  }, [open]) // eslint-disable-line
 
   return (
     <Portal>
