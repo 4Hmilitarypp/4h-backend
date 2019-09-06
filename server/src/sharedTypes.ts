@@ -175,4 +175,9 @@ export interface IUserApplication {
   userId: string
 }
 
+export interface IArchive {
+  record: any
+  type: string
+}
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

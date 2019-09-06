@@ -4,10 +4,11 @@ import { IApplicationDocument } from '../models/Application'
 // import { IUserApplicationDocument } from '../models/UserApplication';
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Application = mongoose.model<IApplicationDocument>('Application')
 // const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanApplication = (obj: any) => pick(obj, ['dueDate', 'title', 'url', 'userGroups'])
 const cleanApplicationWithId = (obj: any) => pick(obj, ['_id', 'dueDate', 'title', 'url', 'userGroups'])
@@ -22,7 +23,7 @@ export const createApplication: Controller = async (req, res) => {
 }
 
 export const getApplications: Controller = async (_, res) => {
-  const applications = await Application.find().select('-createdBy', '-updatedBy', '-updatedDate', '-createdDate')
+  const applications = await Application.find().select(['-createdBy', '-updatedBy', '-updatedDate', '-createdDate'])
   return res.json(applications)
 }
 

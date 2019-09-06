@@ -2,9 +2,11 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IWebinarDocument } from '../models/Webinar';
+import { IArchiveDocument } from '../models/Archive';
 
-const Webinar = mongoose.model('Webinar')
-const Archive = mongoose.model('Archive')
+const Webinar = mongoose.model<IWebinarDocument>('Webinar')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanWebinar = (obj: any) => pick(obj, ['category', 'description', 'title', 'url'])
 const cleanWebinarWithId = (obj: any) => pick(obj, ['_id', 'category', 'description', 'title', 'url'])

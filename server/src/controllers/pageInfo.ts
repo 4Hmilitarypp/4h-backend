@@ -2,8 +2,9 @@ import { omit, pick } from 'lodash'
 import mongoose from 'mongoose'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IPageInfoDocument } from '../models/PageInfo';
 
-const PageInfo = mongoose.model('PageInfo')
+const PageInfo = mongoose.model<IPageInfoDocument>('PageInfo')
 
 const cleanPageInfo = (obj: any) => pick(obj, ['info', 'page'])
 

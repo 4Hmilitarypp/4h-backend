@@ -10,13 +10,14 @@ import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
 import { captchaError, emailError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
+import { IArchiveDocument } from '../models/Archive';
 
 const cleanRegister = (obj: any) =>
   pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name', 'university'])
 const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions', 'university'])
 
 const User = mongoose.model<IUserDocument>('User')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 export const getUsers: Controller = async (_, res) => {
   const users = await User.find()
@@ -84,9 +85,11 @@ export const createUser: Controller = async (req, res) => {
   if (password !== confirmPassword) {
     errors.push('The password and confirmed password are not the same')
   }
-
   if (errors.length > 0) {
     return res.status(400).send({ message: errors.join('. ') })
+  }
+  if (!cleanEmail) {
+    return res.status(400).send()
   }
 
   const user = new User({
@@ -125,9 +128,11 @@ export const register: Controller = async (req, res) => {
   if (password !== confirmPassword) {
     errors.push('The password and confirmed password are not the same')
   }
-
   if (errors.length > 0) {
     return res.status(400).send({ message: errors.join('. ') })
+  }
+  if (!cleanEmail) {
+    return res.status(400).send()
   }
 
   const user = new User({

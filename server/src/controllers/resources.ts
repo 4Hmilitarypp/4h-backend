@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import { IResourceDocument } from '../models/Resource'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const cleanResource = (obj: any) =>
   pick(obj, ['featuredImage', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
@@ -12,7 +13,7 @@ const cleanResourceWithId = (obj: any) =>
   pick(obj, ['_id', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
 
 const Resource = mongoose.model<IResourceDocument>('Resource')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 export const createResource: Controller = async (req, res) => {
   const resource = await new Resource({

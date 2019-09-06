@@ -8,6 +8,7 @@ import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
 import { createValidationError, emailError, forbiddenError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
+import { IArchiveDocument } from '../models/Archive';
 
 type TCreateUserApplication = Pick<
   IUserApplication,
@@ -17,7 +18,7 @@ type TCreateUserApplication = Pick<
 const Application = mongoose.model<IApplicationDocument>('Application')
 const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
 const User = mongoose.model<IUserDocument>('User')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanUserApplication = (obj: any) => pick(obj, ['status', 'url'])
 const cleanUserApplicationWithId = (obj: any) => pick(obj, ['_id', 'status', 'url'])

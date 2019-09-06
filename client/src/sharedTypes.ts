@@ -131,6 +131,7 @@ export interface IRegisterForm extends ILoginForm {
   affiliation: string
   name: string
   confirmPassword: string
+  university: string
 }
 
 export interface IUser {

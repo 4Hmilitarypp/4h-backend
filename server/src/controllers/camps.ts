@@ -3,9 +3,10 @@ import mongoose from 'mongoose'
 import { ICampDocument } from '../models/Camp'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Camp = mongoose.model<ICampDocument>('Camp')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanCamp = (obj: any) =>
   pick(obj, [
