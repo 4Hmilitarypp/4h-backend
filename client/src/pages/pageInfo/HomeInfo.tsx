@@ -63,7 +63,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { title, text } = e.currentTarget.elements
+    const { title } = e.currentTarget.elements
 
     const featuredImage = featuredImageUrl
       ? {
@@ -73,8 +73,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       : undefined
 
     homeInfo
-      ? api.pageInfo.update('home', { title: title.value, featuredImage, text: text.value })
-      : api.pageInfo.create({ featuredImage, title: title.value, text: text.value, page: 'home' })
+      ? api.pageInfo.update('home', { title: title.value, featuredImage, text: sectionText })
+      : api.pageInfo.create({ featuredImage, title: title.value, text: sectionText, page: 'home' })
   }
   return (
     <Form onSubmit={handleSubmit} id="LiaisonForm">
