@@ -1,10 +1,11 @@
 import { pick } from 'lodash'
 import mongoose from 'mongoose'
+import { S3 } from 'aws-sdk'
 
 import { IPartnerDocument } from '../models/Partner'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
-import { IArchiveDocument } from '../models/Archive';
+import { IArchiveDocument } from '../models/Archive'
 
 const Partner = mongoose.model<IPartnerDocument>('Partner')
 const Archive = mongoose.model<IArchiveDocument>('Archive')
@@ -107,6 +108,28 @@ export const getReports: Controller = async (req, res) => {
     return res.json(reports)
   }
   throw notFoundError
+}
+
+export const getS3Reports: Controller = async (_req, res) => {
+  const s3 = new S3({
+    region: 'us-east-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  })
+  const params = {
+    Bucket: '4hmpp-dev',
+    Key: 'reports/dod-usda/OSD-OMK-camp-corporate-report-2013.pdf',
+  }
+  try {
+    const results = await s3.getObject(params).promise()
+    return res
+      .status(200)
+      .header('Content-type', results.ContentType)
+      .send(results.Body)
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send(err)
+  }
 }
 
 const findReportById = (id: string, reports?: any) => {
