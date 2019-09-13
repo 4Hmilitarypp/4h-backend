@@ -110,7 +110,7 @@
       "git add"
     ],
     "*.{ts,tsx}": [
-      "tslint --fix",
+      "eslint --fix",
       "git add"
     ]
   }

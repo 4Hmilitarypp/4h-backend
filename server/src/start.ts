@@ -1,8 +1,11 @@
+/* eslint-disable import/first */
 import mongoose from 'mongoose'
 import { AddressInfo } from 'net'
 
 // import environmental variables from our .env file
 import * as dotenv from 'dotenv'
+
+dotenv.config({ path: '.env' })
 
 // register models with mongoose
 import './models/Application'
@@ -22,7 +25,6 @@ import './config/passport'
 
 // bring in the app
 import app from './app'
-dotenv.config({ path: '.env' })
 
 if (!process.env.DATABASE_URL) throw new Error('No DATABASE_URL')
 // Connect to our Database and handle any bad connections
