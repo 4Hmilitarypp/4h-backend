@@ -4,9 +4,10 @@ import mongoose from 'mongoose'
 import { IPartnerDocument } from '../models/Partner'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Partner = mongoose.model<IPartnerDocument>('Partner')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanPartner = (obj: any) =>
   pick(obj, ['featuredImage1', 'featuredImage2', 'longDescription', 'title', 'shortDescription', 'slug'])

@@ -2,6 +2,7 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   Button,
@@ -26,12 +27,14 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       .get('home')
       .then(setHomeInfo)
       .catch(handleError)
-  }, [])
+  }, []) // eslint-disable-line
 
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
+  const [sectionText, setSectionText] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
+    if (homeInfo) setSectionText(homeInfo.text)
     if (homeInfo && homeInfo.featuredImage) {
       setFeaturedImageUrl(homeInfo.featuredImage.url)
     }
@@ -49,7 +52,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          setFeaturedImageUrl(res.info.secure_url)
+          const optimizedUrl = res.info.secure_url.split('/upload/').join('/upload/f_auto,q_80/')
+          setFeaturedImageUrl(optimizedUrl)
         }
         if (err) handleError(err)
       }
@@ -59,7 +63,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { title, text } = e.currentTarget.elements
+    const { title } = e.currentTarget.elements
 
     const featuredImage = featuredImageUrl
       ? {
@@ -69,8 +73,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
       : undefined
 
     homeInfo
-      ? api.pageInfo.update('home', { title: title.value, featuredImage, text: text.value })
-      : api.pageInfo.create({ featuredImage, title: title.value, text: text.value, page: 'home' })
+      ? api.pageInfo.update('home', { title: title.value, featuredImage, text: sectionText })
+      : api.pageInfo.create({ featuredImage, title: title.value, text: sectionText, page: 'home' })
   }
   return (
     <Form onSubmit={handleSubmit} id="LiaisonForm">
@@ -80,14 +84,8 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
         <input type="text" id="title" defaultValue={(homeInfo && homeInfo.title) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="text">Section Text</label>
-        {homeInfo ? (
-          <>
-            <textarea id="text" name="text" defaultValue={homeInfo.text} rows={5} />
-          </>
-        ) : (
-          <textarea id="text" name="text" rows={5} />
-        )}
+        <label>Section Text</label>
+        <Editor initialData={sectionText} handleChange={setSectionText} />
       </CustomInputGroup>
       <CustomResourceSection>
         <UploadLabel hasImage={featuredImageUrl}>

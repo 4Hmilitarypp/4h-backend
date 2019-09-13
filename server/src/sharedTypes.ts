@@ -1,3 +1,21 @@
+import { Document } from 'mongoose'
+
+export interface I4HDocument extends Document {
+  archivedBy: string
+  createdBy: string
+  updatedBy: string
+  createdAt: number
+  updatedAt: number
+}
+
+export interface IApplication {
+  _id: string
+  dueDate: string
+  title: string
+  url: string
+  userGroups: string[]
+}
+
 export interface ICampDate {
   _id?: string
   beginDate: Date
@@ -134,6 +152,32 @@ export interface IUser {
   name: string
   password: string
   permissions: string[]
+  university: string
+}
+
+export interface IComment {
+  _id: string
+  text: string
+  userId: string
+}
+
+export interface IUserApplication {
+  _id: string
+  baseId: string
+  comments: IComment[]
+  createdBy: string
+  dueDate: string
+  title: string
+  status: 'Not Submitted' | 'Submitted' | 'Late' | 'Rejected' | 'Approved'
+  updatedBy: string
+  url: string
+  userGroups: string[]
+  userId: string
+}
+
+export interface IArchive {
+  record: any
+  type: string
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

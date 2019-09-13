@@ -1,9 +1,9 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 
-import { IResearch, Omit } from '../sharedTypes'
+import { IResearch, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IResearchDocument extends Omit<IResearch, '_id'>, Document {}
+export interface IResearchDocument extends Omit<IResearch, '_id'>, I4HDocument {}
 
 // @ts-ignore: validate causing whole schema to error
 const researchSchema = new mongoose.Schema({

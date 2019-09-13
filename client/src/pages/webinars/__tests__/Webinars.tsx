@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { flushEffects, render, waitForElement } from 'react-testing-library'
 import Webinars from '../Webinars'
-jest.mock('../../../utils/api')
 import fakeApi from '../../../utils/api'
 import generate from '../../../utils/generate'
+jest.mock('../../../utils/api')
 
 beforeEach(() => (fakeApi as any).reset())
 

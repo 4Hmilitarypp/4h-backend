@@ -1,16 +1,16 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import { promisify } from 'util'
-import { IUser, Omit } from '../sharedTypes'
+import { IUser, Omit, I4HDocument } from '../sharedTypes'
 
 // bcryptjs uses callbacks, and so I turn them into promises withe node's promisify util
 const bcryptSalt = promisify(bcrypt.genSalt)
 const bcryptHash = promisify(bcrypt.hash)
 const bcryptCompare = promisify(bcrypt.compare)
 
-export interface IUserDocument extends Omit<IUser, '_id'>, Document {
+export interface IUserDocument extends Omit<IUser, '_id'>, I4HDocument {
   setPassword: (password: string) => Promise<void>
   validatePassword: (password: string) => Promise<boolean>
   generateJWT: () => string
@@ -40,8 +40,9 @@ const UsersSchema = new mongoose.Schema({
   },
   permissions: {
     default: [],
-    type: [String],
+    type: [{ type: String, enum: ['admin', 'liaison', 'application-user'] }],
   },
+  university: { type: String, required: 'university is required' },
   updatedAt: { type: Date, default: Date.now },
   updatedBy: String,
 })
@@ -66,9 +67,12 @@ UsersSchema.methods.generateJWT = function(this: IUserDocument): string {
   return jwt.sign(
     {
       _id: this._id,
+      affiliation: this.affiliation,
       email: this.email,
       exp: expirationDate.getTime() / 1000,
+      name: this.name,
       permissions: this.permissions,
+      university: this.university,
     },
     process.env.JWT_SECRET
   )

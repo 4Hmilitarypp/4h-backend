@@ -3,15 +3,17 @@ import mongoose from 'mongoose'
 import { IResourceDocument } from '../models/Resource'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
-const cleanResource = (obj: any) => pick(obj, ['title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+const cleanResource = (obj: any) =>
+  pick(obj, ['featuredImage', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithLessons = (obj: any) =>
-  pick(obj, ['lessons', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+  pick(obj, ['featuredImage', 'lessons', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithId = (obj: any) =>
   pick(obj, ['_id', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
 
 const Resource = mongoose.model<IResourceDocument>('Resource')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 export const createResource: Controller = async (req, res) => {
   const resource = await new Resource({
@@ -23,7 +25,13 @@ export const createResource: Controller = async (req, res) => {
 }
 
 export const getResources: Controller = async (_, res) => {
-  const resources = await Resource.find()
+  const resources = await Resource.find({ parent: { $exists: false } })
+    .select('-lessons')
+    .sort('title')
+  return res.json(resources)
+}
+export const getNestedResources: Controller = async (req, res) => {
+  const resources = await Resource.find({ parent: req.params.parent })
     .select('-lessons')
     .sort('title')
   return res.json(resources)

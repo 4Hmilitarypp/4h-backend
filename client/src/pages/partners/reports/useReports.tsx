@@ -14,7 +14,7 @@ export type IUpdateReports = ({
   report?: IReport
 }) => void
 
-export type TSetModalState = ({  }: IModalState) => void
+export type TSetModalState = (args: IModalState) => void
 
 export interface IModalState {
   action: 'create' | 'update' | 'close'

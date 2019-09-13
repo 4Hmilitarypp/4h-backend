@@ -2,9 +2,11 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { ILiaisonDocument } from '../models/Liaison';
+import { IArchiveDocument } from '../models/Archive';
 
-const Liaison = mongoose.model('Liaison')
-const Archive = mongoose.model('Archive')
+const Liaison = mongoose.model<ILiaisonDocument>('Liaison')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanLiaison = (obj: any) => pick(obj, ['abbreviation', 'email', 'image', 'name', 'phoneNumber', 'region'])
 const cleanLiaisonWithId = (obj: any) =>

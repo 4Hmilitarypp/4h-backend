@@ -1,12 +1,13 @@
 import { Router } from '@reach/router'
 import * as React from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
-import ErrorBoundary from './components/ErrorBoundry'
+import ErrorBoundary from './components/ErrorBoundary'
 import FlashContext, { useFlash } from './contexts/FlashContext'
 import UserContext, { useUser } from './contexts/UserContext'
 import Flash from './Flash'
 import Header from './Header'
 import Admin from './pages/admin/Admin'
+import ApplicationsAdmin from './pages/applicationsAdmin/ApplicationsAdmin'
 import Camps from './pages/camps/Camps'
 import Home from './pages/Home'
 import Liaisons from './pages/liaisons/Liaisons'
@@ -16,6 +17,8 @@ import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
 import EducatorResources from './pages/resources/EducatorResources'
+import TechCurriculum from './pages/techCurriculum/TechCurriculum'
+import Applications from './pages/userApplications/UserApplications'
 import Webinars from './pages/webinars/Webinars'
 import Sidebar from './Sidebar'
 import { media } from './utils/mixins'
@@ -58,15 +61,18 @@ const App: React.FC<{}> = () => {
                 <Sidebar path="/*" />
               </SidebarContainer>
               <Router primary={false}>
-                <Home path="/" />
+                <Admin path="/admin/*" />
+                <Applications path="applications/*" />
+                <ApplicationsAdmin path="applications-admin/*" />
                 <Camps path="/camps/*" />
-                <Liaisons path="/liaisons" />
+                <EducatorResources path="/educator-resources/*" />
+                <TechCurriculum path="/tech-curriculum/*" />
                 <Partners path="/partners/*" />
+                <Home path="/" />
+                <Liaisons path="/liaisons" />
                 <Register path="/register" />
                 <Researches path="/research" />
-                <EducatorResources path="/educator-resources/*" />
                 <Webinars path="/webinars" />
-                <Admin path="/admin/*" />
                 <HomeInfo path="page-info/home" />
                 <NotFound default={true} />
               </Router>

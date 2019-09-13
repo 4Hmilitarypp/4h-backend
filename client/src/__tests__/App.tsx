@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { render } from 'react-testing-library'
 import App from '../App'
-jest.mock('../utils/api')
 import fakeApi from '../utils/api'
+jest.mock('../utils/api')
 beforeEach(() => (fakeApi as any).reset())
 
 const setup = (propOverrides?: {}) => {

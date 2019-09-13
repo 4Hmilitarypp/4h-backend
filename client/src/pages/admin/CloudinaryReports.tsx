@@ -18,7 +18,7 @@ const CloudinaryReports: React.FC<RouteComponentProps> = () => {
       .cloudinaryUsage()
       .then(setUsage)
       .catch(handleError)
-  }, [])
+  }, []) // eslint-disable-line
 
   const formatDate = (date: string | Date) => format(date, 'YYYY-MM-DD')
 

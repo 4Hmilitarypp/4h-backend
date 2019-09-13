@@ -2,6 +2,14 @@ export interface IApiError {
   response: { data: { message: string }; status: number; statusText: string }
 }
 
+export interface IApplication {
+  _id?: string
+  dueDate: string
+  title: string
+  url: string
+  userGroups: string[]
+}
+
 export interface ICampDate {
   _id?: string
   beginDate: string
@@ -123,6 +131,7 @@ export interface IRegisterForm extends ILoginForm {
   affiliation: string
   name: string
   confirmPassword: string
+  university: string
 }
 
 export interface IUser {
@@ -131,6 +140,35 @@ export interface IUser {
   email: string
   name: string
   permissions: string[]
+  university: string
+}
+
+export interface IComment {
+  _id?: string
+  text: string
+  userId: string
+  userName: string
+}
+export interface IApiComment {
+  _id?: string
+  text: string
+}
+
+export interface IUserApplication {
+  _id?: string
+  status: 'Not Submitted' | 'Submitted' | 'Late' | 'Rejected' | 'Approved'
+  url: string
+}
+
+export interface IFullUserApplication extends IUserApplication {
+  baseApplicationUrl: string
+  baseId: string
+  comments: IComment[]
+  dueDate: string
+  title: string
+  userGroups: string[]
+  userId: string
+  userName: string
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

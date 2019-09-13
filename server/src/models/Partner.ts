@@ -1,8 +1,8 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import slugify from 'slugify'
-import { IPartner, Omit } from '../sharedTypes'
+import { IPartner, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IPartnerDocument extends Omit<IPartner, '_id'>, Document {}
+export interface IPartnerDocument extends Omit<IPartner, '_id'>, I4HDocument {}
 
 const imageSchema = new mongoose.Schema({
   _id: { auto: false },

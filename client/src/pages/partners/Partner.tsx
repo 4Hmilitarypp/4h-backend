@@ -38,7 +38,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
       setPartner(undefined)
       setAction('create')
     }
-  }, [slug])
+  }, [action, slug])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)

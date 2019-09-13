@@ -20,6 +20,10 @@ const setupUserRoutes = (router: Router) => {
     .post(auth.required, guard({}).check('admin'), catchErrors(usersController.createUser))
 
   router
+    .route('/application-users')
+    .get(auth.required, guard({}).check('admin'), catchErrors(usersController.getApplicationUserIds))
+
+  router
     .route('/:_id')
     .put(auth.required, guard({}).check('admin'), catchErrors(usersController.updateUser))
     .delete(auth.required, guard({}).check('admin'), catchErrors(usersController.deleteUser))

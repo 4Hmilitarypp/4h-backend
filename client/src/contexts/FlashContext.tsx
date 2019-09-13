@@ -18,7 +18,7 @@ export const useFlash = () => {
   const initialState = { message: '', isError: false }
   const [flashState, setFlashState] = React.useState<{ message: string; isError: boolean }>(initialState)
   const mySetFlashState = ({ message, isError = false }: ISetFlashStateArgs) => setFlashState({ message, isError })
-  const resetFlashState = () => setFlashState(initialState)
+  const resetFlashState = React.useCallback(() => setFlashState(initialState), [initialState])
 
   React.useEffect(() => {
     if (flashState.message && !flashState.isError) {
@@ -30,7 +30,7 @@ export const useFlash = () => {
       }
     }
     return undefined
-  }, [flashState.message])
+  }, [flashState.isError, flashState.message]) // eslint-disable-line
 
   return { flashState, setFlashState: mySetFlashState, resetFlashState }
 }

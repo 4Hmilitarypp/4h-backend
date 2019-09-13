@@ -2,6 +2,7 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import {
   BlankUploadBox,
   InputGroup,
@@ -28,12 +29,18 @@ interface IProps {
 const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) => {
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
   const [flyerUrl, setFlyerUrl] = React.useState<string | undefined>(undefined)
+  const [campType, setCampType] = React.useState<'Day' | 'Residential'>('Day')
+  const [serviceBranch, setServiceBranch] = React.useState<'Air Force' | 'Navy' | 'Army'>('Air Force')
+  const [description, setDescription] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
+    if (camp) setDescription(camp.description)
     if (camp && camp.featuredImage) {
       setFeaturedImageUrl(camp.featuredImage.url)
       setFlyerUrl(camp.flyerUrl)
+      setCampType(camp.type)
+      setServiceBranch(camp.serviceBranch)
     }
     if (!camp && formRef.current) {
       formRef.current.reset()
@@ -75,6 +82,9 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
     if (widget) widget.open()
   }
 
+  const handleTypeChange = (e: any) => setCampType(e.target.value)
+  const handleServiceChange = (e: any) => setServiceBranch(e.target.value)
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
@@ -86,12 +96,9 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       contactPhoneNumber,
       contactUrl,
       contactUrlText,
-      description,
       descriptionTitle,
-      serviceBranch,
       state,
       title,
-      type,
     } = e.currentTarget.elements
 
     const featuredImage = featuredImageUrl
@@ -112,14 +119,14 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       ageRange: ageRange.value,
       city: city.value,
       contact,
-      description: description.value,
+      description: description || '',
       descriptionTitle: descriptionTitle.value,
       featuredImage,
       flyerUrl,
-      serviceBranch: serviceBranch.value as 'Air Force' | 'Navy' | 'Army',
+      serviceBranch,
       state: state.value,
       title: title.value,
-      type: type.value as 'Residential' | 'Day',
+      type: campType,
     }
     if (action === 'update') {
       api.camps
@@ -162,24 +169,16 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       </CustomInputGroup>
       <CustomInputGroup>
         <label htmlFor="type">Camp Type</label>
-        <Select id="type">
-          <option value="Day" selected={!camp || camp.type === 'Day'}>
-            Day
-          </option>
-          <option value="Residential" selected={camp && camp.type === 'Residential'}>
-            Residential
-          </option>
+        <Select id="type" value={campType} onChange={e => handleTypeChange(e)}>
+          <option value="Day">Day</option>
+          <option value="Residential">Residential</option>
         </Select>
       </CustomInputGroup>
       <CustomInputGroup>
         <label htmlFor="serviceBranch">Service Branch</label>
-        <Select id="serviceBranch">
-          <option value="Air Force" selected={!camp || camp.serviceBranch === 'Air Force'}>
-            Air Force
-          </option>
-          <option value="Navy" selected={camp && camp.serviceBranch === 'Navy'}>
-            Navy
-          </option>
+        <Select id="serviceBranch" value={serviceBranch} onChange={e => handleServiceChange(e)}>
+          <option value="Air Force">Air Force</option>
+          <option value="Navy">Navy</option>
         </Select>
       </CustomInputGroup>
       <CustomInputGroup>
@@ -187,15 +186,8 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <input type="text" id="descriptionTitle" defaultValue={(camp && camp.descriptionTitle) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="description">Description</label>
-        {/* Had to do the following because the description was not showing up for some reason */}
-        {camp ? (
-          <>
-            <textarea id="description" defaultValue={camp.description || ''} cols={100} rows={5} />
-          </>
-        ) : (
-          <textarea id="description" cols={100} rows={5} />
-        )}
+        <label>Description</label>
+        <Editor initialData={description} handleChange={setDescription} />
       </CustomInputGroup>
       <SubHeading>Camp Resources</SubHeading>
       <CampResources>

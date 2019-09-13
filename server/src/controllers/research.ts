@@ -3,9 +3,11 @@ import mongoose from 'mongoose'
 
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IResearchDocument } from '../models/Research';
+import { IArchiveDocument } from '../models/Archive';
 
-const Research = mongoose.model('Research')
-const Archive = mongoose.model('Archive')
+const Research = mongoose.model<IResearchDocument>('Research')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanResearch = (obj: any) => pick(obj, ['description', 'title', 'type', 'url'])
 const cleanResearchWithId = (obj: any) => pick(obj, ['_id', 'description', 'title', 'type', 'url'])

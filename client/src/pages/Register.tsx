@@ -33,7 +33,7 @@ const Register: React.FC<RouteComponentProps> = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
-    const { affiliation, email, password, confirmPassword, name } = e.currentTarget.elements
+    const { affiliation, email, password, confirmPassword, name, university } = e.currentTarget.elements
 
     try {
       const isSpam = await checkIfSpam()
@@ -52,6 +52,7 @@ const Register: React.FC<RouteComponentProps> = () => {
         email: email.value,
         name: name.value,
         password: password.value,
+        university: university.value,
       })
       .then(() => {
         flashContext.set({
@@ -76,6 +77,10 @@ const Register: React.FC<RouteComponentProps> = () => {
           <label htmlFor="email">Email</label>
           <input type="email" id="email" required={true} autoFocus={true} placeholder="brianna.smith@example.com" />
         </CustomInputGroup>
+        <InputGroup>
+          <label htmlFor="university">Which university are you a part of?</label>
+          <input type="text" id="university" />
+        </InputGroup>
         <InputGroup>
           <label htmlFor="affiliation">What is your affiliation with 4-H Military Partnerships?</label>
           <input type="text" id="affiliation" />

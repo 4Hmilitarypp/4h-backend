@@ -1,5 +1,4 @@
 {
-  "eslint.enable": false,
   "search.exclude": {
     "**/dist/**/*": true
   },
@@ -9,6 +8,5 @@
       "titleBar.activeBackground": "#FFA500B0"
     }
   },
-  "tslint.configFile": "../tslint.json",
-  "prettier.tslintIntegration": true
+  "tslint.configFile": "../tslint.json"
 }

@@ -79,6 +79,10 @@ export const A = styled.a`
     opacity: 0.8;
   }
 `
+export const B = styled.b`
+  font-weight: 500;
+  color: ${props => props.theme.primaryBlack};
+`
 // Have to do the props thing because of a jest error
 export const Link = styled(props => <UnstyledLink {...props} />)`
   font-weight: 500;
@@ -239,4 +243,12 @@ export const ResourceSection = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`
+export const UploadInput = styled.input`
+  width: 90%;
+  border-radius: 5px;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  margin-top: 2.4rem;
+  background: ${props => props.theme.white};
 `

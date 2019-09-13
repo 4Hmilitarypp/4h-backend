@@ -3,9 +3,10 @@ import mongoose from 'mongoose'
 import { ICampDocument } from '../models/Camp'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Camp = mongoose.model<ICampDocument>('Camp')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanCamp = (obj: any) =>
   pick(obj, [
@@ -44,6 +45,11 @@ export const createCamp: Controller = async (req, res) => {
 
 export const getCamps: Controller = async (_, res) => {
   const camps = await Camp.find()
+  return res.json(camps)
+}
+
+export const getCurrentCamps: Controller = async (_, res) => {
+  const camps = await Camp.find({ dates: { $elemMatch: { beginDate: { $gte: new Date().toISOString() } } } })
   return res.json(camps)
 }
 

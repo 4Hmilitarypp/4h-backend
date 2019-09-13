@@ -5,7 +5,5 @@
       "titleBar.activeBackground": "#f08080B0"
     }
   },
-  "eslint.enable": false,
-  "tslint.configFile": "../tslint.json",
-  "prettier.tslintIntegration": true
+  "tslint.configFile": "../tslint.json"
 }

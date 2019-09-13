@@ -10,12 +10,14 @@ import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
 import { captchaError, emailError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
+import { IArchiveDocument } from '../models/Archive';
 
-const cleanRegister = (obj: any) => pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name'])
-const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions'])
+const cleanRegister = (obj: any) =>
+  pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name', 'university'])
+const createSafeUser = (obj: any) => pick(obj, ['_id', 'affiliation', 'email', 'name', 'permissions', 'university'])
 
 const User = mongoose.model<IUserDocument>('User')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 export const getUsers: Controller = async (_, res) => {
   const users = await User.find()
@@ -34,6 +36,7 @@ export const updateUser: Controller = async (req, res) => {
       runValidators: true,
     }
   )
+  // if (user) return res.status(200).json(createSafeUser(user))
   if (user) {
     try {
       await transporter.sendMail({
@@ -63,7 +66,7 @@ export const deleteUser: Controller = async (req, res) => {
 }
 
 export const createUser: Controller = async (req, res) => {
-  const { affiliation, email, password, confirmPassword, name } = cleanRegister(req.body)
+  const { affiliation, email, password, confirmPassword, name, university } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
     errors.push('please input a valid email')
@@ -82,9 +85,11 @@ export const createUser: Controller = async (req, res) => {
   if (password !== confirmPassword) {
     errors.push('The password and confirmed password are not the same')
   }
-
   if (errors.length > 0) {
     return res.status(400).send({ message: errors.join('. ') })
+  }
+  if (!cleanEmail) {
+    return res.status(400).send()
   }
 
   const user = new User({
@@ -93,6 +98,7 @@ export const createUser: Controller = async (req, res) => {
     email: cleanEmail,
     name,
     password,
+    university,
     updatedBy: req.user.email,
   })
   await user.setPassword(password)
@@ -103,7 +109,7 @@ export const createUser: Controller = async (req, res) => {
 
 // POST new user
 export const register: Controller = async (req, res) => {
-  const { email, password, confirmPassword, name } = cleanRegister(req.body)
+  const { email, password, confirmPassword, name, university } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
     errors.push('please input a valid email')
@@ -122,9 +128,11 @@ export const register: Controller = async (req, res) => {
   if (password !== confirmPassword) {
     errors.push('The password and confirmed password are not the same')
   }
-
   if (errors.length > 0) {
     return res.status(400).send({ message: errors.join('. ') })
+  }
+  if (!cleanEmail) {
+    return res.status(400).send()
   }
 
   const user = new User({
@@ -133,6 +141,7 @@ export const register: Controller = async (req, res) => {
     email: cleanEmail,
     name,
     password,
+    university,
     updatedBy: 'register',
   })
   await user.setPassword(password)
@@ -143,7 +152,7 @@ export const register: Controller = async (req, res) => {
   try {
     await transporter.sendMail({
       from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
-      html: registration(user.name, user.email, user.affiliation),
+      html: registration(user.name, user.email, user.affiliation, user.university),
       subject: 'New User Registered',
       text: '',
       to: 'alex@wendte.tech',
@@ -221,4 +230,10 @@ export const me: Controller = async (req, res) => {
     res.clearCookie('token')
     return res.send()
   }
+}
+
+export const getApplicationUserIds: Controller = async (_, res) => {
+  const users = await User.find({ permissions: { $in: 'application-user' } }).select(['_id', 'name', 'email'])
+  if (!users) throw notFoundError
+  return res.json(users)
 }
