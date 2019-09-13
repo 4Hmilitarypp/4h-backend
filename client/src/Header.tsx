@@ -1,11 +1,12 @@
-import { RouteComponentProps } from '@reach/router'
+import { Link, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, Link } from './components/Elements'
+import { Button, Link as A } from './components/Elements'
 import SignInModal from './components/SignInModal'
 import UserContext from './contexts/UserContext'
 import useErrorHandler from './hooks/useErrorHandler'
 import { IApiError } from './sharedTypes'
+import { media } from './utils/mixins'
 
 const Header: React.FC<RouteComponentProps> = () => {
   const userContext = React.useContext(UserContext)
@@ -20,9 +21,9 @@ const Header: React.FC<RouteComponentProps> = () => {
   return (
     <HeaderWrapper>
       <ExternalLink>
-        <CustomLink as="a" href="https://4h.wendte.tech">
+        <CustomA as="a" href="https://4-hmilitarypartnerships.org">
           View the Website
-        </CustomLink>
+        </CustomA>
       </ExternalLink>
       <Title>4-HMPP CMS</Title>
       <User>
@@ -32,9 +33,14 @@ const Header: React.FC<RouteComponentProps> = () => {
             <CustomButton onClick={handleLogoutClicked}>Logout</CustomButton>
           </>
         ) : (
-          <SignInModal>
-            <CustomButton>Login</CustomButton>
-          </SignInModal>
+          <>
+            <Register as={Link} to="register">
+              Register
+            </Register>
+            <SignInModal>
+              <CustomButton>Login</CustomButton>
+            </SignInModal>
+          </>
         )}
       </User>
     </HeaderWrapper>
@@ -56,18 +62,27 @@ const HeaderWrapper = styled.header`
 const ExternalLink = styled.div`
   width: 26rem;
   padding-left: 2.4rem;
+  ${media.tabletPort`
+    display: none;
+  `}
 `
-const CustomLink = styled(Link)`
+const CustomA = styled(A)`
   color: ${props => props.theme.white};
 `
 const Title = styled.h1`
   font-size: 2.4rem;
+  ${media.tabletPort`
+    font-size: 1.8rem;
+  `}
 `
 const User = styled.div`
   padding-right: 2.4rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  ${media.tabletPort`
+    padding-right: 0rem;
+  `}
 `
 const Name = styled.span`
   padding-right: 2.4rem;
@@ -76,4 +91,11 @@ const Name = styled.span`
 const CustomButton = styled(Button)`
   color: ${props => props.theme.primary};
   background: ${props => props.theme.white};
+  ${media.tabletPort`
+    padding: .4rem .8rem;
+    font-size: 1.6rem;
+  `}
+`
+const Register = styled(CustomButton)`
+  margin-right: 2rem;
 `

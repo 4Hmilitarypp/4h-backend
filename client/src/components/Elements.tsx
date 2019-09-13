@@ -1,7 +1,9 @@
 import { Link as UnstyledLink } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
+import { theme } from '../App'
 import { elevation, transition } from '../utils/mixins'
+import Icon from './Icon'
 
 export const InputGroup = styled.div`
   margin: 0 0 1.2rem;
@@ -22,7 +24,7 @@ export const InputGroup = styled.div`
     border-radius: 5px;
     padding: 0.9rem 1.5rem;
     border: none;
-    background: ${props => props.theme.primaryBackground};
+    background: ${props => (props.color === 'white' ? props.theme.white : props.theme.primaryBackground)};
   }
 `
 export const PageWrapper = styled.div`
@@ -41,6 +43,9 @@ export const SubHeading = styled.h2`
   padding: 2.4rem 0;
   text-align: center;
   line-height: 1.2;
+`
+export const LeftSubHeading = styled(SubHeading)`
+  text-align: left;
 `
 export const Button: any = styled.button`
   border-radius: 5px;
@@ -73,6 +78,10 @@ export const A = styled.a`
   &:hover {
     opacity: 0.8;
   }
+`
+export const B = styled.b`
+  font-weight: 500;
+  color: ${props => props.theme.primaryBlack};
 `
 // Have to do the props thing because of a jest error
 export const Link = styled(props => <UnstyledLink {...props} />)`
@@ -173,4 +182,73 @@ export const CreateButton: any = styled.button`
     cursor: pointer;
     opacity: 0.8;
   }
+`
+export const UploadImage = styled.img`
+  width: 25rem;
+  height: 25rem;
+  border-radius: 5px;
+  object-fit: cover;
+  ${elevation(4)};
+  &:hover
+    opacity: 0.8;
+    cursor: pointer;
+  }
+`
+export const BlankUploadBox = styled.div`
+  background: ${props => props.theme.primaryLight};
+  width: 25rem;
+  height: 25rem;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${elevation(4)};
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+`
+export const TextUploadBox = styled(BlankUploadBox)`
+  padding: 0.8rem;
+  word-break: break-all;
+`
+
+export const UploadButton = styled.span`
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: ${props => props.theme.primaryDark};
+`
+export const UploadLabel: any = styled.label`
+  font-size: 1.8rem;
+  color: ${props => props.theme.primaryGrey};
+  padding-bottom: 1.2rem;
+  display: flex;
+  justify-content: ${(props: any) => (props.hasImage ? 'space-between' : 'center')};
+  align-items: center;
+  padding: 0 1.6rem 1.2rem;
+  width: 25rem;
+`
+export const Select = styled.select`
+  font-size: 1.6rem;
+`
+const DeleteIcon = styled(Icon)`
+  &:hover {
+    cursor: pointer;
+  }
+`
+export const TrashCan = (props: any) => <DeleteIcon name="delete" height={2.5} color={theme.warning} {...props} />
+export const ResourceSection = styled.div`
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+export const UploadInput = styled.input`
+  width: 90%;
+  border-radius: 5px;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  margin-top: 2.4rem;
+  background: ${props => props.theme.white};
 `

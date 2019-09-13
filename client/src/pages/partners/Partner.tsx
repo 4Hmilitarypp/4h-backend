@@ -1,7 +1,8 @@
 import { navigate, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { Button, DeleteButton, Heading, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
+import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from '../../components/Elements'
+import FormHeading from '../../components/FormHeading'
 import { IApiError, IPartner } from '../../sharedTypes'
 import api from '../../utils/api'
 import PartnerForm from './PartnerForm'
@@ -33,8 +34,11 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
           navigate('/partners')
         }
       })
+    } else {
+      setPartner(undefined)
+      setAction('create')
     }
-  }, [slug])
+  }, [action, slug])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
@@ -56,7 +60,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
   }
   return (
     <div>
-      <CustomHeading>{`${action === 'update' ? 'Updating a Partner' : 'Create a new Partner'}`}</CustomHeading>
+      <FormHeading _id={slug} action={action} singular="Partner" plural="Partners" route="/partners" />
       <PartnerForm
         action={action}
         handleError={handleError}
@@ -84,9 +88,6 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
 
 export default Partner
 
-const CustomHeading = styled(Heading)`
-  font-size: 2.4rem;
-`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;

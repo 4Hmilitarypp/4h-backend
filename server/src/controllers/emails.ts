@@ -4,7 +4,7 @@ import { Controller } from '../types'
 import { emailError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
 
-const cleanContactUs = (obj: any) => pick(obj, ['name', 'email', 'message'])
+const cleanContactUs = (obj: any) => pick(obj, ['name', 'email', 'message', 'category'])
 
 export const contactUs: Controller = async (req, res) => {
   const form = cleanContactUs(req.body)
@@ -13,7 +13,7 @@ export const contactUs: Controller = async (req, res) => {
     await transporter.sendMail({
       from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
       html: informationTemplate(form.name, form.email, form.message),
-      subject: `4-H Information Request`,
+      subject: `4-H Information Request${form.category ? ' :' + form.category : ''}`,
       text: '',
       to: 'alex@wendte.tech',
     })

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { IForm } from '../../clientTypes'
+import Editor from '../../components/Editor'
 import { InputGroup, ModalForm } from '../../components/Elements'
 import { IModalController } from '../../components/table/useTable'
 import { IResearch, ResearchType } from '../../sharedTypes'
@@ -24,13 +25,18 @@ interface IProps {
 const ResearchForm: React.FC<IProps> = ({ modalController }) => {
   const { handleError, reset: resetModalState, updateItems } = modalController
   const { item: research, action } = modalController.state
+  const [description, setDescription] = React.useState<string>()
+
+  React.useEffect(() => {
+    if (research) setDescription(research.description)
+  }, [research])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { description, title, url } = e.currentTarget.elements
+    const { title, url } = e.currentTarget.elements
     const updateResearch = {
       _id: research ? research._id : undefined,
-      description: description.value,
+      description: description || '',
       title: title.value,
       type: getType(url.value),
       url: url.value,
@@ -70,8 +76,8 @@ const ResearchForm: React.FC<IProps> = ({ modalController }) => {
         <input type="url" id="url" defaultValue={research && research.url} required={true} />
       </InputGroup>
       <InputGroup>
-        <label htmlFor="description">Description</label>
-        <textarea id="description" defaultValue={(research && research.description) || ''} cols={100} rows={5} />
+        <label>Description</label>
+        <Editor initialData={description} handleChange={setDescription} />
       </InputGroup>
     </ModalForm>
   )

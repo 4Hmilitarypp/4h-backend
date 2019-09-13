@@ -1,8 +1,8 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose from 'mongoose'
 import slugify from 'slugify'
-import { IPartner, Omit } from '../sharedTypes'
+import { IPartner, Omit, I4HDocument } from '../sharedTypes'
 
-export interface IPartnerDocument extends Omit<IPartner, '_id'>, Document {}
+export interface IPartnerDocument extends Omit<IPartner, '_id'>, I4HDocument {}
 
 const imageSchema = new mongoose.Schema({
   _id: { auto: false },
@@ -19,6 +19,8 @@ const imageSchema = new mongoose.Schema({
 })
 
 const reportSchema = new mongoose.Schema({
+  createdAt: { type: Date, default: Date.now },
+  createdBy: String,
   image: {
     required: true,
     type: imageSchema,
@@ -28,6 +30,8 @@ const reportSchema = new mongoose.Schema({
     trim: true,
     type: String,
   },
+  updatedAt: { type: Date, default: Date.now },
+  updatedBy: String,
   url: {
     required: true,
     trim: true,
@@ -36,6 +40,7 @@ const reportSchema = new mongoose.Schema({
 })
 
 const partnerSchema = new mongoose.Schema({
+  createdAt: { type: Date, default: Date.now },
   featuredImage1: { type: imageSchema, required: 'Please submit at least one featured image' },
   featuredImage2: imageSchema,
   links: [String],
@@ -46,19 +51,21 @@ const partnerSchema = new mongoose.Schema({
   title: { type: String, required: 'Please enter a title' },
 })
 
-partnerSchema.pre('save', function(next) {
+partnerSchema.pre('save', function(this: any, next) {
+  this.updatedAt = Date.now()
   if (!this.isModified('title')) {
     next()
     return
   }
-  ;(this as any).slug = slugify((this as any).title)
+  ;(this as any).slug = slugify((this as any).title, { lower: true })
   next()
 })
 
 partnerSchema.pre('findOneAndUpdate', function(next) {
+  ;(this as any)._update.updatedAt = Date.now()
   const title = this.getUpdate().title
   if (title) {
-    ;(this as any)._update.slug = slugify(title)
+    ;(this as any)._update.slug = slugify(title, { lower: true })
     next()
   } else {
     next()

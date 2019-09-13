@@ -14,6 +14,7 @@ export const CampContext = React.createContext<ICampContext>(undefined as any)
 
 const Camps: React.FC<RouteComponentProps> = () => {
   const { handleError, camps, updateCamps } = useCamps()
+
   const findById = (id: string) => (camps ? camps.find(r => r._id === id) : undefined)
 
   return (

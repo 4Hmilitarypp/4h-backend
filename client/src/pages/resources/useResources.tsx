@@ -24,7 +24,7 @@ const useResources = () => {
       .get()
       .then(r => setResources(r))
       .catch(handleError)
-  }, [])
+  }, []) // eslint-disable-line
 
   const flashContext = React.useContext(FlashContext)
 

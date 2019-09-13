@@ -3,12 +3,25 @@ import mongoose from 'mongoose'
 import { ICampDocument } from '../models/Camp'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Camp = mongoose.model<ICampDocument>('Camp')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanCamp = (obj: any) =>
-  pick(obj, ['ageRange', 'city', 'contact', 'description', 'descriptionTitle', 'featuredImage', 'state', 'title'])
+  pick(obj, [
+    'ageRange',
+    'city',
+    'contact',
+    'description',
+    'descriptionTitle',
+    'featuredImage',
+    'flyerUrl',
+    'serviceBranch',
+    'state',
+    'title',
+    'type',
+  ])
 const cleanCampWithId = (obj: any) =>
   pick(obj, [
     '_id',
@@ -18,12 +31,15 @@ const cleanCampWithId = (obj: any) =>
     'description',
     'descriptionTitle',
     'featuredImage',
+    'flyerUrl',
+    'serviceBranch',
     'state',
     'title',
+    'type',
   ])
 
 export const createCamp: Controller = async (req, res) => {
-  const camp = await new Camp(cleanCamp(req.body)).save()
+  const camp = await new Camp({ ...cleanCamp(req.body), createdBy: req.user.email, updatedBy: req.user.email }).save()
   return res.status(201).json(camp)
 }
 
@@ -32,13 +48,22 @@ export const getCamps: Controller = async (_, res) => {
   return res.json(camps)
 }
 
+export const getCurrentCamps: Controller = async (_, res) => {
+  const camps = await Camp.find({ dates: { $elemMatch: { beginDate: { $gte: new Date().toISOString() } } } })
+  return res.json(camps)
+}
+
 export const updateCamp: Controller = async (req, res) => {
   const { _id } = req.params
-  const camp = await Camp.findByIdAndUpdate(_id, cleanCamp(req.body), {
-    context: 'query',
-    new: true,
-    runValidators: true,
-  })
+  const camp = await Camp.findByIdAndUpdate(
+    _id,
+    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
   if (camp) {
     return res.status(200).json(cleanCampWithId(camp))
   }
@@ -49,7 +74,7 @@ export const deleteCamp: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedCamp = await Camp.findByIdAndDelete(_id)
   if (deletedCamp) {
-    await new Archive({ ...cleanCamp(deletedCamp), type: 'camp' }).save()
+    await new Archive({ archivedBy: req.user.email, record: cleanCamp(deletedCamp), type: 'camp' }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -62,7 +87,7 @@ export const createCampDate: Controller = async (req, res) => {
   const updatedCamp = (await Camp.findByIdAndUpdate(
     campId,
     {
-      $push: { dates: cleanCampDate(req.body) },
+      $push: { dates: { ...cleanCampDate(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -95,7 +120,7 @@ export const updateCampDate: Controller = async (req, res) => {
   const resource = await Camp.findOneAndUpdate(
     { _id: campId, 'dates._id': _id },
     {
-      $set: { 'dates.$': { ...cleanCampDate(req.body), _id } },
+      $set: { 'dates.$': { ...cleanCampDate(req.body), _id, updatedBy: req.user.email } },
     },
     { new: true }
   )
@@ -114,7 +139,7 @@ export const deleteCampDate: Controller = async (req, res) => {
   if (updatedCamp) {
     const deletedCampDate = findCampDateById(_id, updatedCamp.dates)
     if (deletedCampDate) {
-      await new Archive({ ...cleanCampDate(deletedCampDate), type: 'campDate' }).save()
+      await new Archive({ archivedBy: req.user.email, record: cleanCampDate(deletedCampDate), type: 'campDate' }).save()
       return res.status(204).send()
     }
     throw notFoundError

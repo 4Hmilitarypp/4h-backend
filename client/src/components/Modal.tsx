@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import Icon from '../components/Icon'
+import { media } from '../utils/mixins'
 import { Button, DeleteButton, HighSevDeleteButton, OutlineButton } from './Elements'
 import Portal from './Portal'
 
@@ -12,17 +13,18 @@ interface IProps {
 
 const Modal: React.FC<IProps> = ({ children, open, setOpen, closeButton = true }) => {
   React.useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+      }
+    }
     if (open) {
       window.addEventListener('keydown', handleKeydown)
     } else {
       window.removeEventListener('keydown', handleKeydown)
     }
-  }, [open])
-  const handleKeydown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setOpen(false)
-    }
-  }
+  }, [open]) // eslint-disable-line
+
   return (
     <Portal>
       {open && (
@@ -98,8 +100,12 @@ const ModalCard = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   z-index: 2;
   min-width: 70rem;
+  max-width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  ${media.tabletPort`
+    min-width: unset;
+  `}
 `
 const Background = styled.div`
   position: absolute;

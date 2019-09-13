@@ -1,7 +1,11 @@
 import * as axios from 'axios'
 import {
+  IApiComment,
+  IApplication,
   ICamp,
   ICampDate,
+  IComment,
+  IFullUserApplication,
   ILesson,
   ILiaison,
   ILoginForm,
@@ -12,20 +16,35 @@ import {
   IResearch,
   IResource,
   IUser,
+  IUserApplication,
   IWebinar,
   Omit,
 } from '../sharedTypes'
 
-let api: axios.AxiosInstance
+let restApi: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
 
 const getData = (res: { data: object }) => res.data
 
 const requests = {
-  delete: (url: string): Promise<any> => api.delete(url).then(getData),
-  get: (url: string): Promise<any> => api.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => api.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => api.put(url, body).then(getData),
+  delete: (url: string): Promise<any> => restApi.delete(url).then(getData),
+  get: (url: string): Promise<any> => restApi.get(url).then(getData),
+  post: (url: string, body: object): Promise<any> => restApi.post(url, body).then(getData),
+  put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
+}
+
+const admin = {
+  cloudinaryReports: ({ beginDate, endDate }: { beginDate: string; endDate: string }): Promise<any[]> =>
+    requests.get(`/admin/cloudinary-reports/${beginDate}/${endDate}`),
+  cloudinaryUsage: (): Promise<any> => requests.get(`/admin/cloudinary-reports/usage`),
+}
+
+const applications = {
+  create: (data: Omit<IApplication, '_id'>): Promise<IApplication> => requests.post('/applications', data),
+  delete: (id: string): Promise<string> => requests.delete(`/applications/${id}`),
+  get: (): Promise<IApplication[]> => requests.get('/applications'),
+  getIds: (): Promise<string[]> => requests.get('/applications/ids'),
+  update: (id: string, updates: IApplication): Promise<IApplication> => requests.put(`/applications/${id}`, updates),
 }
 
 const camps = {
@@ -41,6 +60,19 @@ const campDates = {
   get: (campId: string): Promise<ICampDate[]> => requests.get(`/camps/${campId}/dates/`),
   update: (campId: string, id: string, updates: ICampDate): Promise<ICampDate> =>
     requests.put(`/camps/${campId}/dates/${id}`, updates),
+}
+
+const comments = {
+  create: (userApplicationId: string, data: Pick<IApiComment, 'text'>): Promise<IComment> =>
+    requests.post(`/user-applications/${userApplicationId}/comments/`, data),
+  delete: (userApplicationId: string, id: string): Promise<string> =>
+    requests.delete(`/user-applications/${userApplicationId}/comments/${id}`),
+  get: (userApplicationId: string): Promise<IComment[]> =>
+    requests.get(`/user-applications/${userApplicationId}/comments/`),
+  getById: (userApplicationId: string, id: string): Promise<IComment[]> =>
+    requests.get(`/user-applications/${userApplicationId}/comments/${id}`),
+  update: (userApplicationId: string, id: string, updates: Pick<IApiComment, 'text'>): Promise<IComment> =>
+    requests.put(`/user-applications/${userApplicationId}/comments/${id}`, updates),
 }
 
 const lessons = {
@@ -60,12 +92,18 @@ const liaisons = {
   update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
 }
 
+const pageInfo = {
+  create: (data: any): Promise<any> => requests.post('/page-info', { info: data, page: data.page }),
+  get: (page: string): Promise<any> => requests.get(`/page-info/${page}`),
+  update: (page: string, updates: any): Promise<any> => requests.put(`/page-info/${page}`, { info: updates }),
+}
+
 const partners = {
-  create: (data: IPartner): Promise<IPartner> => requests.post('/partners', data),
+  create: (data: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.post('/partners', data),
   delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
   get: (): Promise<IPartnerSection[]> => requests.get('/partners'),
   getBySlug: (slug: string): Promise<IPartner> => requests.get(`/partners/slug/${slug}`),
-  update: (id: string, updates: IPartner): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
+  update: (id: string, updates: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
 }
 
 const reports = {
@@ -89,16 +127,33 @@ const resources = {
   delete: (id: string): Promise<string> => requests.delete(`/resources/${id}`),
   get: (): Promise<IResource[]> => requests.get('/resources'),
   getById: (id: string): Promise<IResource> => requests.get(`/resources/${id}`),
+  getByParent: (parent: string): Promise<IResource[]> => requests.get(`/resources/nested/${parent}`),
   update: (id: string, updates: Omit<IResource, 'slug'>): Promise<IResource> =>
     requests.put(`/resources/${id}`, updates),
 }
 
+const userApplications = {
+  create: (data: IUserApplication): Promise<IFullUserApplication> => requests.post('/user-applications', data),
+  delete: (id: string): Promise<string> => requests.delete(`/user-applications/${id}`),
+  get: (): Promise<IFullUserApplication[]> => requests.get('/user-applications'),
+  getByBaseId: (baseId: string): Promise<IFullUserApplication[]> => requests.get(`/user-applications/base/${baseId}`),
+  getById: (id: string): Promise<IFullUserApplication> => requests.get(`/user-applications/${id}`),
+  getByUserId: (userId: string): Promise<IFullUserApplication[]> => requests.get(`/user-applications/user/${userId}`),
+  update: (id: string, updates: IUserApplication): Promise<IFullUserApplication> =>
+    requests.put(`/user-applications/${id}`, updates),
+}
+
 const users = {
   checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
+  create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
+  delete: (id: string): Promise<string> => requests.delete(`/users/${id}`),
+  get: (): Promise<IUser[]> => requests.get('/users'),
+  getApplicationUserIds: (): Promise<string[]> => requests.get('/users/application-users'),
   login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
   logout: (): Promise<string> => requests.post('/users/logout', {}),
   me: (): Promise<IUser> => requests.get('/users/me'),
   register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
+  update: (id: string, updates: IUser): Promise<IUser> => requests.put(`/users/${id}`, updates),
 }
 
 const webinars = {
@@ -108,8 +163,8 @@ const webinars = {
   update: (id: string, updates: IWebinar): Promise<IWebinar> => requests.put(`/webinars/${id}`, updates),
 }
 
-function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
-  api = (axios as any).create({
+function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
+  restApi = (axios as any).create({
     baseURL,
     ...axiosOptions,
     headers: {
@@ -118,18 +173,23 @@ function init({ baseURL = (api && api.defaults.baseURL) || envBaseURL, axiosOpti
   })
 }
 
-const restApi = {
+const api = {
+  admin,
+  applications,
   campDates,
   camps,
+  comments,
   init,
   lessons,
   liaisons,
+  pageInfo,
   partners,
   reports,
   research,
   resources,
+  userApplications,
   users,
   webinars,
 }
 
-export default restApi
+export default api

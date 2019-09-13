@@ -17,10 +17,12 @@ import {
 const generate = {
   dbUser: (overrides?: Partial<IUser>): IUser => ({
     _id: generate.objectId(),
+    affiliation: faker.lorem.word(),
     email: faker.internet.email().toLowerCase(),
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     password: faker.internet.password(),
     permissions: [],
+    university: faker.lorem.word(),
     ...overrides,
   }),
   image: (overrides?: Partial<IImage>): IImage => ({
@@ -31,7 +33,7 @@ const generate = {
   lesson: (overrides?: Partial<ILesson>): ILesson => ({
     _id: generate.objectId(),
     links: Array.from({ length: faker.random.number({ min: 1, max: 4 }) }, () => ({
-      type: new Array('doc', 'pdf', 'external', 'ppt')[faker.random.number({ min: 0, max: 3 })] as LessonLinkType,
+      type: ['doc', 'pdf', 'external', 'ppt'][faker.random.number({ min: 0, max: 3 })] as LessonLinkType,
       url: faker.internet.url(),
     })),
     title: faker.company.catchPhrase(),
@@ -83,7 +85,7 @@ const generate = {
     _id: generate.objectId(),
     description: faker.lorem.words(descriptionLength),
     title: faker.company.catchPhrase(),
-    type: new Array('doc', 'pdf', 'external')[faker.random.number({ min: 0, max: 2 })] as 'doc' | 'pdf' | 'external',
+    type: ['doc', 'pdf', 'external'][faker.random.number({ min: 0, max: 2 })] as 'doc' | 'pdf' | 'external',
     url: faker.internet.url(),
     ...overrides,
   }),

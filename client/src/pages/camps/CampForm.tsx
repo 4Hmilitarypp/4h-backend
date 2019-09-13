@@ -2,7 +2,19 @@ import { navigate } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
-import { InputGroup, SubHeading } from '../../components/Elements'
+import Editor from '../../components/Editor'
+import {
+  BlankUploadBox,
+  InputGroup,
+  ResourceSection,
+  Select,
+  SubHeading,
+  TextUploadBox,
+  TrashCan,
+  UploadButton,
+  UploadImage,
+  UploadLabel,
+} from '../../components/Elements'
 import { IApiError, ICamp } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdateCamps } from './useCamps'
@@ -16,46 +28,62 @@ interface IProps {
 
 const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) => {
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
+  const [flyerUrl, setFlyerUrl] = React.useState<string | undefined>(undefined)
+  const [campType, setCampType] = React.useState<'Day' | 'Residential'>('Day')
+  const [serviceBranch, setServiceBranch] = React.useState<'Air Force' | 'Navy' | 'Army'>('Air Force')
+  const [description, setDescription] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
   React.useEffect(() => {
-    createCloudinaryScript()
-  }, [])
-
-  React.useEffect(() => {
+    if (camp) setDescription(camp.description)
     if (camp && camp.featuredImage) {
       setFeaturedImageUrl(camp.featuredImage.url)
+      setFlyerUrl(camp.flyerUrl)
+      setCampType(camp.type)
+      setServiceBranch(camp.serviceBranch)
     }
     if (!camp && formRef.current) {
       formRef.current.reset()
       setFeaturedImageUrl(undefined)
+      setFlyerUrl(undefined)
     }
   }, [camp])
 
-  const createCloudinaryScript = () => {
-    const cloudinaryScript = document.createElement('script')
-    cloudinaryScript.src = 'https://widget.cloudinary.com/v2.0/global/all.js'
-    cloudinaryScript.async = true
-    cloudinaryScript.defer = true
-    cloudinaryScript.type = 'text/javascript'
-    document.body.appendChild(cloudinaryScript)
-  }
-
-  const openCloudinary = () => {
+  const uploadImage = () => {
     const widget = (window as any).cloudinary.createUploadWidget(
       {
         cloudName: 'four-hmpp',
-        uploadPreset: 'vxkayjrs',
+        uploadPreset: 'camp-images',
       },
       (err: any, res: any) => {
         if (!err && res && res.event === 'success') {
-          const fAutoUrl = res.info.secure_url.split('/upload/').join('/upload/f_auto/')
-          setFeaturedImageUrl(fAutoUrl)
+          const optimizedUrl = res.info.secure_url.split('/upload/').join('/upload/c_fill,f_auto,h_850,q_80,w_1650/')
+          setFeaturedImageUrl(optimizedUrl)
         }
+        if (err) handleError(err)
       }
     )
     if (widget) widget.open()
   }
+
+  const uploadFlyer = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'camp-flyers',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          setFlyerUrl(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
+
+  const handleTypeChange = (e: any) => setCampType(e.target.value)
+  const handleServiceChange = (e: any) => setServiceBranch(e.target.value)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
@@ -68,7 +96,6 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       contactPhoneNumber,
       contactUrl,
       contactUrlText,
-      description,
       descriptionTitle,
       state,
       title,
@@ -92,11 +119,14 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
       ageRange: ageRange.value,
       city: city.value,
       contact,
-      description: description.value,
+      description: description || '',
       descriptionTitle: descriptionTitle.value,
       featuredImage,
+      flyerUrl,
+      serviceBranch,
       state: state.value,
       title: title.value,
+      type: campType,
     }
     if (action === 'update') {
       api.camps
@@ -138,40 +168,57 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <input type="text" id="ageRange" defaultValue={(camp && camp.ageRange) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
+        <label htmlFor="type">Camp Type</label>
+        <Select id="type" value={campType} onChange={e => handleTypeChange(e)}>
+          <option value="Day">Day</option>
+          <option value="Residential">Residential</option>
+        </Select>
+      </CustomInputGroup>
+      <CustomInputGroup>
+        <label htmlFor="serviceBranch">Service Branch</label>
+        <Select id="serviceBranch" value={serviceBranch} onChange={e => handleServiceChange(e)}>
+          <option value="Air Force">Air Force</option>
+          <option value="Navy">Navy</option>
+        </Select>
+      </CustomInputGroup>
+      <CustomInputGroup>
         <label htmlFor="descriptionTitle">Description Title</label>
         <input type="text" id="descriptionTitle" defaultValue={(camp && camp.descriptionTitle) || ''} />
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="description">Description</label>
-        {/* Had to do the following because the description was not showing up for some reason */}
-        {camp ? (
-          <>
-            <textarea id="description" defaultValue={camp.description || ''} cols={100} rows={5} />
-          </>
-        ) : (
-          <textarea id="description" cols={100} rows={5} />
-        )}
+        <label>Description</label>
+        <Editor initialData={description} handleChange={setDescription} />
       </CustomInputGroup>
       <SubHeading>Camp Resources</SubHeading>
       <CampResources>
         <ResourceSection>
-          <ResourceLabel>Featured Image Upload</ResourceLabel>
+          <UploadLabel hasImage={featuredImageUrl}>
+            Featured Image
+            {featuredImageUrl && <TrashCan onClick={() => setFeaturedImageUrl(undefined)} />}
+          </UploadLabel>
           {featuredImageUrl ? (
-            <FeaturedImage
-              src={featuredImageUrl.split('f_auto').join('f_auto,h_250,w_250,c_fill')}
-              onClick={openCloudinary}
+            <UploadImage
+              src={featuredImageUrl.split('h_850,q_80,w_1650').join('h_250,q_80,w_250')}
+              onClick={uploadImage}
             />
           ) : (
-            <BlankUploadBox onClick={openCloudinary}>
-              <Upload>Upload Image</Upload>
+            <BlankUploadBox onClick={uploadImage}>
+              <UploadButton>Upload Image</UploadButton>
             </BlankUploadBox>
           )}
         </ResourceSection>
         <ResourceSection>
-          <ResourceLabel>File Upload</ResourceLabel>
-          <BlankUploadBox onClick={openCloudinary}>
-            <Upload>Upload File</Upload>
-          </BlankUploadBox>
+          <UploadLabel hasImage={flyerUrl}>
+            Camp Flyer
+            {flyerUrl && <TrashCan onClick={() => setFlyerUrl(undefined)} />}
+          </UploadLabel>
+          {flyerUrl ? (
+            <TextUploadBox>{flyerUrl}</TextUploadBox>
+          ) : (
+            <BlankUploadBox onClick={uploadFlyer}>
+              <UploadButton>Upload Flyer</UploadButton>
+            </BlankUploadBox>
+          )}
         </ResourceSection>
       </CampResources>
       <SubHeading>Camp's Contact Information</SubHeading>
@@ -208,7 +255,8 @@ const Form = styled.form`
 `
 const CustomInputGroup = styled(InputGroup)`
   input,
-  textarea {
+  textarea,
+  select {
     background: ${props => props.theme.white};
   }
 `
@@ -216,44 +264,4 @@ const CampResources = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
-const ResourceSection = styled.div`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-const ResourceLabel = styled.label`
-  font-size: 1.8rem;
-  color: ${props => props.theme.primaryGrey};
-  padding-bottom: 1.2rem;
-`
-const FeaturedImage = styled.img`
-  width: 25rem;
-  height: 25rem;
-  border-radius: 5px;
-  object-fit: cover;
-  &:hover {
-    opacity: 0.8;
-    cursor: pointer;
-  }
-`
-const BlankUploadBox = styled.div`
-  background: ${props => props.theme.primaryLight};
-  width: 25rem;
-  height: 25rem;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    opacity: 0.8;
-    cursor: pointer;
-  }
-`
-const Upload = styled.span`
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: ${props => props.theme.primaryDark};
 `

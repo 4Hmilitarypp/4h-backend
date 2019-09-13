@@ -4,13 +4,14 @@ import { IApiError, ILoginForm, IRegisterForm, IUser } from '../sharedTypes'
 import api from '../utils/api'
 
 interface IUserState {
+  _id?: string
   email: string
   name: string
   permissions: string[]
-  _id: string
 }
 
 export interface IUserContext {
+  isLoaded: boolean
   login: (loginForm: ILoginForm) => Promise<void>
   logout: () => Promise<void>
   register: (registerForm: IRegisterForm) => Promise<void>
@@ -21,23 +22,32 @@ const UserContext = React.createContext<IUserContext>(undefined as any)
 
 export const useUser = () => {
   const [user, setUser] = React.useState<IUserContext['user'] | undefined>(undefined)
+  const [isLoaded, setIsLoaded] = React.useState(false)
   const handleError = useErrorHandler()
 
   React.useEffect(() => {
     api.users
       .me()
-      .then(u => setUser(u))
-      .catch(err => handleError(err))
-  }, [])
+      .then(u => {
+        setUser(u)
+        setIsLoaded(true)
+      })
+      .catch(err => {
+        setIsLoaded(true)
+        handleError(err)
+      })
+  }, []) // eslint-disable-line
 
   const login: IUserContext['login'] = (loginForm: ILoginForm) =>
     api.users
       .login(loginForm)
       .then((responseUser: IUser) => {
         setUser({ ...responseUser })
+        setIsLoaded(true)
         return Promise.resolve()
       })
       .catch((err: IApiError) => {
+        setIsLoaded(true)
         return Promise.reject(err)
       })
 
@@ -58,13 +68,14 @@ export const useUser = () => {
       .register(registerForm)
       .then((responseUser: IUser) => {
         setUser({ ...responseUser })
+        setIsLoaded(true)
         return Promise.resolve()
       })
       .catch((err: IApiError) => {
         return Promise.reject(err)
       })
 
-  return { user, login, logout, register }
+  return { user, login, logout, register, isLoaded }
 }
 
 export default UserContext

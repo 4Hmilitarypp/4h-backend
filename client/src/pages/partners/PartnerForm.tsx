@@ -1,7 +1,17 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
-import { InputGroup } from '../../components/Elements'
+import Editor from '../../components/Editor'
+import {
+  BlankUploadBox,
+  InputGroup,
+  ResourceSection,
+  TrashCan,
+  UploadButton,
+  UploadImage,
+  UploadLabel,
+} from '../../components/Elements'
+import { createError } from '../../hooks/useErrorHandler'
 import { IApiError, IPartner } from '../../sharedTypes'
 import api from '../../utils/api'
 import { TUpdatePartners } from './usePartners'
@@ -14,33 +24,41 @@ interface IProps {
 }
 
 const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePartners }) => {
+  const [featuredImageUrl1, setFeaturedImageUrl1] = React.useState<string | undefined>()
+  const [featuredImageUrl2, setFeaturedImageUrl2] = React.useState<string | undefined>()
+  const [longDescription, setLongDescription] = React.useState<string>()
+
+  React.useEffect(() => {
+    if (partner) {
+      setFeaturedImageUrl1(partner.featuredImage1.url)
+      setFeaturedImageUrl2(partner.featuredImage2 && partner.featuredImage2.url)
+      setLongDescription(partner.longDescription)
+    }
+  }, [partner])
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const {
-      featuredImage1: fi1,
-      featuredImage2: fi2,
-      shortDescription,
-      longDescription,
-      title,
-      slug,
-    } = e.currentTarget.elements
+    const { shortDescription, title } = e.currentTarget.elements
+
+    if (!featuredImageUrl1) return handleError(createError('Please supply a featured image', 400))
 
     const featuredImage1 = {
       alt: `${title.value} logo`,
-      url: fi1.value,
+      url: featuredImageUrl1,
     }
-    const featuredImage2 = {
-      alt: `${title.value} logo`,
-      url: fi2.value,
-    }
+    const featuredImage2 = featuredImageUrl2
+      ? {
+          alt: `${title.value} logo`,
+          url: featuredImageUrl2,
+        }
+      : undefined
     const updatePartner = {
       _id: partner ? partner._id : undefined,
       featuredImage1,
       featuredImage2,
-      longDescription: longDescription.value,
+      longDescription: longDescription || '',
       reports: partner ? partner.reports : [],
       shortDescription: shortDescription.value,
-      slug: slug.value,
       title: title.value,
     }
     if (action === 'update') {
@@ -60,6 +78,37 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
     }
   }
 
+  const uploadImage1 = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'partners-and-liaisons',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          setFeaturedImageUrl1(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
+  const uploadImage2 = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'partners-and-liaisons',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          setFeaturedImageUrl2(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
+
   return (
     // the id on the form must be what the corresponding submit button's formId is
     <Form onSubmit={handleSubmit} id="PartnerForm">
@@ -67,43 +116,54 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
         <label htmlFor="title">Title</label>
         <input type="text" id="title" defaultValue={(partner && partner.title) || ''} autoFocus={true} />
       </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="slug">Partner Slug</label>
-        <input type="text" id="slug" defaultValue={(partner && partner.slug) || ''} />
-      </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="featuredImage1">Partner Featured Image</label>
-        <input type="text" id="featuredImage1" defaultValue={(partner && partner.featuredImage1.url) || ''} />
-      </CustomInputGroup>
-      <CustomInputGroup>
-        <label htmlFor="featuredImage2">Optional Second Featured Image</label>
-        <input
-          type="text"
-          id="featuredImage2"
-          defaultValue={(partner && partner.featuredImage2 && partner.featuredImage2.url) || ''}
-        />
-      </CustomInputGroup>
+      <CampResources>
+        <ResourceSection>
+          <UploadLabel hasImage={featuredImageUrl1}>
+            Featured Image
+            {featuredImageUrl1 && <TrashCan onClick={() => setFeaturedImageUrl1(undefined)} />}
+          </UploadLabel>
+          {featuredImageUrl1 ? (
+            <UploadImage src={featuredImageUrl1} onClick={uploadImage1} />
+          ) : (
+            <BlankUploadBox onClick={uploadImage1}>
+              <UploadButton>Upload Image</UploadButton>
+            </BlankUploadBox>
+          )}
+        </ResourceSection>
+        <ResourceSection>
+          <UploadLabel hasImage={featuredImageUrl2}>
+            Optional Second Featured Image
+            {featuredImageUrl2 && <TrashCan onClick={() => setFeaturedImageUrl2(undefined)} />}
+          </UploadLabel>
+          {featuredImageUrl2 ? (
+            <UploadImage src={featuredImageUrl2} onClick={uploadImage2} />
+          ) : (
+            <BlankUploadBox onClick={uploadImage2}>
+              <UploadButton>Upload Image</UploadButton>
+            </BlankUploadBox>
+          )}
+        </ResourceSection>
+      </CampResources>
       <CustomInputGroup>
         <label htmlFor="shortDescription">Short Description</label>
         {/* Had to do the following because the shortDescription was not showing up for some reason */}
         {partner ? (
           <>
-            <textarea id="shortDescription" defaultValue={partner.shortDescription || ''} cols={100} rows={5} />
+            <textarea
+              id="shortDescription"
+              defaultValue={partner.shortDescription || ''}
+              cols={100}
+              rows={5}
+              maxLength={515}
+            />
           </>
         ) : (
-          <textarea id="shortDescription" cols={100} rows={5} />
+          <textarea id="shortDescription" cols={100} rows={5} maxLength={515} />
         )}
       </CustomInputGroup>
       <CustomInputGroup>
-        <label htmlFor="longDescription">Long Description</label>
-        {/* Had to do the following because the longDescription was not showing up for some reason */}
-        {partner ? (
-          <>
-            <textarea id="longDescription" defaultValue={partner.longDescription} cols={100} rows={5} />
-          </>
-        ) : (
-          <textarea id="longDescription" cols={100} rows={5} />
-        )}
+        <label>Long Description</label>
+        <Editor initialData={longDescription} handleChange={setLongDescription} />
       </CustomInputGroup>
     </Form>
   )
@@ -121,4 +181,9 @@ const CustomInputGroup = styled(InputGroup)`
   textarea {
     background: ${props => props.theme.white};
   }
+`
+const CampResources = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `

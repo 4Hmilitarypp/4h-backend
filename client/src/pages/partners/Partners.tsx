@@ -1,5 +1,6 @@
 import { RouteComponentProps, Router } from '@reach/router'
 import * as React from 'react'
+import usePermission from '../../hooks/usePermission'
 import { IPartnerSection } from '../../sharedTypes'
 import Partner from './Partner'
 import PartnerTable from './PartnerTable'
@@ -13,6 +14,7 @@ export const PartnerContext = React.createContext<IPartnerContext>(undefined as 
 
 const Partners: React.FC<RouteComponentProps> = () => {
   const { handleError, partners, updatePartners } = usePartners()
+  usePermission('admin')
 
   return (
     <PartnerContext.Provider value={{ partners, updatePartners }}>

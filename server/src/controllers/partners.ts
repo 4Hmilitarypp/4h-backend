@@ -4,9 +4,10 @@ import mongoose from 'mongoose'
 import { IPartnerDocument } from '../models/Partner'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
 const Partner = mongoose.model<IPartnerDocument>('Partner')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 const cleanPartner = (obj: any) =>
   pick(obj, ['featuredImage1', 'featuredImage2', 'longDescription', 'title', 'shortDescription', 'slug'])
@@ -23,7 +24,11 @@ const cleanPartnerWithId = (obj: any) =>
   ])
 
 export const createPartner: Controller = async (req, res) => {
-  const partner = await new Partner(cleanPartnerWithId(req.body)).save()
+  const partner = await new Partner({
+    ...cleanPartnerWithId(req.body),
+    createdBy: req.user.email,
+    updatedBy: req.user.email,
+  }).save()
   return res.status(201).json(partner)
 }
 
@@ -35,7 +40,7 @@ export const getPartnerSections: Controller = async (_, res) => {
 }
 
 export const getPartner: Controller = async (req, res) => {
-  const partner = await Partner.findOne({ slug: req.params.slug })
+  const partner = await Partner.findOne({ slug: req.params.slug.toLowerCase() })
   if (!partner) {
     throw notFoundError
   }
@@ -44,11 +49,15 @@ export const getPartner: Controller = async (req, res) => {
 
 export const updatePartner: Controller = async (req, res) => {
   const { _id } = req.params
-  const partner = await Partner.findByIdAndUpdate(_id, cleanPartner(req.body), {
-    context: 'query',
-    new: true,
-    runValidators: true,
-  })
+  const partner = await Partner.findByIdAndUpdate(
+    _id,
+    { ...cleanPartner(req.body), updatedBy: req.user.email },
+    {
+      context: 'query',
+      new: true,
+      runValidators: true,
+    }
+  )
   if (partner) {
     return res.status(200).json(cleanPartnerWithId(partner))
   }
@@ -59,7 +68,7 @@ export const deletePartner: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedPartner = await Partner.findByIdAndDelete(_id)
   if (deletedPartner) {
-    await new Archive({ ...cleanPartner(deletedPartner), type: 'partner' }).save()
+    await new Archive({ archivedBy: req.user.email, record: cleanPartner(deletedPartner), type: 'partner' }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -74,7 +83,7 @@ export const createReport: Controller = async (req, res) => {
     {
       $push: {
         reports: {
-          $each: [cleanReport(req.body)],
+          $each: [{ ...cleanReport(req.body), createdBy: req.user.email, updatedBy: req.user.email }],
           $sort: { title: 1 },
         },
       },
@@ -112,7 +121,7 @@ export const updateReport: Controller = async (req, res) => {
   const partner = await Partner.findOneAndUpdate(
     { _id: partnerId, 'reports._id': _id },
     {
-      $set: { 'reports.$': { ...cleanReport(req.body), _id } },
+      $set: { 'reports.$': { ...cleanReport(req.body), _id, updatedBy: req.user.email } },
     },
     { new: true }
   )
@@ -131,7 +140,7 @@ export const deleteReport: Controller = async (req, res) => {
   if (updatedPartner) {
     const deletedReport = findReportById(_id, updatedPartner.reports)
     if (deletedReport) {
-      await new Archive({ ...cleanReport(deletedReport), type: 'report' }).save()
+      await new Archive({ archivedBy: req.user.email, record: cleanReport(deletedReport), type: 'report' }).save()
       return res.status(204).send()
     }
     throw notFoundError

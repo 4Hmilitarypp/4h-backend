@@ -4,10 +4,6 @@ const fs = require('fs')
 const globalConfigPath = path.join(__dirname, 'globalConfig.json')
 
 module.exports = class MongoEnvironment extends NodeEnvironment {
-  constructor(config) {
-    super(config)
-  }
-
   async setup() {
     const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'))
 

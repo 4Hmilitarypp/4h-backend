@@ -3,23 +3,35 @@ import mongoose from 'mongoose'
 import { IResourceDocument } from '../models/Resource'
 import { Controller } from '../types'
 import { notFoundError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive';
 
-const cleanResource = (obj: any) => pick(obj, ['title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+const cleanResource = (obj: any) =>
+  pick(obj, ['featuredImage', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithLessons = (obj: any) =>
-  pick(obj, ['lessons', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
+  pick(obj, ['featuredImage', 'lessons', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
 const cleanResourceWithId = (obj: any) =>
   pick(obj, ['_id', 'title', 'shortDescription', 'longDescription', 'featuredImage', 'slug'])
 
 const Resource = mongoose.model<IResourceDocument>('Resource')
-const Archive = mongoose.model('Archive')
+const Archive = mongoose.model<IArchiveDocument>('Archive')
 
 export const createResource: Controller = async (req, res) => {
-  const resource = await new Resource(cleanResource(req.body)).save()
+  const resource = await new Resource({
+    ...cleanResource(req.body),
+    createdBy: req.user.email,
+    updatedBy: req.user.email,
+  }).save()
   return res.status(201).json(cleanResourceWithId(resource))
 }
 
 export const getResources: Controller = async (_, res) => {
-  const resources = await Resource.find()
+  const resources = await Resource.find({ parent: { $exists: false } })
+    .select('-lessons')
+    .sort('title')
+  return res.json(resources)
+}
+export const getNestedResources: Controller = async (req, res) => {
+  const resources = await Resource.find({ parent: req.params.parent })
     .select('-lessons')
     .sort('title')
   return res.json(resources)
@@ -35,7 +47,7 @@ export const getResource: Controller = async (req, res) => {
 }
 export const getResourceBySlug: Controller = async (req, res) => {
   const { slug } = req.params
-  const resource = await Resource.findOne({ slug })
+  const resource = await Resource.findOne({ slug: slug.toLowerCase() })
   if (resource) {
     return res.json(resource)
   }
@@ -46,7 +58,7 @@ export const updateResource: Controller = async (req, res) => {
   const { _id } = req.params
   const resource = await Resource.findOneAndUpdate(
     { _id },
-    { ...cleanResource(req.body) },
+    { ...cleanResource(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
     {
       context: 'query',
       new: true,
@@ -63,7 +75,11 @@ export const deleteResource: Controller = async (req, res) => {
   const { _id } = req.params
   const deletedResource = await Resource.findByIdAndDelete(_id)
   if (deletedResource) {
-    await new Archive({ ...cleanResourceWithLessons(deletedResource), type: 'resource' }).save()
+    await new Archive({
+      archivedBy: req.user.email,
+      record: cleanResourceWithLessons(deletedResource),
+      type: 'resource',
+    }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -76,7 +92,7 @@ export const createLesson: Controller = async (req, res) => {
   const updatedResource = (await Resource.findByIdAndUpdate(
     resourceId,
     {
-      $push: { lessons: cleanLesson(req.body) },
+      $push: { lessons: { ...cleanLesson(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -111,7 +127,7 @@ export const updateLesson: Controller = async (req, res) => {
   const resource = await Resource.findOneAndUpdate(
     { _id: resourceId, 'lessons._id': _id },
     {
-      $set: { 'lessons.$': { ...cleanLesson(req.body), _id } },
+      $set: { 'lessons.$': { ...cleanLesson(req.body), _id, updatedBy: req.user.email } },
     },
     { new: true }
   )
@@ -130,7 +146,7 @@ export const deleteLesson: Controller = async (req, res) => {
   if (updatedResource) {
     const deletedLesson = findLessonById(_id, updatedResource.lessons)
     if (deletedLesson) {
-      await new Archive({ ...cleanLesson(deletedLesson), type: 'lesson' }).save()
+      await new Archive({ archivedBy: req.user.email, record: cleanLesson(deletedLesson), type: 'lesson' }).save()
       return res.status(204).send()
     }
     throw notFoundError

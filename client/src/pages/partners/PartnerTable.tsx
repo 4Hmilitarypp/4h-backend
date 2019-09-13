@@ -2,12 +2,17 @@ import { Link, RouteComponentProps } from '@reach/router'
 import { map } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components/macro'
-import { CreateButton, Heading } from '../../components/Elements'
+import { CreateButton, Heading, InputGroup } from '../../components/Elements'
 import { hoveredRow } from '../../utils/mixins'
 import { PartnerContext } from './Partners'
 
 const PartnerTable: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(PartnerContext)
+
+  const [filterText, setFilterText] = React.useState<string>('')
+  const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
+  const filterPartners = () => context.partners.filter(partner => !filterText || isFound(partner.title))
+
   return (
     <div>
       <TableHeader>
@@ -16,8 +21,12 @@ const PartnerTable: React.FC<RouteComponentProps> = () => {
           + New Partner
         </CreateButton>
       </TableHeader>
+      <CustomInputGroup color="white">
+        <label>Filter Partners</label>
+        <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
+      </CustomInputGroup>
       <div>
-        {map(context.partners, p => (
+        {map(filterPartners(), p => (
           <Wrapper to={p.slug} key={p.slug}>
             <Title>{p.title}</Title>
           </Wrapper>
@@ -50,4 +59,7 @@ const Wrapper = styled(Link)`
 const Title = styled.span`
   font-weight: 500;
   color: ${props => props.theme.primaryGrey};
+`
+const CustomInputGroup = styled(InputGroup)`
+  margin: 0 2.4rem 2rem;
 `

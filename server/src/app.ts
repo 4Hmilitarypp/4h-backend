@@ -1,15 +1,20 @@
 /* eslint-disable no-console */
+import * as Sentry from '@sentry/node'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import express from 'express'
+import * as express from 'express'
 import helmet from 'helmet'
 import path from 'path'
 
 import setupRoutes from './routes'
 import * as errorHandlers from './utils/errorHandlers'
 
+Sentry.init({ dsn: 'https://41f19f5556de47668c5bc430f3a12b08@sentry.io/1446953' })
+
 // initialize the application and create the routes
-const app = express()
+const app = express.default()
+
+app.use(Sentry.Handlers.requestHandler() as express.RequestHandler)
 
 // sets various http headers https://github.com/helmetjs/helmet
 app.use(helmet())
@@ -40,6 +45,8 @@ app.get('/*', (_, res) => {
     }
   })
 })
+
+app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler)
 
 // If that above routes didn't work, we 404 them and forward to error handler
 app.use(errorHandlers.routeNotFound)
