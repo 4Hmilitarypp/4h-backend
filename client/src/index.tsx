@@ -1,6 +1,7 @@
 import 'react-app-polyfill/ie11'
 
-import 'babel-polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 
 // import * as Sentry from '@sentry/browser'
 import * as React from 'react'

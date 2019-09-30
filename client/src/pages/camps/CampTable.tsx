@@ -30,7 +30,7 @@ const CampTable: React.FC<RouteComponentProps> = () => {
       </CustomInputGroup>
       <div>
         {map(filterAndSortCamps(), p => (
-          <Wrapper to={p._id} key={p._id}>
+          <Wrapper to={p._id || ''} key={p._id}>
             <CityAndState>{`${p.city}, ${p.state}:`}</CityAndState>
             <Title>{p.title}</Title>
           </Wrapper>
