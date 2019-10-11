@@ -1,12 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { TSetModalState } from '../../components/table/useTable'
-import { IResearch } from '../../sharedTypes'
+import { ILatestNews } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  research: IResearch
-  setModalState: TSetModalState<IResearch>
+  research: ILatestNews
+  setModalState: TSetModalState<ILatestNews>
 }
 
 const LatestNewsArticle: React.FC<IProps> = ({ research, setModalState }) => (

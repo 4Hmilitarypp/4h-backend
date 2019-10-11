@@ -45,7 +45,6 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
   const initialModalState = { webinar: undefined, action: 'close' as 'close', timesDeleteClicked: 0 }
   const [modalState, setModalState] = React.useState<IModalState<T>>(initialModalState)
   const handleError = useErrorHandler()
-
   React.useEffect(() => {
     api
       .get()

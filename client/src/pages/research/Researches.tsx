@@ -15,7 +15,6 @@ import ResearchesForm from './ResearchForm'
 const Researches: React.FC<RouteComponentProps> = () => {
   const { modalController, items: researches } = useTable<IResearch>('Research', api.research)
   usePermission('admin')
-
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
   const filteredResearches = () => researches.filter(research => !filterText || isFound(research.title))

@@ -16,6 +16,15 @@ export interface ICampDate {
   endDate: string
 }
 
+export interface ILatestNews {
+  title: string // modifiable
+  _id?: string
+}
+
+export interface ITest {
+  title: 'Test '
+}
+
 export interface ICampContact {
   email?: string
   name: string

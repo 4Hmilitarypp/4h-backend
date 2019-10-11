@@ -16,6 +16,7 @@ import HomeInfo from './pages/pageInfo/HomeInfo'
 import Partners from './pages/partners/Partners'
 import Register from './pages/Register'
 import Researches from './pages/research/Researches'
+import LatestNews from './pages/latest-news/LatestNews'
 import EducatorResources from './pages/resources/EducatorResources'
 import TechCurriculum from './pages/techCurriculum/TechCurriculum'
 import Applications from './pages/userApplications/UserApplications'
@@ -72,6 +73,7 @@ const App: React.FC<{}> = () => {
                 <Liaisons path="/liaisons" />
                 <Register path="/register" />
                 <Researches path="/research" />
+                <LatestNews path="/latest-news" />
                 <Webinars path="/webinars" />
                 <HomeInfo path="page-info/home" />
                 <NotFound default={true} />

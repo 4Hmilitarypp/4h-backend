@@ -40,6 +40,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           <ActiveLink to="/camps" text="Camps" path={path} />
           <ActiveLink to="/partners" text="Partners" path={path} />
           <ActiveLink to="/liaisons" text="Liaisons" path={path} />
+          <ActiveLink to="/latest-news" text="Latest News" path={path} />
         </Links>
       </ConditionalLinkGroup>
       <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>

@@ -5,6 +5,7 @@ import { notFoundError } from '../utils/errors'
 
 const lambda = new Lambda({ region: 'us-east-1' })
 
+console.log('keys: ', process.env.AWS_ACCESS_KEY, process.env.AWS_SECRET_ACCESS_KEY)
 export const createLatestNews: Controller = async (req, res) => {
   const latestNews = {
     ...req.body,

@@ -7,13 +7,13 @@ import Table from '../../components/table/Table'
 import TableModal from '../../components/table/TableModal'
 import useTable from '../../components/table/useTable'
 import usePermission from '../../hooks/usePermission'
-import { IResearch } from '../../sharedTypes'
+import { ILatestNews } from '../../sharedTypes'
 import api from '../../utils/api'
 import LatestNewsArticle from './LatestNewsArticle'
 import LatestNewsForm from './LatestNewsForm'
 
 const LatestNews: React.FC<RouteComponentProps> = () => {
-  const { modalController, items: researches } = useTable<IResearch>('Research', api.latestNews)
+  const { modalController, items: researches } = useTable<ILatestNews>('Research', api.latestNews)
   usePermission('admin')
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
