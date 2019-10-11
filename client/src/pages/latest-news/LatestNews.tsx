@@ -7,42 +7,41 @@ import Table from '../../components/table/Table'
 import TableModal from '../../components/table/TableModal'
 import useTable from '../../components/table/useTable'
 import usePermission from '../../hooks/usePermission'
-import { ILatestNews } from '../../sharedTypes'
+import { IResearch } from '../../sharedTypes'
 import api from '../../utils/api'
 import LatestNewsArticle from './LatestNewsArticle'
 import LatestNewsForm from './LatestNewsForm'
 
-const LatestNewsArticles: React.FC<RouteComponentProps> = () => {
-  const { modalController, items: articles } = useTable<ILatestNews>('Article', api.latestNews)
-  console.log(articles)
+const LatestNews: React.FC<RouteComponentProps> = () => {
+  const { modalController, items: researches } = useTable<IResearch>('Research', api.latestNews)
   usePermission('admin')
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
-  const filteredArticles = () => articles.filter(article => !filterText || isFound(article.title))
+  const filteredResearches = () => researches.filter(research => !filterText || isFound(research.title))
 
   return (
     <>
-      <Table itemTitle="Article" itemTitlePlural="Articles" modalController={modalController}>
+      <Table itemTitle="Article" itemTitlePlural="Latest News" modalController={modalController}>
         <CustomInputGroup color="white">
           <label>Article Filter</label>
           <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
         </CustomInputGroup>
-        {articles && (
-          <div data-testid="Articles">
-            {map(filteredArticles(), article => (
-              <LatestNewsArticle key={article.id} article={article} setModalState={modalController.set} />
+        {researches && (
+          <div data-testid="Researches">
+            {map(filteredResearches(), research => (
+              <LatestNewsArticle key={research.title} research={research} setModalState={modalController.set} />
             ))}
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle="Article">
+      <TableModal controller={modalController} itemTitle="News Item">
         <LatestNewsForm modalController={modalController} />
       </TableModal>
     </>
   )
 }
 
-export default LatestNewsArticles
+export default LatestNews
 
 const CustomInputGroup = styled(InputGroup)`
   margin: 0 2.4rem 2rem;

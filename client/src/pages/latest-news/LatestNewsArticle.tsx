@@ -1,24 +1,23 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { TSetModalState } from '../../components/table/useTable'
-import { ILatestNews } from '../../sharedTypes'
+import { IResearch } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  key: string
-  article: ILatestNews
-  setModalState: TSetModalState<ILatestNews>
+  research: IResearch
+  setModalState: TSetModalState<IResearch>
 }
 
-const LatestNewsArticle: React.FC<IProps> = ({ article, setModalState }) => (
-  <ArticleWrapper onClick={() => setModalState({ action: 'update', item: article })}>
-    <Title>{article.title}</Title>
-  </ArticleWrapper>
+const LatestNewsArticle: React.FC<IProps> = ({ research, setModalState }) => (
+  <ResearchWrapper onClick={() => setModalState({ action: 'update', item: research })}>
+    <Title>{research.title}</Title>
+  </ResearchWrapper>
 )
 
 export default LatestNewsArticle
 
-const ArticleWrapper = styled.div`
+const ResearchWrapper = styled.div`
   padding: 2rem;
   position: relative;
   ${hoveredRow()};
