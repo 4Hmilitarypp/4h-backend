@@ -33,10 +33,10 @@ const BaseApplicationTableByBase: React.FC<RouteComponentProps> = () => {
       </CustomInputGroup>
       <div>
         {map(filterAndSortBaseApplications(), p => (
-          <Wrapper to={p._id} key={p._id}>
+          <Wrapper to={p._id || ''} key={p._id}>
             <TitleAndDate>
               <Title>{p.title}</Title>
-              <span>{format(p.dueDate, 'MMMM D YYYY')}</span>
+              <span>{format(p.dueDate as any, 'MMMM D YYYY')}</span>
             </TitleAndDate>
             <B>{p.userId}</B>
             <B>{p.status}</B>

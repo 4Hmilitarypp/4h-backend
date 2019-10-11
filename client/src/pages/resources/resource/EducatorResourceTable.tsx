@@ -28,7 +28,7 @@ const EducatorResourceTable: React.FC<RouteComponentProps> = () => {
       </CustomInputGroup>
       <div>
         {map(filterResources(), r => (
-          <Wrapper to={r._id} key={r._id}>
+          <Wrapper to={r._id || ''} key={r._id}>
             <Title>{r.title}</Title>
           </Wrapper>
         ))}

@@ -8,9 +8,9 @@ import registration from '../emailTemplates/registration'
 import userModified from '../emailTemplates/userModified'
 import { IUserDocument } from '../models/User'
 import { Controller } from '../types'
-import { captchaError, emailError, notFoundError } from '../utils/errors'
+import { captchaError, emailError, notFoundError, forbiddenError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
-import { IArchiveDocument } from '../models/Archive';
+import { IArchiveDocument } from '../models/Archive'
 
 const cleanRegister = (obj: any) =>
   pick(obj, ['affiliation', 'email', 'password', 'confirmPassword', 'name', 'university'])
@@ -27,9 +27,10 @@ export const getUsers: Controller = async (_, res) => {
 
 export const updateUser: Controller = async (req, res) => {
   const { _id } = req.params
+  if (!req.user) throw forbiddenError
   const user = await User.findByIdAndUpdate(
     _id,
-    { ...createSafeUser(req.body), updatedBy: req.user.email },
+    { ...createSafeUser(req.body), updatedBy: (req.user as any).email },
     {
       context: 'query',
       new: true,
@@ -57,15 +58,17 @@ export const updateUser: Controller = async (req, res) => {
 
 export const deleteUser: Controller = async (req, res) => {
   const { _id } = req.params
+  if (!req.user) throw forbiddenError
   const deletedUser = await User.findByIdAndDelete(_id)
   if (deletedUser) {
-    await new Archive({ archivedBy: req.user.email, record: createSafeUser(deletedUser), type: 'user' }).save()
+    await new Archive({ archivedBy: (req.user as any).email, record: createSafeUser(deletedUser), type: 'user' }).save()
     return res.status(204).send()
   }
   throw notFoundError
 }
 
 export const createUser: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { affiliation, email, password, confirmPassword, name, university } = cleanRegister(req.body)
   const errors: string[] = []
   if (!validator.isEmail(email)) {
@@ -94,12 +97,12 @@ export const createUser: Controller = async (req, res) => {
 
   const user = new User({
     affiliation,
-    createdBy: req.user.email,
+    createdBy: (req.user as any).email,
     email: cleanEmail,
     name,
     password,
     university,
-    updatedBy: req.user.email,
+    updatedBy: (req.user as any).email,
   })
   await user.setPassword(password)
   const safeUser = createSafeUser(await user.save())
@@ -213,8 +216,8 @@ export const checkIfSpam: Controller = async (req, res) => {
 
 // GET current user
 export const me: Controller = async (req, res) => {
-  if (req.user) {
-    const user = await User.findById(req.user._id)
+  if (req.user as any) {
+    const user = await User.findById((req.user as any)._id)
     if (!user) {
       res.clearCookie('token')
       return res.sendStatus(404)

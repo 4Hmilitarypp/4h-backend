@@ -12,9 +12,9 @@ const setupPartnerRoutes = (router: Router) => {
     .get(auth.optional, catchErrors(latestNewsController.getAllLatestNews))
     .post(auth.optional, catchErrors(latestNewsController.createLatestNews))
   // !! .post(auth.required, guard({}).check('admin'), catchErrors(latestNewsController.createLatestNews))
+  router.route('/slug/:slug').get(auth.optional, catchErrors(latestNewsController.getLatestNews))
   router
-    .route('/:slug')
-    .get(auth.optional, catchErrors(latestNewsController.getLatestNews))
+    .route('/:id')
     // ! .delete(auth.required, guard({}).check('admin'), catchErrors(latestNewsController.deleteLatestNews))
     .delete(auth.optional, catchErrors(latestNewsController.deleteLatestNews))
     .put(auth.optional, catchErrors(latestNewsController.updateLatestNews))

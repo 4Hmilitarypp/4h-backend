@@ -3,8 +3,8 @@ import mongoose from 'mongoose'
 import { IApplicationDocument } from '../models/Application'
 // import { IUserApplicationDocument } from '../models/UserApplication';
 import { Controller } from '../types'
-import { notFoundError } from '../utils/errors'
-import { IArchiveDocument } from '../models/Archive';
+import { notFoundError, forbiddenError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive'
 
 const Application = mongoose.model<IApplicationDocument>('Application')
 // const UserApplication = mongoose.model<IUserApplicationDocument>('UserApplication')
@@ -14,10 +14,11 @@ const cleanApplication = (obj: any) => pick(obj, ['dueDate', 'title', 'url', 'us
 const cleanApplicationWithId = (obj: any) => pick(obj, ['_id', 'dueDate', 'title', 'url', 'userGroups'])
 
 export const createApplication: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const application = await new Application({
     ...cleanApplication({ ...req.body, userGroups: ['admin', ...req.body.userGroups] }),
-    createdBy: req.user.email,
-    updatedBy: req.user.email,
+    createdBy: (req.user as any).email,
+    updatedBy: (req.user as any).email,
   }).save()
   return res.status(201).json(application)
 }
@@ -33,10 +34,11 @@ export const getApplicationIds: Controller = async (_, res) => {
 }
 
 export const updateApplication: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   const application = await Application.findByIdAndUpdate(
     _id,
-    { ...cleanApplication(req.body), updatedBy: req.user.email },
+    { ...cleanApplication(req.body), updatedBy: (req.user as any).email },
     {
       context: 'query',
       new: true,
@@ -50,11 +52,12 @@ export const updateApplication: Controller = async (req, res) => {
 }
 
 export const deleteApplication: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   const deletedApplication = await Application.findByIdAndDelete(_id)
   if (deletedApplication) {
     await new Archive({
-      archivedBy: req.user.email,
+      archivedBy: (req.user as any).email,
       record: cleanApplication(deletedApplication),
       type: 'application',
     }).save()
