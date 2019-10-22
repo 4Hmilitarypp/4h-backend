@@ -28,6 +28,7 @@ const ResearchForm: React.FC<IProps> = ({ modalController }) => {
   const [description, setDescription] = React.useState<string>()
 
   React.useEffect(() => {
+    if (research) console.log(research.description)
     if (research) setDescription(research.description)
   }, [research])
 

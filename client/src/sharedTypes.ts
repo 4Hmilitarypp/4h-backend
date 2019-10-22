@@ -18,7 +18,13 @@ export interface ICampDate {
 
 export interface ILatestNews {
   title: string // modifiable
-  _id?: string
+  _id: string
+  shortDescription: string
+  author: string
+  createdAt: string
+  updatedAt: string
+  body: string
+  featuredImage: IImage
 }
 
 export interface ITest {

@@ -23,9 +23,7 @@ import {
 } from '../sharedTypes'
 
 let restApi: axios.AxiosInstance
-let aws4hRestApi: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
-const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
 
 const getData = (res: { data: object }) => res.data
 
@@ -34,13 +32,6 @@ const requests = {
   get: (url: string): Promise<any> => restApi.get(url).then(getData),
   post: (url: string, body: object): Promise<any> => restApi.post(url, body).then(getData),
   put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
-}
-
-const aws4hRequests = {
-  delete: (url: string): Promise<any> => aws4hRestApi.delete(url).then(getData),
-  get: (url: string): Promise<any> => aws4hRestApi.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => aws4hRestApi.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => aws4hRestApi.put(url, body).then(getData),
 }
 
 const admin = {
@@ -109,11 +100,11 @@ const pageInfo = {
 }
 
 const latestNews = {
-  create: (data: ILatestNews): Promise<ILatestNews> => aws4hRequests.post('/latest-news', data),
-  update: (id: string, update: ILatestNews): Promise<ILatestNews> => aws4hRequests.put(`/latest-news/${id}`, update),
-  delete: (id: string): Promise<string> => aws4hRequests.delete(`/latest-news/${id}`),
-  get: (): Promise<ILatestNews[]> => aws4hRequests.get('/latest-news'),
-  getBySlug: (slug: string): Promise<ILatestNews> => aws4hRequests.get(`/latest-news/${slug}`),
+  create: (data: ILatestNews): Promise<ILatestNews> => requests.post('/latest-news', data),
+  update: (id: string, update: ILatestNews): Promise<ILatestNews> => requests.put(`/latest-news/${id}`, update),
+  delete: (id: string): Promise<string> => requests.delete(`/latest-news/${id}`),
+  get: (): Promise<ILatestNews[]> => requests.get('/latest-news'),
+  getBySlug: (slug: string): Promise<ILatestNews> => requests.get(`/latest-news/${slug}`),
 }
 
 const partners = {
@@ -184,13 +175,6 @@ const webinars = {
 function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, axiosOptions = { headers: {} } } = {}) {
   restApi = (axios as any).create({
     baseURL,
-    ...axiosOptions,
-    headers: {
-      ...axiosOptions.headers,
-    },
-  })
-  aws4hRestApi = (axios as any).create({
-    baseURL: aws4hBaseURL,
     ...axiosOptions,
     headers: {
       ...axiosOptions.headers,
