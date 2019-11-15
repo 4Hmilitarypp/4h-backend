@@ -35,7 +35,7 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
     if (article) {
       setBody(article.body)
       setShortDescription(article.shortDescription)
-      setFeaturedImageUrl(article.featuredImage.url)
+      setFeaturedImageUrl(article.featuredImage ? article.featuredImage.url : '')
     }
   }, [article])
 
