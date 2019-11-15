@@ -1,4 +1,5 @@
 import * as axios from 'axios'
+
 import {
   IApiComment,
   IApplication,
@@ -36,13 +37,27 @@ const requests = {
   put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
 }
 
+const getCookie = () => {
+  const keys = document.cookie.split(';')
+  const tokenKey = keys.find(key => key.includes('token='))
+  if (!tokenKey) return undefined
+  const formattedKey = tokenKey.split(' ').join('')
+  return formattedKey
+}
+
 const aws4hRequests = {
-  delete: (url: string): Promise<any> => aws4hRestApi.delete(url, { withCredentials: true }).then(getData),
-  get: (url: string): Promise<any> => aws4hRestApi.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> =>
-    aws4hRestApi.post(url, body, { withCredentials: true }).then(getData),
-  put: (url: string, body: object): Promise<any> =>
-    aws4hRestApi.put(url, body, { withCredentials: true }).then(getData),
+  delete: (url: string): Promise<any> => {
+    return aws4hRestApi.delete(url, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  get: (url: string): Promise<any> => {
+    return aws4hRestApi.get(url, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  post: (url: string, body: object): Promise<any> => {
+    return aws4hRestApi.post(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  put: (url: string, body: object): Promise<any> => {
+    return aws4hRestApi.put(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+  },
 }
 
 const admin = {

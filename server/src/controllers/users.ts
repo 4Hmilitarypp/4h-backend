@@ -4,6 +4,7 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import passport from 'passport'
 import validator from 'validator'
+import { Response } from 'express'
 import registration from '../emailTemplates/registration'
 import userModified from '../emailTemplates/userModified'
 import { IUserDocument } from '../models/User'
@@ -110,6 +111,14 @@ export const createUser: Controller = async (req, res) => {
   return res.status(201).json(safeUser)
 }
 
+const applyCookie = (res: Response, token: any) => {
+  res.cookie('token', token, {
+    httpOnly: false,
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+    secure: process.env.NODE_ENV === 'production',
+  })
+}
+
 // POST new user
 export const register: Controller = async (req, res) => {
   const { email, password, confirmPassword, name, university } = cleanRegister(req.body)
@@ -165,11 +174,8 @@ export const register: Controller = async (req, res) => {
     throw emailError(err)
   }
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 365,
-    secure: process.env.NODE_ENV === 'production',
-  })
+  applyCookie(res, token)
+
   Sentry.configureScope(scope => {
     scope.setUser({ email: cleanEmail || undefined, name })
   })
@@ -184,11 +190,7 @@ export const login: Controller = async (req, res, next) => {
     }
     if (passportUser) {
       const token = await passportUser.generateJWT()
-      res.cookie('token', token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 365,
-        secure: process.env.NODE_ENV === 'production',
-      })
+      applyCookie(res, token)
       Sentry.configureScope(scope => {
         scope.setUser({ email: passportUser.email, name: passportUser.name })
       })
