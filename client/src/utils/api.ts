@@ -185,6 +185,7 @@ function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, a
   restApi = (axios as any).create({
     baseURL,
     ...axiosOptions,
+    withCredentials: true,
     headers: {
       ...axiosOptions.headers,
     },
@@ -192,6 +193,7 @@ function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, a
   aws4hRestApi = (axios as any).create({
     baseURL: aws4hBaseURL,
     ...axiosOptions,
+    withCredentials: true,
     headers: {
       ...axiosOptions.headers,
     },
