@@ -13,11 +13,11 @@ import LatestNewsArticle from './LatestNewsArticle'
 import LatestNewsForm from './LatestNewsForm'
 
 const LatestNews: React.FC<RouteComponentProps> = () => {
-  const { modalController, items: researches } = useTable<ILatestNews>('Research', api.latestNews)
+  const { modalController, items: allLatestNews } = useTable<ILatestNews>('Latest News', api.latestNews)
   usePermission('admin')
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
-  const filteredResearches = () => researches.filter(research => !filterText || isFound(research.title))
+  const filteredResearches = () => allLatestNews.filter(latestNews => !filterText || isFound(latestNews.title))
 
   return (
     <>
@@ -26,7 +26,7 @@ const LatestNews: React.FC<RouteComponentProps> = () => {
           <label>Article Filter</label>
           <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
         </CustomInputGroup>
-        {researches && (
+        {allLatestNews && (
           <div data-testid="Researches">
             {map(filteredResearches(), research => (
               <LatestNewsArticle key={research.title} research={research} setModalState={modalController.set} />

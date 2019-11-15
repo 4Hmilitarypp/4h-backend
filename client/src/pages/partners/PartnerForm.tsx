@@ -91,7 +91,6 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
         if (err) handleError(err)
       }
     )
-    console.log(widget)
     if (widget) widget.open()
   }
   const uploadImage2 = () => {

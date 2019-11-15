@@ -10,7 +10,6 @@ const apigClient = apigClientFactory.newClient({
   secretKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
-console.log('keys: ', process.env.AWS_ACCESS_KEY, process.env.AWS_SECRET_ACCESS_KEY)
 export const createLatestNews: Controller = async (req, res) => {
   if (!req.user) throw forbiddenError
   try {

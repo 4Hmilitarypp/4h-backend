@@ -90,7 +90,6 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
         if (err) handleError(err)
       }
     )
-    console.log(widget)
     if (widget) widget.open()
   }
 

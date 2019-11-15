@@ -53,7 +53,6 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
   }, []) // eslint-disable-line
 
   const updateItems: TUpdateItems<T> = ({ _id, action, item }) => {
-    console.log(items)
     if (items) {
       let newItems: T[] = []
       if (action === 'update' && item) {
@@ -67,7 +66,6 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
         flashContext.set({ message: `${itemTitle} Deleted Successfully` })
         modalController.reset()
       }
-      console.log(newItems)
       setItems(newItems)
     }
   }
@@ -81,7 +79,7 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
     state: modalState,
     updateItems,
   }
-
+  console.log({ items })
   return {
     items,
     modalController,

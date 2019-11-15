@@ -27,6 +27,8 @@ let aws4hRestApi: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
 const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
 
+console.log({ aws4hBaseURL })
+
 const getData = (res: { data: object }) => res.data
 
 const requests = {
