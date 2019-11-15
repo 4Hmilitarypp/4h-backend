@@ -32,10 +32,11 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
   const user = userContext.user
 
   React.useEffect(() => {
-    if (article) setBody(article.body)
-  }, [article])
-  React.useEffect(() => {
-    if (article) setShortDescription(article.shortDescription)
+    if (article) {
+      setBody(article.body)
+      setShortDescription(article.shortDescription)
+      setFeaturedImageUrl(article.featuredImage.url)
+    }
   }, [article])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
