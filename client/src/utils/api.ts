@@ -37,10 +37,12 @@ const requests = {
 }
 
 const aws4hRequests = {
-  delete: (url: string): Promise<any> => aws4hRestApi.delete(url).then(getData),
+  delete: (url: string): Promise<any> => aws4hRestApi.delete(url, { withCredentials: true }).then(getData),
   get: (url: string): Promise<any> => aws4hRestApi.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => aws4hRestApi.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => aws4hRestApi.put(url, body).then(getData),
+  post: (url: string, body: object): Promise<any> =>
+    aws4hRestApi.post(url, body, { withCredentials: true }).then(getData),
+  put: (url: string, body: object): Promise<any> =>
+    aws4hRestApi.put(url, body, { withCredentials: true }).then(getData),
 }
 
 const admin = {
@@ -185,7 +187,6 @@ function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, a
   restApi = (axios as any).create({
     baseURL,
     ...axiosOptions,
-    withCredentials: true,
     headers: {
       ...axiosOptions.headers,
     },
@@ -193,7 +194,6 @@ function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, a
   aws4hRestApi = (axios as any).create({
     baseURL: aws4hBaseURL,
     ...axiosOptions,
-    withCredentials: true,
     headers: {
       ...axiosOptions.headers,
     },
