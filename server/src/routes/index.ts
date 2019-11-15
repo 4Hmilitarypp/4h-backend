@@ -12,7 +12,6 @@ import setupResourceRoutes from './resources'
 import setupUserApplicationRoutes from './userApplications'
 import setupUserRoutes from './users'
 import setupWebinarRoutes from './webinars'
-import setupLatestNewsRoutes from './latestNews'
 
 const setupRoutes = (app: Express) => {
   const campRouter = express.Router()
@@ -62,10 +61,6 @@ const setupRoutes = (app: Express) => {
   const applicationRouter = express.Router()
   setupApplicationRoutes(applicationRouter)
   app.use('/api/applications', applicationRouter)
-
-  const latestNewsRouter = express.Router()
-  setupLatestNewsRoutes(latestNewsRouter)
-  app.use('/api/latest-news', latestNewsRouter)
 
   // Docker check to tell whether the app is ready or not
   app.get('/api/docker-check', (_, res) => res.send('app is ready'))

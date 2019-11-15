@@ -79,7 +79,6 @@ function useTable<T extends IItem>(itemTitle: string, api: any) {
     state: modalState,
     updateItems,
   }
-  console.log({ items })
   return {
     items,
     modalController,
