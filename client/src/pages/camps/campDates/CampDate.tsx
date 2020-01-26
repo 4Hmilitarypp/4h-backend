@@ -13,9 +13,9 @@ interface IProps {
 
 const CampDate: React.FC<IProps> = ({ campDate, setModalState, campId }) => (
   <Wrapper onClick={() => setModalState({ action: 'update', campDate, campId })}>
-    <Title>{`${format(new Date(campDate.beginDate), 'MMMM D YYYY')} to ${format(
+    <Title>{`${format(new Date(campDate.beginDate), 'MMMM d yyyy')} to ${format(
       new Date(campDate.endDate),
-      'MMMM D YYYY'
+      'MMMM d yyyy'
     )}`}</Title>
   </Wrapper>
 )

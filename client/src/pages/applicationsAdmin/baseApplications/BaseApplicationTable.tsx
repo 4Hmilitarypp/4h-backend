@@ -39,7 +39,7 @@ const BaseApplicationTable: React.FC<RouteComponentProps> = () => {
         {map(filterAndSortBaseApplications(), p => (
           <Wrapper to={p._id || ''} key={p._id}>
             <CityAndState>{`${p.title}`}</CityAndState>
-            <DueDate>{`${format(new Date(p.dueDate), 'MMMM D YYYY')}`}</DueDate>
+            <DueDate>{`${format(new Date(p.dueDate), 'MMMM d yyyy')}`}</DueDate>
           </Wrapper>
         ))}
       </div>
