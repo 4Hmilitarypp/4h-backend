@@ -37,7 +37,7 @@ const BaseApplicationTableByUser: React.FC<RouteComponentProps> = () => {
           <Wrapper to={p._id || ''} key={p._id}>
             <TitleAndDate>
               <Title>{p.title}</Title>
-              <span>{format(p.dueDate as any, 'MMMM D YYYY')}</span>
+              <span>{format(new Date(p.dueDate), 'MMMM D YYYY')}</span>
             </TitleAndDate>
             <B>{p.status}</B>
           </Wrapper>

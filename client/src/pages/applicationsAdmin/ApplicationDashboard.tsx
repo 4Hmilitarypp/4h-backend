@@ -51,7 +51,7 @@ const ApplicationDashboard: React.FC<RouteComponentProps> = () => {
             : baseApplications.map(a => (
                 <Wrapper to={`${reviewType}/${a._id}`} onClick={() => handleSelect(a._id)} key={a._id}>
                   <CityAndState>{`${a.title}`}</CityAndState>
-                  <DueDate>{`${format(a.dueDate, 'MMMM D YYYY')}`}</DueDate>
+                  <DueDate>{`${format(new Date(a.dueDate), 'MMMM D YYYY')}`}</DueDate>
                 </Wrapper>
               ))}
         </ModalWrapper>

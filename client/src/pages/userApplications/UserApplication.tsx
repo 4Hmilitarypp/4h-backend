@@ -59,7 +59,7 @@ const UserApplication: React.FC<IProps> = ({ _id, handleError }) => {
               <ApplicationHeading>{userApplication.title}</ApplicationHeading>
               <StatusButton>{userApplication.status}</StatusButton>
             </Title>
-            <DueDate>Due {format(userApplication.dueDate as any, 'MMMM D YYYY')}</DueDate>
+            <DueDate>Due {format(new Date(userApplication.dueDate), 'MMMM D YYYY')}</DueDate>
           </HeaderWrapper>
           <Section>
             <DownloadButton as="a" href={userApplication.baseApplicationUrl} target="_blank">
