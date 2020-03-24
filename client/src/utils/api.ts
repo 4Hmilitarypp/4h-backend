@@ -1,4 +1,5 @@
 import * as axios from 'axios'
+
 import {
   IApiComment,
   IApplication,
@@ -12,6 +13,7 @@ import {
   IPartner,
   IPartnerSection,
   IRegisterForm,
+  ILatestNews,
   IReport,
   IResearch,
   IResource,
@@ -22,7 +24,9 @@ import {
 } from '../sharedTypes'
 
 let restApi: axios.AxiosInstance
+let aws4hRestApi: axios.AxiosInstance
 const envBaseURL = process.env.REACT_APP_API_URL
+const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
 
 const getData = (res: { data: object }) => res.data
 
@@ -31,6 +35,29 @@ const requests = {
   get: (url: string): Promise<any> => restApi.get(url).then(getData),
   post: (url: string, body: object): Promise<any> => restApi.post(url, body).then(getData),
   put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
+}
+
+const getCookie = () => {
+  const keys = document.cookie.split(';')
+  const tokenKey = keys.find(key => key.includes('token='))
+  if (!tokenKey) return undefined
+  const formattedKey = tokenKey.split(' ').join('')
+  return formattedKey
+}
+
+const aws4hRequests = {
+  delete: (url: string): Promise<any> => {
+    return aws4hRestApi.delete(url, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  get: (url: string): Promise<any> => {
+    return aws4hRestApi.get(url, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  post: (url: string, body: object): Promise<any> => {
+    return aws4hRestApi.post(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  put: (url: string, body: object): Promise<any> => {
+    return aws4hRestApi.put(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+  },
 }
 
 const admin = {
@@ -86,16 +113,24 @@ const lessons = {
 }
 
 const liaisons = {
-  create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
-  delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
-  get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
-  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
+  create: (data: ILiaison): Promise<ILiaison> => aws4hRequests.post('/liaisons', data),
+  delete: (id: string): Promise<string> => aws4hRequests.delete(`/liaisons/${id}`),
+  get: (): Promise<ILiaison[]> => aws4hRequests.get('/liaisons'),
+  update: (id: string, updates: ILiaison): Promise<ILiaison> => aws4hRequests.put(`/liaisons/${id}`, updates),
 }
 
 const pageInfo = {
   create: (data: any): Promise<any> => requests.post('/page-info', { info: data, page: data.page }),
   get: (page: string): Promise<any> => requests.get(`/page-info/${page}`),
   update: (page: string, updates: any): Promise<any> => requests.put(`/page-info/${page}`, { info: updates }),
+}
+
+const latestNews = {
+  create: (data: ILatestNews): Promise<ILatestNews> => aws4hRequests.post('/latest-news', data),
+  update: (id: string, update: ILatestNews): Promise<ILatestNews> => aws4hRequests.put(`/latest-news/${id}`, update),
+  delete: (id: string): Promise<string> => aws4hRequests.delete(`/latest-news/${id}`),
+  get: (): Promise<ILatestNews[]> => aws4hRequests.get('/latest-news'),
+  getBySlug: (slug: string): Promise<ILatestNews> => aws4hRequests.get(`/latest-news/${slug}`),
 }
 
 const partners = {
@@ -171,6 +206,13 @@ function init({ baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL, a
       ...axiosOptions.headers,
     },
   })
+  aws4hRestApi = (axios as any).create({
+    baseURL: aws4hBaseURL,
+    ...axiosOptions,
+    headers: {
+      ...axiosOptions.headers,
+    },
+  })
 }
 
 const api = {
@@ -184,6 +226,7 @@ const api = {
   liaisons,
   pageInfo,
   partners,
+  latestNews,
   reports,
   research,
   resources,

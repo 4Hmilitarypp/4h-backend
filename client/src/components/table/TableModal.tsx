@@ -9,9 +9,7 @@ const TableModal: React.FC<{ controller: IModalController<any>; itemTitle: strin
   itemTitle,
 }) => {
   const { api, handleError, reset, state, updateItems, incTimesDeleteClicked } = controller
-
   const [open, setOpen] = React.useState(false)
-
   React.useLayoutEffect(() => {
     if (state.action === 'update' || state.action === 'create') {
       setOpen(true)

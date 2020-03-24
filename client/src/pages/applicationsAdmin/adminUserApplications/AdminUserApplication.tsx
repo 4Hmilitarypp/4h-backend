@@ -89,7 +89,7 @@ const AdminUserApplication: React.FC<IProps> = ({ _id, handleError, refId, type 
               <ApplicationHeading>{adminUserApplication.title}</ApplicationHeading>
               <StatusButton>{adminUserApplication.status}</StatusButton>
             </Title>
-            <DueDate>Due {format(adminUserApplication.dueDate, 'MMMM D YYYY')}</DueDate>
+            <DueDate>Due {format(new Date(adminUserApplication.dueDate), 'MMMM d yyyy')}</DueDate>
           </HeaderWrapper>
           <Section>
             <Comments applicationId={adminUserApplication._id || ''} handleError={handleError} />

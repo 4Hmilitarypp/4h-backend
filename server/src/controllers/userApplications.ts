@@ -8,7 +8,7 @@ import { IUserApplication } from '../sharedTypes'
 import { Controller } from '../types'
 import { createValidationError, emailError, forbiddenError, notFoundError } from '../utils/errors'
 import transporter from '../utils/nodemailer'
-import { IArchiveDocument } from '../models/Archive';
+import { IArchiveDocument } from '../models/Archive'
 
 type TCreateUserApplication = Pick<
   IUserApplication,
@@ -29,8 +29,9 @@ const cleanUserApplicationWithId = (obj: any) => pick(obj, ['_id', 'status', 'ur
  * key will be userId and baseId
  */
 export const getUserApplications: Controller = async (req, res) => {
-  const baseApplications = await Application.find({ userGroups: { $in: req.user.permissions } })
-  const userApplications = await UserApplication.find({ userId: req.user._id })
+  if (!req.user) throw forbiddenError
+  const baseApplications = await Application.find({ userGroups: { $in: (req.user as any).permissions } })
+  const userApplications = await UserApplication.find({ userId: (req.user as any)._id })
 
   const applicationsToCreate = baseApplications.reduce<TCreateUserApplication[]>((arr, baseApplication) => {
     if (!userApplications.find(app => baseApplication._id.equals(app.baseId))) {
@@ -41,7 +42,7 @@ export const getUserApplications: Controller = async (req, res) => {
         title: baseApplication.title,
         updatedBy: 'system',
         userGroups: baseApplication.userGroups,
-        userId: req.user._id,
+        userId: (req.user as any)._id,
       })
     }
     return arr
@@ -83,9 +84,10 @@ export const getByBaseId: Controller = async (req, res) => {
 }
 
 export const updateUserApplication: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   if (req.body.status !== 'Submitted' && req.body.status !== 'Not Submitted') {
-    if (!req.user.permissions.includes('admin')) throw forbiddenError
+    if (!(req.user as any).permissions.includes('admin')) throw forbiddenError
   }
 
   const oldUserApplication = await UserApplication.findById(_id)
@@ -96,7 +98,7 @@ export const updateUserApplication: Controller = async (req, res) => {
 
   const userApplication = await UserApplication.findByIdAndUpdate(
     _id,
-    { ...cleanUserApplication(req.body), updatedBy: req.user.email },
+    { ...cleanUserApplication(req.body), updatedBy: (req.user as any).email },
     {
       context: 'query',
       new: true,
@@ -108,11 +110,12 @@ export const updateUserApplication: Controller = async (req, res) => {
 }
 
 export const deleteUserApplication: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   const deletedUserApplication = await UserApplication.findByIdAndDelete(_id)
   if (deletedUserApplication) {
     await new Archive({
-      archivedBy: req.user.email,
+      archivedBy: (req.user as any).email,
       record: cleanUserApplication(deletedUserApplication),
       type: 'userApplication',
     }).save()
@@ -124,6 +127,7 @@ export const deleteUserApplication: Controller = async (req, res) => {
 const cleanComment = (obj: any) => pick(obj, ['text'])
 
 export const createComment: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { userApplicationId } = req.params
   const updatedUserApplication = (await UserApplication.findByIdAndUpdate(
     userApplicationId,
@@ -131,9 +135,9 @@ export const createComment: Controller = async (req, res) => {
       $push: {
         comments: {
           ...cleanComment(req.body),
-          createdBy: req.user.email,
-          updatedBy: req.user.email,
-          userId: req.user._id,
+          createdBy: (req.user as any).email,
+          updatedBy: (req.user as any).email,
+          userId: (req.user as any)._id,
         },
       },
     },
@@ -142,13 +146,13 @@ export const createComment: Controller = async (req, res) => {
   if (updatedUserApplication) {
     // will only return the last comment in the list. If they are ordered in the db this won't work and I'll need to find a way to get the actual created comment
     const comment = updatedUserApplication.comments[updatedUserApplication.comments.length - 1]
-    if (updatedUserApplication.userId.toString() !== req.user._id) {
+    if (updatedUserApplication.userId.toString() !== (req.user as any)._id) {
       const user = await User.findById(updatedUserApplication.userId).select('email')
       if (!user) throw notFoundError
       try {
         await transporter.sendMail({
           from: `"4-H Military Partnerships" <${process.env.EMAIL_USER}>`,
-          html: applicationCommentTemplate(req.user.name, req.body.text.substr(0, 50)),
+          html: applicationCommentTemplate((req.user as any).name, req.body.text.substr(0, 50)),
           subject: `Comment Made on Application ${updatedUserApplication.title}`,
           text: '',
           to: user.email,
@@ -205,17 +209,25 @@ const findCommentById = (id: string, comments?: any) => {
 }
 
 export const updateComment: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { userApplicationId, _id } = req.params
 
   const firstUserApplication = await UserApplication.findById(userApplicationId).select('comments')
 
   if (firstUserApplication) {
     const dbComment = findCommentById(_id, firstUserApplication.comments)
-    if (dbComment.userId.toString() !== req.user._id) throw forbiddenError
+    if (dbComment.userId.toString() !== (req.user as any)._id) throw forbiddenError
     const userApplication = await UserApplication.findOneAndUpdate(
       { _id: userApplicationId, 'comments._id': _id },
       {
-        $set: { 'comments.$': { ...cleanComment(req.body), _id, userId: dbComment.userId, updatedBy: req.user.email } },
+        $set: {
+          'comments.$': {
+            ...cleanComment(req.body),
+            _id,
+            userId: dbComment.userId,
+            updatedBy: (req.user as any).email,
+          },
+        },
       },
       { new: true }
     )
@@ -228,6 +240,7 @@ export const updateComment: Controller = async (req, res) => {
 }
 
 export const deleteComment: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { userApplicationId, _id } = req.params
   const updatedUserApplication = await UserApplication.findByIdAndUpdate(userApplicationId, {
     $pull: { comments: { _id } },
@@ -235,7 +248,11 @@ export const deleteComment: Controller = async (req, res) => {
   if (updatedUserApplication) {
     const deletedComment = findCommentById(_id, updatedUserApplication.comments)
     if (deletedComment) {
-      await new Archive({ archivedBy: req.user.email, record: cleanComment(deletedComment), type: 'comment' }).save()
+      await new Archive({
+        archivedBy: (req.user as any).email,
+        record: cleanComment(deletedComment),
+        type: 'comment',
+      }).save()
       return res.status(204).send()
     }
     throw notFoundError

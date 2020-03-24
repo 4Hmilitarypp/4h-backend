@@ -12,6 +12,7 @@ const setupPartnerRoutes = (router: Router) => {
     .get(auth.optional, catchErrors(partnerController.getPartnerSections))
     .post(auth.required, guard({}).check('admin'), catchErrors(partnerController.createPartner))
   router.route('/slug/:slug').get(auth.optional, catchErrors(partnerController.getPartner))
+  router.route('/s3-reports').get(catchErrors(partnerController.getS3Reports))
   router
     .route('/:_id')
     .delete(auth.required, guard({}).check('admin'), catchErrors(partnerController.deletePartner))

@@ -2,8 +2,8 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import { ICampDocument } from '../models/Camp'
 import { Controller } from '../types'
-import { notFoundError } from '../utils/errors'
-import { IArchiveDocument } from '../models/Archive';
+import { notFoundError, forbiddenError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive'
 
 const Camp = mongoose.model<ICampDocument>('Camp')
 const Archive = mongoose.model<IArchiveDocument>('Archive')
@@ -39,7 +39,12 @@ const cleanCampWithId = (obj: any) =>
   ])
 
 export const createCamp: Controller = async (req, res) => {
-  const camp = await new Camp({ ...cleanCamp(req.body), createdBy: req.user.email, updatedBy: req.user.email }).save()
+  if (!req.user) throw forbiddenError
+  const camp = await new Camp({
+    ...cleanCamp(req.body),
+    createdBy: (req.user as any).email,
+    updatedBy: (req.user as any).email,
+  }).save()
   return res.status(201).json(camp)
 }
 
@@ -54,10 +59,11 @@ export const getCurrentCamps: Controller = async (_, res) => {
 }
 
 export const updateCamp: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   const camp = await Camp.findByIdAndUpdate(
     _id,
-    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
+    { ...cleanCamp(req.body), featuredImage: req.body.featuredImage, updatedBy: (req.user as any).email },
     {
       context: 'query',
       new: true,
@@ -71,10 +77,11 @@ export const updateCamp: Controller = async (req, res) => {
 }
 
 export const deleteCamp: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { _id } = req.params
   const deletedCamp = await Camp.findByIdAndDelete(_id)
   if (deletedCamp) {
-    await new Archive({ archivedBy: req.user.email, record: cleanCamp(deletedCamp), type: 'camp' }).save()
+    await new Archive({ archivedBy: (req.user as any).email, record: cleanCamp(deletedCamp), type: 'camp' }).save()
     return res.status(204).send()
   }
   throw notFoundError
@@ -83,11 +90,14 @@ export const deleteCamp: Controller = async (req, res) => {
 const cleanCampDate = (obj: any) => pick(obj, ['beginDate', 'endDate'])
 
 export const createCampDate: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { campId } = req.params
   const updatedCamp = (await Camp.findByIdAndUpdate(
     campId,
     {
-      $push: { dates: { ...cleanCampDate(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
+      $push: {
+        dates: { ...cleanCampDate(req.body), createdBy: (req.user as any).email, updatedBy: (req.user as any).email },
+      },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -116,11 +126,12 @@ const findCampDateById = (id: string, dates?: any) => {
 }
 
 export const updateCampDate: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { campId, _id } = req.params
   const resource = await Camp.findOneAndUpdate(
     { _id: campId, 'dates._id': _id },
     {
-      $set: { 'dates.$': { ...cleanCampDate(req.body), _id, updatedBy: req.user.email } },
+      $set: { 'dates.$': { ...cleanCampDate(req.body), _id, updatedBy: (req.user as any).email } },
     },
     { new: true }
   )
@@ -132,6 +143,7 @@ export const updateCampDate: Controller = async (req, res) => {
 }
 
 export const deleteCampDate: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { campId, _id } = req.params
   const updatedCamp = await Camp.findByIdAndUpdate(campId, {
     $pull: { dates: { _id } },
@@ -139,7 +151,11 @@ export const deleteCampDate: Controller = async (req, res) => {
   if (updatedCamp) {
     const deletedCampDate = findCampDateById(_id, updatedCamp.dates)
     if (deletedCampDate) {
-      await new Archive({ archivedBy: req.user.email, record: cleanCampDate(deletedCampDate), type: 'campDate' }).save()
+      await new Archive({
+        archivedBy: (req.user as any).email,
+        record: cleanCampDate(deletedCampDate),
+        type: 'campDate',
+      }).save()
       return res.status(204).send()
     }
     throw notFoundError

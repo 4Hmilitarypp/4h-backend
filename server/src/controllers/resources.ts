@@ -2,8 +2,8 @@ import { pick } from 'lodash'
 import mongoose from 'mongoose'
 import { IResourceDocument } from '../models/Resource'
 import { Controller } from '../types'
-import { notFoundError } from '../utils/errors'
-import { IArchiveDocument } from '../models/Archive';
+import { notFoundError, forbiddenError } from '../utils/errors'
+import { IArchiveDocument } from '../models/Archive'
 
 const cleanResource = (obj: any) =>
   pick(obj, ['featuredImage', 'longDescription', 'parent', 'shortDescription', 'slug', 'title'])
@@ -18,8 +18,8 @@ const Archive = mongoose.model<IArchiveDocument>('Archive')
 export const createResource: Controller = async (req, res) => {
   const resource = await new Resource({
     ...cleanResource(req.body),
-    createdBy: req.user.email,
-    updatedBy: req.user.email,
+    createdBy: (req.user as any).email,
+    updatedBy: (req.user as any).email,
   }).save()
   return res.status(201).json(cleanResourceWithId(resource))
 }
@@ -58,7 +58,7 @@ export const updateResource: Controller = async (req, res) => {
   const { _id } = req.params
   const resource = await Resource.findOneAndUpdate(
     { _id },
-    { ...cleanResource(req.body), featuredImage: req.body.featuredImage, updatedBy: req.user.email },
+    { ...cleanResource(req.body), featuredImage: req.body.featuredImage, updatedBy: (req.user as any).email },
     {
       context: 'query',
       new: true,
@@ -76,7 +76,7 @@ export const deleteResource: Controller = async (req, res) => {
   const deletedResource = await Resource.findByIdAndDelete(_id)
   if (deletedResource) {
     await new Archive({
-      archivedBy: req.user.email,
+      archivedBy: (req.user as any).email,
       record: cleanResourceWithLessons(deletedResource),
       type: 'resource',
     }).save()
@@ -88,11 +88,14 @@ export const deleteResource: Controller = async (req, res) => {
 const cleanLesson = (obj: any) => pick(obj, ['title', 'links', 'category'])
 
 export const createLesson: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { resourceId } = req.params
   const updatedResource = (await Resource.findByIdAndUpdate(
     resourceId,
     {
-      $push: { lessons: { ...cleanLesson(req.body), createdBy: req.user.email, updatedBy: req.user.email } },
+      $push: {
+        lessons: { ...cleanLesson(req.body), createdBy: (req.user as any).email, updatedBy: (req.user as any).email },
+      },
     },
     { context: 'query', new: true, runValidators: true }
   )) as any
@@ -123,11 +126,12 @@ const findLessonById = (id: string, lessons?: any) => {
 }
 
 export const updateLesson: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { resourceId, _id } = req.params
   const resource = await Resource.findOneAndUpdate(
     { _id: resourceId, 'lessons._id': _id },
     {
-      $set: { 'lessons.$': { ...cleanLesson(req.body), _id, updatedBy: req.user.email } },
+      $set: { 'lessons.$': { ...cleanLesson(req.body), _id, updatedBy: (req.user as any).email } },
     },
     { new: true }
   )
@@ -139,6 +143,7 @@ export const updateLesson: Controller = async (req, res) => {
 }
 
 export const deleteLesson: Controller = async (req, res) => {
+  if (!req.user) throw forbiddenError
   const { resourceId, _id } = req.params
   const updatedResource = await Resource.findByIdAndUpdate(resourceId, {
     $pull: { lessons: { _id } },
@@ -146,7 +151,11 @@ export const deleteLesson: Controller = async (req, res) => {
   if (updatedResource) {
     const deletedLesson = findLessonById(_id, updatedResource.lessons)
     if (deletedLesson) {
-      await new Archive({ archivedBy: req.user.email, record: cleanLesson(deletedLesson), type: 'lesson' }).save()
+      await new Archive({
+        archivedBy: (req.user as any).email,
+        record: cleanLesson(deletedLesson),
+        type: 'lesson',
+      }).save()
       return res.status(204).send()
     }
     throw notFoundError

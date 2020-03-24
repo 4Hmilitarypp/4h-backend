@@ -1,6 +1,7 @@
 import 'react-app-polyfill/ie11'
 
-import 'babel-polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 
 // import * as Sentry from '@sentry/browser'
 import * as React from 'react'
@@ -20,5 +21,5 @@ if (process.env.NODE_ENV === 'production') {
   // serviceWorker.register() I decided that they should always have the most up to date version of the CMS
   serviceWorker.unregister()
 } else {
-  // serviceWorker.unregister()
+  serviceWorker.unregister()
 }

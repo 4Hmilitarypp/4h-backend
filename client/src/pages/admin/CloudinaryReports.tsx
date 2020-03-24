@@ -20,7 +20,7 @@ const CloudinaryReports: React.FC<RouteComponentProps> = () => {
       .catch(handleError)
   }, []) // eslint-disable-line
 
-  const formatDate = (date: string | Date) => format(date, 'YYYY-MM-DD')
+  const formatDate = (date: string | Date) => format(new Date(date), 'yyyy-MM-dd')
 
   const formatMB = (val: any) =>
     (val / 1000)

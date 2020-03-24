@@ -1,0 +1,4 @@
+diff a/client/src/pages/latest-news/LatestNewsForm.tsx b/client/src/pages/latest-news/LatestNewsForm.tsx	(rejected hunks)
+@@ -34 +34 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
+-    if (research) setShortDescription(research.description);
++    if (research) setShortDescription(research.description)
