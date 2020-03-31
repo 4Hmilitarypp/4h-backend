@@ -17,8 +17,10 @@ const LatestNews: React.FC<RouteComponentProps> = () => {
   usePermission('admin')
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
-  const filteredResearches = () => allLatestNews.filter(latestNews => !filterText || isFound(latestNews.title))
-
+  const filteredArticles = () =>
+    allLatestNews
+      .filter(latestNews => !filterText || isFound(latestNews.title))
+      .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
   return (
     <>
       <Table itemTitle="Article" itemTitlePlural="Latest News" modalController={modalController}>
@@ -27,9 +29,9 @@ const LatestNews: React.FC<RouteComponentProps> = () => {
           <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
         </CustomInputGroup>
         {allLatestNews && (
-          <div data-testid="Researches">
-            {map(filteredResearches(), research => (
-              <LatestNewsArticle key={research.title} research={research} setModalState={modalController.set} />
+          <div data-testid="Articles">
+            {map(filteredArticles(), article => (
+              <LatestNewsArticle key={article.title} article={article} setModalState={modalController.set} />
             ))}
           </div>
         )}

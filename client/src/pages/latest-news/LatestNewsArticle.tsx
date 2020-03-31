@@ -5,19 +5,19 @@ import { ILatestNews } from '../../sharedTypes'
 import { hoveredRow } from '../../utils/mixins'
 
 interface IProps {
-  research: ILatestNews
+  article: ILatestNews
   setModalState: TSetModalState<ILatestNews>
 }
 
-const LatestNewsArticle: React.FC<IProps> = ({ research, setModalState }) => (
-  <ResearchWrapper onClick={() => setModalState({ action: 'update', item: research })}>
-    <Title>{research.title}</Title>
-  </ResearchWrapper>
+const LatestNewsArticle: React.FC<IProps> = ({ article, setModalState }) => (
+  <ArticleWrapper onClick={() => setModalState({ action: 'update', item: article })}>
+    <Title>{article.title}</Title>
+  </ArticleWrapper>
 )
 
 export default LatestNewsArticle
 
-const ResearchWrapper = styled.div`
+const ArticleWrapper = styled.div`
   padding: 2rem;
   position: relative;
   ${hoveredRow()};
