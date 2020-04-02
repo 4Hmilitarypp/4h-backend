@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "concurrently -k -p \"[{name}]\" -n \"Client,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm:client:start\" \"npm:server:watch:ts\" \"npm:server:watch:node\"",
-    "build": "concurrently \"npm:client:build\" \"npm:server:build\"",
+    "build": "npm run client:build && npm run server:build",
     "coverage": "concurrently \"npm:client:coverage\" \"npm:server:coverage\"",
     "production": "pm2-runtime server/dist/start.js",
     "lint": "concurrently \"prettier --write **/*.{js,ts,tsx,scss,html,json}\" \"eslint --fix client/**/*.{js,ts,tsx}\" \"eslint --fix server/**/*.{js,ts,tsx}\"",
