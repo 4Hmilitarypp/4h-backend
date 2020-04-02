@@ -113,10 +113,10 @@ const lessons = {
 }
 
 const liaisons = {
-  create: (data: ILiaison): Promise<ILiaison> => aws4hRequests.post('/liaisons', data),
-  delete: (id: string): Promise<string> => aws4hRequests.delete(`/liaisons/${id}`),
-  get: (): Promise<ILiaison[]> => aws4hRequests.get('/liaisons'),
-  update: (id: string, updates: ILiaison): Promise<ILiaison> => aws4hRequests.put(`/liaisons/${id}`, updates),
+  create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
+  delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
+  get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
+  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
 }
 
 const pageInfo = {
