@@ -15,7 +15,7 @@ export const contactUs: Controller = async (req, res) => {
       html: informationTemplate(form.name, form.email, form.message),
       subject: `4-H Information Request${form.category ? ' :' + form.category : ''}`,
       text: '',
-      to: 'alex@wendte.tech',
+      to: ['alex@wendte.tech', 'meredithb@ksu.edu', 'suziem@ksu.edu', 'jpartida@ksu.edu'],
     })
   } catch (err) {
     throw emailError(err)
