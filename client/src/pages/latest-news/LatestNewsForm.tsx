@@ -114,7 +114,7 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit} id="News ItemForm">
+    <Form onSubmit={handleSubmit} id="ArticleForm">
       <InputGroup>
         <label htmlFor="title">Article Title</label>
         <input
