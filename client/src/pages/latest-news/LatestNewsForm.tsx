@@ -10,6 +10,7 @@ import {
   BlankUploadBox,
   UploadButton,
   TextUploadBox,
+  ModalForm,
 } from '../../components/Elements'
 import { IModalController } from '../../components/table/useTable'
 import { ILatestNews } from '../../sharedTypes'
@@ -114,7 +115,7 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit} id="ArticleForm">
+    <ModalForm onSubmit={handleSubmit} id="News ItemForm">
       <InputGroup>
         <label htmlFor="title">Article Title</label>
         <input
@@ -163,17 +164,12 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
           )}
         </ResourceSection>
       </NewsResources>
-    </Form>
+    </ModalForm>
   )
 }
 
 export default LatestNewsForm
 
-const Form = styled.form`
-  padding: 1.2rem 2rem 2rem;
-  display: flex;
-  flex-direction: column;
-`
 const NewsResources = styled.div`
   display: flex;
   justify-content: center;

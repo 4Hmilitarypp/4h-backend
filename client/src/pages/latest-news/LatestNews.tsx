@@ -23,7 +23,7 @@ const LatestNews: React.FC<RouteComponentProps> = () => {
       .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
   return (
     <>
-      <Table itemTitle="Article" itemTitlePlural="Articles" modalController={modalController}>
+      <Table itemTitle="Article" itemTitlePlural="Latest News" modalController={modalController}>
         <CustomInputGroup color="white">
           <label>Article Filter</label>
           <input value={filterText} onChange={e => setFilterText(e.currentTarget.value.toLowerCase())} />
@@ -36,7 +36,7 @@ const LatestNews: React.FC<RouteComponentProps> = () => {
           </div>
         )}
       </Table>
-      <TableModal controller={modalController} itemTitle="Article">
+      <TableModal controller={modalController} itemTitle="News Item">
         <LatestNewsForm modalController={modalController} />
       </TableModal>
     </>
