@@ -25,7 +25,7 @@ export interface ILatestNews {
   updatedAt: string
   body: string
   featuredImage: IImage
-  resourceUrl: string
+  resourceUrl?: string
 }
 
 export interface ITest {

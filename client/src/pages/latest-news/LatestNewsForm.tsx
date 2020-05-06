@@ -39,6 +39,7 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
       setBody(article.body)
       setShortDescription(article.shortDescription)
       setFeaturedImageUrl(article.featuredImage ? article.featuredImage.url : '')
+      setResourceUrl(article.resourceUrl)
     }
   }, [article])
 
@@ -92,7 +93,7 @@ const LatestNewsForm: React.FC<IProps> = ({ modalController }) => {
       createdAt: action === 'create' ? new Date().toDateString() : article ? article.createdAt : '',
       updatedAt: new Date().toDateString(),
       body: body ? body : '',
-      resourceUrl: article ? article.resourceUrl : '',
+      resourceUrl: resourceUrl,
     }
 
     if (action === 'update') {
