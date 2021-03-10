@@ -179,6 +179,7 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
         <Select id="serviceBranch" value={serviceBranch} onChange={e => handleServiceChange(e)}>
           <option value="Air Force">Air Force</option>
           <option value="Navy">Navy</option>
+          <option value="Army">Army</option>
         </Select>
       </CustomInputGroup>
       <CustomInputGroup>
