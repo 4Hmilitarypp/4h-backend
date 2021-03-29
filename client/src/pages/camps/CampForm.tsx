@@ -30,7 +30,9 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
   const [flyerUrl, setFlyerUrl] = React.useState<string | undefined>(undefined)
   const [campType, setCampType] = React.useState<'Day' | 'Residential'>('Day')
-  const [serviceBranch, setServiceBranch] = React.useState<'Air Force' | 'Navy' | 'Army'>('Air Force')
+  const [serviceBranch, setServiceBranch] = React.useState<
+    'Air Force' | 'Navy' | 'Army' | 'Guard/Reserve' | 'Guard/Reserve/Retired' | 'All Services'
+  >('Air Force')
   const [description, setDescription] = React.useState<string>()
   const formRef = React.useRef<HTMLFormElement>(null)
 
@@ -180,6 +182,9 @@ const CampForm: React.FC<IProps> = ({ action, camp, handleError, updateCamps }) 
           <option value="Air Force">Air Force</option>
           <option value="Navy">Navy</option>
           <option value="Army">Army</option>
+          <option value="Guard/Reserve">Guard/Reserve</option>
+          <option value="Guard/Reserve/Retired">Guard/Reserve/Retired</option>
+          <option value="All Services">All Services</option>
         </Select>
       </CustomInputGroup>
       <CustomInputGroup>

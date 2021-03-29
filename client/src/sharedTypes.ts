@@ -49,7 +49,7 @@ export interface ICamp {
   descriptionTitle: string
   featuredImage?: IImage
   flyerUrl?: string
-  serviceBranch: 'Air Force' | 'Navy' | 'Army'
+  serviceBranch: 'Air Force' | 'Navy' | 'Army' | 'Guard/Reserve' | 'Guard/Reserve/Retired' | 'All Services'
   state: string
   title: string
   type: 'Residential' | 'Day'
