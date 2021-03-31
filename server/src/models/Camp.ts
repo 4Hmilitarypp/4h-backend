@@ -63,7 +63,7 @@ const campSchema = new mongoose.Schema({
   featuredImage: { type: imageSchema },
   flyerUrl: String,
   serviceBranch: {
-    enum: ['Air Force', 'Navy', 'Army'],
+    enum: ['Air Force', 'Navy', 'Army', 'Guard/Reserve', 'Guard/Reserve/Retired', 'All Services'],
     required: 'Service branch is required',
     type: String,
   },
