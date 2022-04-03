@@ -1,5 +1,8 @@
 export interface IApiError {
-  response: { data: { message: string }; status: number; statusText: string }
+  response?: { data: { message: string }; status: number; statusText: string }
+  error?: string
+  message?: string
+  statusCode?: number
 }
 
 export interface IApplication {

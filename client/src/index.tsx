@@ -4,8 +4,7 @@ import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
 // import * as Sentry from '@sentry/browser'
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 import App from './App'
 import './assets/styles/reset.css'
 import * as serviceWorker from './serviceWorker'
@@ -16,7 +15,9 @@ api.init()
 //   dsn: 'https://071f5a5ca4ad42749cdac7147954effe@sentry.io/1375275',
 // })
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const container = document.getElementById('root');
+const root = createRoot(container as any);
+root.render(<App />);
 if (process.env.NODE_ENV === 'production') {
   // serviceWorker.register() I decided that they should always have the most up to date version of the CMS
   serviceWorker.unregister()

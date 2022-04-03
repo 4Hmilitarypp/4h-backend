@@ -1,4 +1,4 @@
-import * as faker from 'faker'
+import * as faker from '@faker-js/faker'
 import * as React from 'react'
 import { fireEvent, getByTestId as globalGetByTestId, render, waitForElement } from 'react-testing-library'
 import Modal from '../Modal'

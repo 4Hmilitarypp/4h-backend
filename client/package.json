@@ -1,6 +1,6 @@
 {
   "name": "4h-military-partnership-cms",
-  "proxy": "https://cms.4h.wendte.tech",
+  "proxy": "https://api.cms.4h.wendte.tech",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,6 +1,5 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { Transition } from 'react-spring/renderprops'
 import styled from 'styled-components/macro'
 import FlashContext from './contexts/FlashContext'
 
@@ -8,37 +7,17 @@ const Flash: React.FC<RouteComponentProps> = () => {
   const context = React.useContext(FlashContext)
   return (
     <>
-      <Transition
-        from={{ opacity: 0, height: 0 }}
-        enter={{ opacity: 1, height: 'auto' }}
-        leave={{ opacity: 0, height: 0 }}
-        items={!context.isError && context.message}
-      >
-        {(toggle: any) =>
-          toggle &&
-          (({ opacity, height }: { opacity: number; height: number }) => (
-            <ResponseSuccess data-testid="create-success" style={{ opacity, height }}>
-              <Message>{context.message}</Message>
-            </ResponseSuccess>
-          ))
-        }
-      </Transition>
-      <Transition
-        from={{ opacity: 0, height: 0 }}
-        enter={{ opacity: 1, height: 'auto' }}
-        leave={{ opacity: 0, height: 0 }}
-        items={context.isError && context.message}
-      >
-        {(toggle: any) =>
-          toggle &&
-          (({ opacity, height }: { opacity: number; height: number }) => (
-            <ResponseError data-testid="create-error" style={{ opacity, height }}>
-              <Message>{context.message}</Message>
-              <Close onClick={context.reset}>X</Close>
-            </ResponseError>
-          ))
-        }
-      </Transition>
+      {!context.isError && context.message && (
+        <ResponseSuccess data-testid="create-success">
+          <Message>{context.message}</Message>
+        </ResponseSuccess>
+      )}
+      {context.isError && context.message && (
+        <ResponseError data-testid="create-error">
+          <Message>{context.message}</Message>
+          <Close onClick={context.reset}>X</Close>
+        </ResponseError>
+      )}
     </>
   )
 }

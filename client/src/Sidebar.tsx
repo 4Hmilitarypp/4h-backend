@@ -11,7 +11,7 @@ interface IConditionalLinkGroupProps {
 }
 
 const ConditionalLinkGroup: React.FC<IConditionalLinkGroupProps> = ({ children, permissions, userContext }) =>
-  userContext.user && userContext.user.permissions.some(p => permissions.some(p2 => p2 === p)) ? (
+  userContext.user && userContext.user.permissions?.some(p => permissions?.some(p2 => p2 === p)) ? (
     <LinkGroup>{children}</LinkGroup>
   ) : null
 interface IActiveLinkProps {
@@ -70,7 +70,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
         <GroupHeader>Grant Applications</GroupHeader>
         <Links>
           <ActiveLink to="/applications" text="Applications" path={path} exact={true} />
-          {userContext.user && userContext.user.permissions.includes('admin') && (
+          {userContext.user && userContext.user.permissions?.includes('admin') && (
             <ActiveLink to="/applications-admin" text="Applications Admin" path={path} />
           )}
         </Links>

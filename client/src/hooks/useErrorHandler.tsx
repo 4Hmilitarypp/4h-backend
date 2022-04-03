@@ -6,20 +6,24 @@ import { IApiError } from '../sharedTypes'
 export const createError = (message: string, status: number) =>
   ({ response: { data: { message }, status, statusText: '' } } as IApiError)
 
-export const formatError = (err: IApiError) => {
-  if (err.response) {
-    if (err.response.data) {
-      return { message: err.response.data.message, status: err.response.status }
+export const formatError = (err: IApiError | unknown) => {
+  const apiError = err as IApiError 
+  if (apiError.response) {
+    if (apiError.response.data) {
+      return { message: apiError.response.data.message, status: apiError.response.status }
     }
   }
-  return { message: typeof err === 'object' ? JSON.stringify(err) : err, status: 500 }
+  if (apiError.message) {
+    return { message: apiError.message, status: apiError.statusCode }
+  }
+  return { message: typeof err === 'object' ? JSON.stringify(err) : (err as any)?.message || (err as any).toString(), status: 500 }
 }
 
 const useErrorHandler = () => {
   const userContext = React.useContext(UserContext)
   const flashContext = React.useContext(FlashContext)
 
-  const handleError = (dirtyError: IApiError, type?: string) => {
+  const handleError = (dirtyError: IApiError | unknown, type?: string) => {
     console.error(dirtyError)
 
     if (!flashContext) return
