@@ -9,7 +9,7 @@ import {
   IFullUserApplication,
   ILesson,
   ILiaison,
-  ILoginForm,
+  // ILoginForm,
   IPartner,
   IPartnerSection,
   IRegisterForm,
@@ -75,6 +75,17 @@ const awsAlex4hRequests = {
   },
   put: (url: string, body: object): Promise<any> => {
     return awsAlex4hRestApi.put(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+  },
+  login: (url: string, accessToken: string): Promise<any> => {
+    return awsAlex4hRestApi
+      .post(url, null, {
+        headers: {
+          'Access-Control-Allow-Headers': 'Set-Cookie',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then(getData)
   },
 }
 
@@ -204,16 +215,16 @@ const userApplications = {
 }
 
 const users = {
-  checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
-  create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
-  delete: (id: string): Promise<string> => requests.delete(`/users/${id}`),
-  get: (): Promise<IUser[]> => requests.get('/users'),
-  getApplicationUserIds: (): Promise<string[]> => requests.get('/users/application-users'),
-  login: (form: ILoginForm): Promise<IUser> => requests.post('/users/login', form),
-  logout: (): Promise<string> => requests.post('/users/logout', {}),
-  me: (): Promise<IUser> => requests.get('/users/me'),
-  register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
-  update: (id: string, updates: IUser): Promise<IUser> => requests.put(`/users/${id}`, updates),
+  checkIfSpam: (token: string): Promise<boolean> => awsAlex4hRequests.post('/users/checkIfSpam', { token }),
+  create: (form: IRegisterForm): Promise<IUser> => awsAlex4hRequests.post('/users', form),
+  delete: (id: string): Promise<string> => awsAlex4hRequests.delete(`/users/${id}`),
+  get: (): Promise<IUser[]> => awsAlex4hRequests.get('/users'),
+  getApplicationUserIds: (): Promise<string[]> => awsAlex4hRequests.get('/users/application-users'),
+  login: (accessToken: string): Promise<IUser> => awsAlex4hRequests.login('/users/login', accessToken),
+  logout: (): Promise<string> => awsAlex4hRequests.post('/users/logout', {}),
+  me: (): Promise<IUser> => awsAlex4hRequests.get('/users/me'),
+  register: (form: IRegisterForm): Promise<IUser> => awsAlex4hRequests.post('/users/register', form),
+  update: (id: string, updates: IUser): Promise<IUser> => awsAlex4hRequests.put(`/users/${id}`, updates),
 }
 
 const webinars = {

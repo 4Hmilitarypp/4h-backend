@@ -26,30 +26,69 @@ export const useUser = () => {
   const handleError = useErrorHandler()
 
   React.useEffect(() => {
-    api.users
-      .me()
-      .then(u => {
-        setUser(u)
-        setIsLoaded(true)
-      })
-      .catch(err => {
-        setIsLoaded(true)
-        handleError(err)
-      })
+    const go = async () => {
+      const [originalRef, idTokenParts] = window.location.href.split('#id_token=')
+      console.log({ originalRef, idTokenParts })
+      if (idTokenParts) {
+        console.log({ userInUseEffectBegin: user, name: user?.name })
+        const accessToken = idTokenParts?.split('&access_token=')?.[1]?.split('&expires_in=')?.[0]
+
+        console.log({ originalRef, accessToken })
+
+        try {
+          const userResult = await api.users.login(accessToken)
+          console.log({ userResult })
+          setUser(userResult)
+          setIsLoaded(true)
+        } catch (err) {
+          setIsLoaded(true)
+          handleError(err)
+        }
+
+        // api.users
+        //   .login(accessToken)
+        //   .then(u => {
+        //     setUser(u)
+        //     setIsLoaded(true)
+        //   })
+        //   .catch(err => {
+        //     setIsLoaded(true)
+        //     handleError(err)
+        //   })
+
+        // window.history.pushState({}, '', originalRef)
+      } else {
+        console.log('calling users me')
+        api.users
+          .me()
+          .then(u => {
+            setUser(u)
+            setIsLoaded(true)
+          })
+          .catch(err => {
+            setIsLoaded(true)
+            handleError(err)
+          })
+      }
+    }
+    go()
   }, []) // eslint-disable-line
 
-  const login: IUserContext['login'] = (loginForm: ILoginForm) =>
-    api.users
-      .login(loginForm)
-      .then((responseUser: IUser) => {
-        setUser({ ...responseUser })
-        setIsLoaded(true)
-        return Promise.resolve()
-      })
-      .catch((err: IApiError) => {
-        setIsLoaded(true)
-        return Promise.reject(err)
-      })
+  const login: IUserContext['login'] = (loginForm: ILoginForm) => {
+    console.log({ loginForm })
+    throw new Error('unemplemented')
+  }
+  // api.users
+  //   .login(loginForm)
+  //   .then((responseUser: IUser) => {
+  //     setUser({ ...responseUser })
+  //     setIsLoaded(true)
+  //     return Promise.resolve()
+  //   })
+  //   .catch((err: IApiError) => {
+  //     setIsLoaded(true)
+  //     return Promise.reject(err)
+  //   })
 
   const logout: IUserContext['logout'] = () =>
     api.users

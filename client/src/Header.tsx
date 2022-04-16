@@ -2,7 +2,7 @@ import { Link, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Link as A } from './components/Elements'
-import SignInModal from './components/SignInModal'
+// import SignInModal from './components/SignInModal'
 import UserContext from './contexts/UserContext'
 import useErrorHandler from './hooks/useErrorHandler'
 import { IApiError } from './sharedTypes'
@@ -37,9 +37,12 @@ const Header: React.FC<RouteComponentProps> = () => {
             <Register as={Link} to="register">
               Register
             </Register>
-            <SignInModal>
-              <CustomButton>Login</CustomButton>
-            </SignInModal>
+            <CustomButton
+              as="a"
+              href="https://backend-domain-service-1.auth.us-east-1.amazoncognito.com/login?client_id=4qt7c6cpqe69t9jk5ta0q95omq&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=http://localhost:3001"
+            >
+              Login
+            </CustomButton>
           </>
         )}
       </User>
