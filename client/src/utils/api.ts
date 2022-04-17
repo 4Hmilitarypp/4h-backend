@@ -42,10 +42,19 @@ const requests = {
 
 const getCookie = () => {
   const keys = document.cookie.split(';')
+  console.log({ keys })
   const tokenKey = keys.find(key => key.includes('token='))
   if (!tokenKey) return ''
   const formattedKey = tokenKey.split(' ').join('')
   return formattedKey
+}
+
+const buildAuthorizationHeaderFromCookie = () => {
+  const keys = document.cookie.split(';')
+  const accessTokenKey = keys.find(key => key.includes('token='))
+  if (!accessTokenKey) return ''
+  const formattedKey = accessTokenKey.replace('token=', '')
+  return `Bearer ${formattedKey}`
 }
 
 const aws4hRequests = {
@@ -65,23 +74,30 @@ const aws4hRequests = {
 
 const awsAlex4hRequests = {
   delete: (url: string): Promise<any> => {
-    return awsAlex4hRestApi.delete(url, { headers: { Authorization: getCookie() } }).then(getData)
+    return awsAlex4hRestApi
+      .delete(url, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .then(getData)
   },
   get: (url: string): Promise<any> => {
-    return awsAlex4hRestApi.get(url, { headers: { Authorization: getCookie() } }).then(getData)
+    return awsAlex4hRestApi.get(url, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } }).then(getData)
   },
   post: (url: string, body: object): Promise<any> => {
-    return awsAlex4hRestApi.post(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+    return awsAlex4hRestApi
+      .post(url, body, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .then(getData)
   },
   put: (url: string, body: object): Promise<any> => {
-    return awsAlex4hRestApi.put(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+    return awsAlex4hRestApi
+      .put(url, body, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .then(getData)
   },
   login: (url: string, accessToken: string): Promise<any> => {
     return awsAlex4hRestApi
       .post(url, null, {
+        withCredentials: true,
         headers: {
-          'Access-Control-Allow-Headers': 'Set-Cookie',
-          'Access-Control-Allow-Origin': '*',
+          // 'Access-Control-Allow-Headers': 'Set-Cookie',
+          // 'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${accessToken}`,
         },
       })
