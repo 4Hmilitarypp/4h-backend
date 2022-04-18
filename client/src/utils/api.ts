@@ -29,7 +29,7 @@ let awsAlex4hRestApi: axios.AxiosInstance
 
 const envBaseURL = process.env.REACT_APP_API_URL
 const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
-const awsAlex4hBaseURL = process.env.REACT_APP_AWS_ALEX_4H_BASEURL
+// const awsAlex4hBaseURL = process.env.REACT_APP_AWS_ALEX_4H_BASEURL
 
 const getData = (res: { data: object }) => res.data
 
@@ -269,7 +269,8 @@ function init({
     },
   })
   awsAlex4hRestApi = (axios as any).create({
-    baseURL: awsAlex4hBaseURL,
+    baseURL,
+    // baseURL: `${awsAlex4hBaseURL}/api`,
     ...axiosOptions,
     headers: {
       ...axiosOptions.headers,

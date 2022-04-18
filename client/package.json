@@ -1,6 +1,6 @@
 {
   "name": "4h-military-partnership-cms",
-  "proxy": "https://api.cms.4h.wendte.tech",
+  "proxy": "https://cliqtai246.execute-api.us-east-1.amazonaws.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
