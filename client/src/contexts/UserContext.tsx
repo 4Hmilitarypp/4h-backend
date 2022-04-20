@@ -1,6 +1,7 @@
 import * as React from 'react'
 import useErrorHandler from '../hooks/useErrorHandler'
-import { IApiError, ILoginForm, IRegisterForm, IUser } from '../sharedTypes'
+import { IApiError } from '../sharedTypes'
+// import { IApiError, IRegisterForm } from '../sharedTypes'
 import api from '../utils/api'
 
 interface IUserState {
@@ -12,9 +13,9 @@ interface IUserState {
 
 export interface IUserContext {
   isLoaded: boolean
-  login: (loginForm: ILoginForm) => Promise<void>
+  login: (accessToken: string) => Promise<void>
   logout: () => Promise<void>
-  register: (registerForm: IRegisterForm) => Promise<void>
+  // register: (registerForm: IRegisterForm) => Promise<void>
   user?: IUserState
 }
 
@@ -28,37 +29,12 @@ export const useUser = () => {
   React.useEffect(() => {
     const go = async () => {
       const [originalRef, idTokenParts] = window.location.href.split('#id_token=')
-      console.log({ originalRef, idTokenParts })
       if (idTokenParts) {
-        console.log({ userInUseEffectBegin: user, name: user?.name })
         const accessToken = idTokenParts?.split('&access_token=')?.[1]?.split('&expires_in=')?.[0]
+        await login(accessToken)
 
-        console.log({ originalRef, accessToken })
-
-        try {
-          const userResult = await api.users.login(accessToken)
-          console.log({ userResult })
-          setUser(userResult)
-          setIsLoaded(true)
-        } catch (err) {
-          setIsLoaded(true)
-          handleError(err)
-        }
-
-        // api.users
-        //   .login(accessToken)
-        //   .then(u => {
-        //     setUser(u)
-        //     setIsLoaded(true)
-        //   })
-        //   .catch(err => {
-        //     setIsLoaded(true)
-        //     handleError(err)
-        //   })
-
-        // window.history.pushState({}, '', originalRef)
+        window.history.pushState({}, '', originalRef)
       } else {
-        console.log('calling users me')
         api.users
           .me()
           .then(u => {
@@ -74,9 +50,15 @@ export const useUser = () => {
     go()
   }, []) // eslint-disable-line
 
-  const login: IUserContext['login'] = (loginForm: ILoginForm) => {
-    console.log({ loginForm })
-    throw new Error('unemplemented')
+  const login: IUserContext['login'] = async (accessToken: string) => {
+    try {
+      const userResult = await api.users.login(accessToken)
+      setUser(userResult)
+      setIsLoaded(true)
+    } catch (err) {
+      setIsLoaded(true)
+      handleError(err)
+    }
   }
   // api.users
   //   .login(loginForm)
@@ -91,8 +73,7 @@ export const useUser = () => {
   //   })
 
   const logout: IUserContext['logout'] = () =>
-    api.users
-      .logout()
+    Promise.resolve()
       .then(() => {
         setUser(undefined)
         document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
@@ -102,19 +83,20 @@ export const useUser = () => {
         return Promise.reject(err)
       })
 
-  const register: IUserContext['register'] = (registerForm: IRegisterForm) =>
-    api.users
-      .register(registerForm)
-      .then((responseUser: IUser) => {
-        setUser({ ...responseUser })
-        setIsLoaded(true)
-        return Promise.resolve()
-      })
-      .catch((err: IApiError) => {
-        return Promise.reject(err)
-      })
+  // const register: IUserContext['register'] = (registerForm: IRegisterForm) =>
+  //   api.users
+  //     .register(registerForm)
+  //     .then((responseUser: IUser) => {
+  //       setUser({ ...responseUser })
+  //       setIsLoaded(true)
+  //       return Promise.resolve()
+  //     })
+  //     .catch((err: IApiError) => {
+  //       return Promise.reject(err)
+  //     })
 
-  return { user, login, logout, register, isLoaded }
+  // return { user, login, logout, register, isLoaded }
+  return { user, login, logout, isLoaded }
 }
 
 export default UserContext

@@ -1,4 +1,5 @@
-import { navigate, RouteComponentProps } from '@reach/router'
+// import { navigate, RouteComponentProps } from '@reach/router'
+import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../clientTypes'
@@ -33,7 +34,7 @@ const Register: React.FC<RouteComponentProps> = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
-    const { affiliation, email, password, confirmPassword, name, university } = e.currentTarget.elements
+    // const { affiliation, email, password, confirmPassword, name, university } = e.currentTarget.elements
 
     try {
       const isSpam = await checkIfSpam()
@@ -45,23 +46,23 @@ const Register: React.FC<RouteComponentProps> = () => {
       return handleError(err)
     }
 
-    userContext
-      .register({
-        affiliation: affiliation.value,
-        confirmPassword: confirmPassword.value,
-        email: email.value,
-        name: name.value,
-        password: password.value,
-        university: university.value,
-      })
-      .then(() => {
-        flashContext.set({
-          message:
-            'You successfully registered. Feel free to browse around until you are granted access to update data',
-        })
-        navigate('/')
-      })
-      .catch(handleError)
+    // userContext
+    //   .register({
+    //     affiliation: affiliation.value,
+    //     confirmPassword: confirmPassword.value,
+    //     email: email.value,
+    //     name: name.value,
+    //     password: password.value,
+    //     university: university.value,
+    //   })
+    //   .then(() => {
+    //     flashContext.set({
+    //       message:
+    //         'You successfully registered. Feel free to browse around until you are granted access to update data',
+    //     })
+    //     navigate('/')
+    //   })
+    //   .catch(handleError)
   }
 
   return (

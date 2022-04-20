@@ -2,9 +2,9 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../clientTypes'
-import UserContext from '../contexts/UserContext'
-import useErrorHandler from '../hooks/useErrorHandler'
-import { IApiError } from '../sharedTypes'
+// import UserContext from '../contexts/UserContext'
+// import useErrorHandler from '../hooks/useErrorHandler'
+// import { IApiError } from '../sharedTypes'
 import { Button, InputGroup } from './Elements'
 import Modal from './Modal'
 
@@ -13,25 +13,25 @@ interface IProps {
 }
 
 const SignInModal: React.FC<IProps> = ({ children, initialOpen = false }) => {
-  const handleError = useErrorHandler()
+  // const handleError = useErrorHandler()
   const [open, setOpen] = React.useState<boolean>(initialOpen)
   const [password, setPassword] = React.useState<string>('')
-  const userContext = React.useContext(UserContext)
+  // const userContext = React.useContext(UserContext)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
 
-    const { email: submittedEmail, password: submittedPassword } = e.currentTarget.elements
+    // const { email: submittedEmail, password: submittedPassword } = e.currentTarget.elements
 
-    userContext
-      .login({
-        email: submittedEmail.value,
-        password: submittedPassword.value,
-      })
-      .catch((err: IApiError) => {
-        setPassword('')
-        handleError(err, 'login')
-      })
+    // userContext
+    //   .login({
+    //     email: submittedEmail.value,
+    //     password: submittedPassword.value,
+    //   })
+    //   .catch((err: IApiError) => {
+    //     setPassword('')
+    //     handleError(err, 'login')
+    //   })
   }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {

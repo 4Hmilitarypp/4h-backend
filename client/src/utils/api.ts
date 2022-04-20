@@ -1,4 +1,4 @@
-import * as axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 import {
   IApiComment,
@@ -23,9 +23,9 @@ import {
   Omit,
 } from '../sharedTypes'
 
-let restApi: axios.AxiosInstance
-let aws4hRestApi: axios.AxiosInstance
-let awsAlex4hRestApi: axios.AxiosInstance
+let restApi: AxiosInstance
+let aws4hRestApi: AxiosInstance
+let awsAlex4hRestApi: AxiosInstance
 
 const envBaseURL = process.env.REACT_APP_API_URL
 const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
@@ -42,19 +42,18 @@ const requests = {
 
 const getCookie = () => {
   const keys = document.cookie.split(';')
-  console.log({ keys })
   const tokenKey = keys.find(key => key.includes('token='))
   if (!tokenKey) return ''
   const formattedKey = tokenKey.split(' ').join('')
   return formattedKey
 }
 
-const buildAuthorizationHeaderFromCookie = () => {
+export const getAccessTokenCookie = () => {
   const keys = document.cookie.split(';')
   const accessTokenKey = keys.find(key => key.includes('token='))
   if (!accessTokenKey) return ''
-  const formattedKey = accessTokenKey.replace('token=', '')
-  return `Bearer ${formattedKey}`
+  const accessToken = accessTokenKey.replace('token=', '')
+  return accessToken
 }
 
 const aws4hRequests = {
@@ -75,20 +74,20 @@ const aws4hRequests = {
 const awsAlex4hRequests = {
   delete: (url: string): Promise<any> => {
     return awsAlex4hRestApi
-      .delete(url, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .delete(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
       .then(getData)
   },
   get: (url: string): Promise<any> => {
-    return awsAlex4hRestApi.get(url, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } }).then(getData)
+    return awsAlex4hRestApi.get(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
   },
   post: (url: string, body: object): Promise<any> => {
     return awsAlex4hRestApi
-      .post(url, body, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .post(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
       .then(getData)
   },
   put: (url: string, body: object): Promise<any> => {
     return awsAlex4hRestApi
-      .put(url, body, { headers: { Authorization: buildAuthorizationHeaderFromCookie() } })
+      .put(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
       .then(getData)
   },
   login: (url: string, accessToken: string): Promise<any> => {
@@ -235,7 +234,8 @@ const users = {
   get: (): Promise<IUser[]> => awsAlex4hRequests.get('/users'),
   getApplicationUserIds: (): Promise<string[]> => awsAlex4hRequests.get('/users/application-users'),
   login: (accessToken: string): Promise<IUser> => awsAlex4hRequests.login('/users/login', accessToken),
-  logout: (): Promise<string> => awsAlex4hRequests.post('/users/logout', {}),
+  // logout: (): Promise<string> => awsAlex4hRequests.post('/users/logout', {}),
+  // logout: (accessToken: string): Promise<string> => awsAlex4hRequests.logout(accessToken),
   me: (): Promise<IUser> => awsAlex4hRequests.get('/users/me'),
   register: (form: IRegisterForm): Promise<IUser> => awsAlex4hRequests.post('/users/register', form),
   update: (id: string, updates: IUser): Promise<IUser> => awsAlex4hRequests.put(`/users/${id}`, updates),
