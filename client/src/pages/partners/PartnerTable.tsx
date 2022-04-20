@@ -27,7 +27,7 @@ const PartnerTable: React.FC<RouteComponentProps> = () => {
       </CustomInputGroup>
       <div>
         {map(filterPartners(), p => (
-          <Wrapper to={p.slug} key={p.slug}>
+          <Wrapper to={p._id as string} key={p._id}>
             <Title>{p.title}</Title>
           </Wrapper>
         ))}

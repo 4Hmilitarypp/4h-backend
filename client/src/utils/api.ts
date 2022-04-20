@@ -155,7 +155,7 @@ const partners = {
   create: (data: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.post('/partners', data),
   delete: (id: string): Promise<string> => requests.delete(`/partners/${id}`),
   get: (): Promise<IPartnerSection[]> => requests.get('/partners'),
-  getBySlug: (slug: string): Promise<IPartner> => requests.get(`/partners/slug/${slug}`),
+  getById: (id: string): Promise<IPartner> => requests.get(`/partners/${id}`),
   update: (id: string, updates: Omit<IPartner, 'slug'>): Promise<IPartner> => requests.put(`/partners/${id}`, updates),
 }
 

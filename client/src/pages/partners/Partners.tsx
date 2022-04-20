@@ -21,7 +21,7 @@ const Partners: React.FC<RouteComponentProps> = () => {
       {partners.length > 0 && <div data-testid="Partners" />}
       <Router>
         <PartnerTable path="/" />
-        <Partner handleError={handleError} path="/:slug" />
+        <Partner handleError={handleError} path="/:id" />
       </Router>
     </PartnerContext.Provider>
   )

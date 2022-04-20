@@ -31,8 +31,12 @@ const PartnerForm: React.FC<IProps> = ({ action, partner, handleError, updatePar
   React.useEffect(() => {
     if (partner) {
       setFeaturedImageUrl1(partner.featuredImage1.url)
-      setFeaturedImageUrl2(partner.featuredImage2 && partner.featuredImage2.url)
+      setFeaturedImageUrl2(partner.featuredImage2?.url)
       setLongDescription(partner.longDescription)
+    } else {
+      setFeaturedImageUrl1('')
+      setFeaturedImageUrl2('')
+      setLongDescription('')
     }
   }, [partner])
 

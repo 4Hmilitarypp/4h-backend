@@ -14,12 +14,14 @@ import {
   UploadImage,
   UploadLabel,
 } from '../../components/Elements'
+import FlashContext from '../../contexts/FlashContext'
 import useErrorHandler from '../../hooks/useErrorHandler'
 import usePermission from '../../hooks/usePermission'
 import api from '../../utils/api'
 
 const HomeInfo: React.FC<RouteComponentProps> = () => {
   const handleError = useErrorHandler()
+  const flashContext = React.useContext(FlashContext)
   usePermission('admin')
   const [homeInfo, setHomeInfo] = React.useState<any>()
   React.useEffect(() => {
@@ -74,6 +76,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
         .update('home', { page: 'home', title: title.value, featuredImage, text: sectionText || '' })
         .then(newHomeInfo => {
           setHomeInfo(newHomeInfo)
+          flashContext.set({ message: `Home Page Info Updated Successfully` })
         })
         .catch(handleError)
     } else {
@@ -81,6 +84,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
         .create({ featuredImage, title: title.value, text: sectionText || '', page: 'home' })
         .then(newHomeInfo => {
           setHomeInfo(newHomeInfo)
+          flashContext.set({ message: `Home Page Info Created Successfully` })
         })
         .catch(handleError)
     }

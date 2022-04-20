@@ -10,24 +10,24 @@ import { PartnerContext } from './Partners'
 import Reports from './reports/Reports'
 
 interface IProps extends RouteComponentProps {
-  slug?: string
+  id?: string
   handleError: (err: IApiError) => void
 }
 
-const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
+const Partner: React.FC<IProps> = ({ id = '', handleError }) => {
   const [partner, setPartner] = React.useState<IPartner | undefined>(undefined)
-  const [action, setAction] = React.useState<'create' | 'update'>(slug === 'new' ? 'create' : 'update')
+  const [action, setAction] = React.useState<'create' | 'update'>(id === 'new' ? 'create' : 'update')
   const [timesDeleteClicked, setTimesDeleteClicked] = React.useState(0)
 
   const partnerContext = React.useContext(PartnerContext)
 
   React.useEffect(() => {
-    if (slug !== 'new') {
+    if (id !== 'new') {
       // If the action is not already update set it to be update
       if (action !== 'update') {
         setAction('update')
       }
-      api.partners.getBySlug(slug).then(updatePartner => {
+      api.partners.getById(id).then(updatePartner => {
         if (updatePartner) {
           setPartner(updatePartner)
         } else {
@@ -38,7 +38,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
       setPartner(undefined)
       setAction('create')
     }
-  }, [action, slug])
+  }, [action, id])
 
   const handleCancel = () => {
     setTimesDeleteClicked(0)
@@ -60,7 +60,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
   }
   return (
     <div>
-      <FormHeading _id={slug} action={action} singular="Partner" plural="Partners" route="/partners" />
+      <FormHeading _id={id} action={action} singular="Partner" plural="Partners" route="/partners" />
       <PartnerForm
         action={action}
         handleError={handleError}
@@ -79,7 +79,7 @@ const Partner: React.FC<IProps> = ({ slug = '', handleError }) => {
           <Button form="PartnerForm">{action === 'update' ? 'Update' : 'Create'} Partner</Button>
         </RightButtons>
       </Buttons>
-      {slug !== 'new' && action === 'update' && partner && (
+      {id !== 'new' && action === 'update' && partner && (
         <Reports partnerId={partner ? partner._id || '' : ''} handleError={handleError} reports={partner.reports} />
       )}
     </div>
