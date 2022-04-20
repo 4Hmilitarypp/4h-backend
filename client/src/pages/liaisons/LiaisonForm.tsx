@@ -1,7 +1,15 @@
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { IForm } from '../../clientTypes'
-import { InputGroup } from '../../components/Elements'
+import {
+  BlankUploadBox,
+  InputGroup,
+  ResourceSection,
+  TrashCan,
+  UploadButton,
+  UploadImage,
+  UploadLabel,
+} from '../../components/Elements'
 import { IModalController } from '../../components/table/useTable'
 import { ILiaison } from '../../sharedTypes'
 import api from '../../utils/api'
@@ -11,22 +19,30 @@ interface IProps {
 }
 
 const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
+  const [imageUrl, setImageUrl] = React.useState<string | undefined>()
   const { handleError, reset: resetModalState, updateItems: updateLiaisons } = modalController
   const { item: liaison, action } = modalController.state
 
+  React.useEffect(() => {
+    if (liaison) {
+      setImageUrl(liaison.image)
+    }
+  }, [liaison])
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { abbreviation, email, image, name, phoneNumber, stateOrRegion, countryCode } = e.currentTarget.elements
+    const { abbreviation, email, name, phoneNumber, stateOrRegion, countryCode } = e.currentTarget.elements
     const updateLiaison = {
       _id: liaison ? liaison._id : undefined,
       abbreviation: abbreviation.value,
       email: email.value,
-      image: image.value,
+      image: imageUrl as string,
       name: name.value,
       phoneNumber: phoneNumber.value,
       stateOrRegion: stateOrRegion.value,
       countryCode: countryCode.value,
     }
+
     if (action === 'update') {
       api.liaisons
         .update(updateLiaison._id as string, updateLiaison)
@@ -45,6 +61,23 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
         .catch(handleError)
     }
   }
+
+  const uploadImage = () => {
+    const widget = (window as any).cloudinary.createUploadWidget(
+      {
+        cloudName: 'four-hmpp',
+        uploadPreset: 'partners-and-liaisons',
+      },
+      (err: any, res: any) => {
+        if (!err && res && res.event === 'success') {
+          setImageUrl(res.info.secure_url)
+        }
+        if (err) handleError(err)
+      }
+    )
+    if (widget) widget.open()
+  }
+
   return (
     <Form onSubmit={handleSubmit} id="LiaisonForm">
       <InputGroup>
@@ -86,7 +119,7 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
           defaultValue={(liaison && liaison.phoneNumber) || ''}
         />
       </InputGroup>
-      <InputGroup>
+      {/* <InputGroup>
         <label htmlFor="image">Image</label>
         <input
           type="url"
@@ -94,7 +127,20 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
           placeholder="https://res.cloudinary.com/four-hmpp/image/upload/f_auto,q_auto/v1543361622/logos/lgus/alaska.jpg"
           defaultValue={liaison && liaison.image}
         />
-      </InputGroup>
+      </InputGroup> */}
+      <ResourceSection>
+        <UploadLabel hasImage={imageUrl}>
+          Featured Image
+          {imageUrl && <TrashCan onClick={() => setImageUrl(undefined)} />}
+        </UploadLabel>
+        {imageUrl ? (
+          <UploadImage src={imageUrl} onClick={uploadImage} />
+        ) : (
+          <BlankUploadBox onClick={uploadImage}>
+            <UploadButton>Upload Image</UploadButton>
+          </BlankUploadBox>
+        )}
+      </ResourceSection>
     </Form>
   )
 }
