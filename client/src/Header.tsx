@@ -39,7 +39,7 @@ const Header: React.FC<RouteComponentProps> = () => {
             </Register>
             <CustomButton
               as="a"
-              href="https://backend-domain-service-1.auth.us-east-1.amazoncognito.com/login?client_id=4qt7c6cpqe69t9jk5ta0q95omq&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=http://localhost:3001"
+              href={`${process.env.REACT_APP_AWS_COGNITO_BASEURL}/login?client_id=${process.env.REACT_APP_AWS_COGNITO_CLIENT_ID}&response_type=token&scope=email+openid+profile+aws.cognito.signin.user.admin&redirect_uri=http://localhost:3001`}
             >
               Login
             </CustomButton>

@@ -96,8 +96,6 @@ const awsAlex4hRequests = {
       .post(url, null, {
         withCredentials: true,
         headers: {
-          // 'Access-Control-Allow-Headers': 'Set-Cookie',
-          // 'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${accessToken}`,
         },
       })

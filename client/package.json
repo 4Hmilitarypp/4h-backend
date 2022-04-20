@@ -1,6 +1,6 @@
 {
   "name": "4h-military-partnership-cms",
-  "proxy": "https://cliqtai246.execute-api.us-east-1.amazonaws.com",
+  "proxy": "https://2qmh5uo56c.execute-api.us-east-1.amazonaws.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
