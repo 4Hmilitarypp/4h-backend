@@ -44,7 +44,7 @@ export const theme = {
 
 const App: React.FC<{}> = () => {
   const { flashState, resetFlashState, setFlashState } = useFlash()
-  const { isLoaded, user, login, logout } = useUser()
+  const { isLoaded, user, login, logout, refreshAccessToken } = useUser()
   // const { isLoaded, user, login, logout, register } = useUser()
   return (
     <ThemeProvider theme={theme}>
@@ -52,7 +52,7 @@ const App: React.FC<{}> = () => {
         <AppContainer data-testid="app">
           <GlobalStyle />
           {/* <UserContext.Provider value={{ isLoaded, user, login, logout, register }}> */}
-          <UserContext.Provider value={{ isLoaded, user, login, logout }}>
+          <UserContext.Provider value={{ isLoaded, user, login, logout, refreshAccessToken }}>
             <FlashContext.Provider value={{ ...flashState, reset: resetFlashState, set: setFlashState }}>
               <Flash />
               <HeaderContainer>

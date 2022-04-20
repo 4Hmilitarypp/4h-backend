@@ -1,4 +1,5 @@
-import { Link, RouteComponentProps } from '@reach/router'
+import { RouteComponentProps } from '@reach/router'
+// import { Link, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import styled from 'styled-components/macro'
 import { Button, Link as A } from './components/Elements'
@@ -26,26 +27,36 @@ const Header: React.FC<RouteComponentProps> = () => {
         </CustomA>
       </ExternalLink>
       <Title>4-HMPP CMS</Title>
-      <User>
-        {userContext.user ? (
-          <>
-            <Name>{userContext.user.name}</Name>
-            <CustomButton onClick={handleLogoutClicked}>Logout</CustomButton>
-          </>
-        ) : (
-          <>
-            <Register as={Link} to="register">
-              Register
-            </Register>
-            <CustomButton
-              as="a"
-              href={`${process.env.REACT_APP_AWS_COGNITO_BASEURL}/login?client_id=${process.env.REACT_APP_AWS_COGNITO_CLIENT_ID}&response_type=token&scope=email+openid+profile+aws.cognito.signin.user.admin&redirect_uri=http://localhost:3001`}
-            >
-              Login
-            </CustomButton>
-          </>
-        )}
-      </User>
+      {userContext.isLoaded ? (
+        <User>
+          {userContext.user ? (
+            <>
+              <Name>{userContext.user.name}</Name>
+              <CustomButton onClick={handleLogoutClicked}>Logout</CustomButton>
+            </>
+          ) : (
+            <>
+              {/* <Register as={Link} to="register">
+                Register
+              </Register> */}
+              <Register
+                as="a"
+                href={`${process.env.REACT_APP_AWS_COGNITO_BASEURL}/login?client_id=${process.env.REACT_APP_AWS_COGNITO_CLIENT_ID}&response_type=code&scope=email+openid+profile+aws.cognito.signin.user.admin&redirect_uri=${process.env.REACT_APP_COGNITO_REDIRECT_URI}`}
+              >
+                Register
+              </Register>
+              <CustomButton
+                as="a"
+                href={`${process.env.REACT_APP_AWS_COGNITO_BASEURL}/login?client_id=${process.env.REACT_APP_AWS_COGNITO_CLIENT_ID}&response_type=code&scope=email+openid+profile+aws.cognito.signin.user.admin&redirect_uri=${process.env.REACT_APP_COGNITO_REDIRECT_URI}`}
+              >
+                Login
+              </CustomButton>
+            </>
+          )}
+        </User>
+      ) : (
+        <User />
+      )}
     </HeaderWrapper>
   )
 }
@@ -83,6 +94,7 @@ const User = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  min-width: 30rem;
   ${media.tabletPort`
     padding-right: 0rem;
   `}
@@ -95,8 +107,8 @@ const CustomButton = styled(Button)`
   color: ${props => props.theme.primary};
   background: ${props => props.theme.white};
   ${media.tabletPort`
-    padding: .4rem .8rem;
-    font-size: 1.6rem;
+  padding: .4rem .8rem;
+  font-size: 1.6rem;
   `}
 `
 const Register = styled(CustomButton)`

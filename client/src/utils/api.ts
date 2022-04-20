@@ -26,8 +26,17 @@ import {
 let restApi: AxiosInstance
 
 const envBaseURL = process.env.REACT_APP_API_URL
+const cognitoBaseUrl = process.env.REACT_APP_AWS_COGNITO_BASEURL
+const cognitoClientId = process.env.REACT_APP_AWS_COGNITO_CLIENT_ID
+const cognitoRedirectUri = process.env.REACT_APP_COGNITO_REDIRECT_URI
 
-const getData = (res: { data: object }) => res.data
+if (!cognitoBaseUrl || !cognitoClientId || !cognitoRedirectUri) {
+  throw new Error(
+    'missing required environment variables: one of: [REACT_APP_AWS_COGNITO_BASEURL, REACT_APP_AWS_COGNITO_CLIENT_ID, REACT_APP_COGNITO_REDIRECT_URI]'
+  )
+}
+
+const getData = (res: { data: object }) => res.data as any
 
 export const getAccessTokenCookie = () => {
   const keys = document.cookie.split(';')
@@ -208,6 +217,45 @@ const webinars = {
   update: (id: string, updates: IWebinar): Promise<IWebinar> => requests.put(`/webinars/${id}`, updates),
 }
 
+const cognito = {
+  getTokenFromAuthCode: (
+    authCode: string
+  ): Promise<{
+    access_token: string
+    expires_in: number
+    id_token: string
+    refresh_token: string
+    token_type: string
+  }> => {
+    return axios
+      .post(
+        `${cognitoBaseUrl}/oauth2/token`,
+        new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: cognitoClientId,
+          code: authCode,
+          redirect_uri: cognitoRedirectUri,
+        }),
+        { headers: { 'content-type': 'application/x-www-form-urlencoded' } }
+      )
+      .then(getData)
+  },
+  getTokenFromRefreshToken: (refreshToken: string): Promise<any> => {
+    return axios
+      .post(
+        `${cognitoBaseUrl}/oauth2/token`,
+        new URLSearchParams({
+          grant_type: 'refresh_token',
+          client_id: cognitoClientId,
+          refresh_token: refreshToken,
+          redirect_uri: cognitoRedirectUri,
+        }),
+        { headers: { 'content-type': 'application/x-www-form-urlencoded' } }
+      )
+      .then(getData)
+  },
+}
+
 function init({
   baseURL = (restApi && restApi.defaults.baseURL) || envBaseURL || '/api',
   axiosOptions = { headers: {} },
@@ -239,6 +287,7 @@ const api = {
   userApplications,
   users,
   webinars,
+  cognito,
 }
 
 export default api
