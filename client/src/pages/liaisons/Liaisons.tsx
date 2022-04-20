@@ -19,7 +19,8 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
   const [filterText, setFilterText] = React.useState<string>('')
   const isFound = (...args: string[]) => args.some(s => s.toLowerCase().includes(filterText))
 
-  const filterLiaisons = () => liaisons.filter(liaison => !filterText || isFound(liaison.name || '', liaison.region))
+  const filterLiaisons = () =>
+    liaisons.filter(liaison => !filterText || isFound(liaison.name || '', liaison.stateOrRegion))
 
   return (
     <>
@@ -31,7 +32,11 @@ const Liaisons: React.FC<RouteComponentProps> = () => {
         {liaisons && (
           <div data-testid="Liaisons">
             {map(filterLiaisons(), liaison => (
-              <Liaison key={liaison.region + liaison.email} liaison={liaison} setModalState={modalController.set} />
+              <Liaison
+                key={liaison.stateOrRegion + liaison.email}
+                liaison={liaison}
+                setModalState={modalController.set}
+              />
             ))}
           </div>
         )}

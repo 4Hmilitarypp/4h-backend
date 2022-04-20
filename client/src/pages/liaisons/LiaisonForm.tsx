@@ -16,7 +16,7 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement> & IForm) => {
     e.preventDefault()
-    const { abbreviation, email, image, name, phoneNumber, region } = e.currentTarget.elements
+    const { abbreviation, email, image, name, phoneNumber, stateOrRegion, countryCode } = e.currentTarget.elements
     const updateLiaison = {
       _id: liaison ? liaison._id : undefined,
       abbreviation: abbreviation.value,
@@ -24,7 +24,8 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
       image: image.value,
       name: name.value,
       phoneNumber: phoneNumber.value,
-      region: region.value,
+      stateOrRegion: stateOrRegion.value,
+      countryCode: countryCode.value,
     }
     if (action === 'update') {
       api.liaisons
@@ -48,27 +49,51 @@ const LiaisonForm: React.FC<IProps> = ({ modalController }) => {
     <Form onSubmit={handleSubmit} id="LiaisonForm">
       <InputGroup>
         <label htmlFor="name">Name</label>
-        <input type="text" id="name" defaultValue={(liaison && liaison.name) || ''} />
+        <input
+          type="text"
+          id="name"
+          placeholder="Judith Conde Pacheco"
+          defaultValue={(liaison && liaison.name) || ''}
+        />
       </InputGroup>
       <InputGroup>
-        <label htmlFor="region">Region</label>
-        <input type="text" id="region" defaultValue={liaison && liaison.region} />
+        <label htmlFor="countryCode">Country Code</label>
+        <input type="text" id="countryCode" placeholder="PR" defaultValue={liaison && liaison.countryCode} />
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="stateOrRegion">State Or Region</label>
+        <input
+          type="text"
+          id="stateOrRegion"
+          placeholder="Puerto Rico"
+          defaultValue={liaison && liaison.stateOrRegion}
+        />
       </InputGroup>
       <InputGroup>
         <label htmlFor="abbreviation">Abbreviation</label>
-        <input type="text" id="abbreviation" defaultValue={(liaison && liaison.abbreviation) || ''} />
+        <input type="text" id="abbreviation" placeholder="PR" defaultValue={(liaison && liaison.abbreviation) || ''} />
       </InputGroup>
       <InputGroup>
         <label htmlFor="email">Email</label>
-        <input type="email" id="email" defaultValue={(liaison && liaison.email) || ''} />
+        <input type="email" id="email" placeholder="Puerto Rico" defaultValue={(liaison && liaison.email) || ''} />
       </InputGroup>
       <InputGroup>
-        <label htmlFor="phoneNumber">PhoneNumber</label>
-        <input type="tel" id="phoneNumber" defaultValue={(liaison && liaison.phoneNumber) || ''} />
+        <label htmlFor="phoneNumber">Phone Number</label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          placeholder="913-123-4567"
+          defaultValue={(liaison && liaison.phoneNumber) || ''}
+        />
       </InputGroup>
       <InputGroup>
         <label htmlFor="image">Image</label>
-        <input type="url" id="image" defaultValue={liaison && liaison.image} />
+        <input
+          type="url"
+          id="image"
+          placeholder="https://res.cloudinary.com/four-hmpp/image/upload/f_auto,q_auto/v1543361622/logos/lgus/alaska.jpg"
+          defaultValue={liaison && liaison.image}
+        />
       </InputGroup>
     </Form>
   )

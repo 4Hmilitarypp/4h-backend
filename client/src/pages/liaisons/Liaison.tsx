@@ -13,13 +13,13 @@ const Liaison: React.FC<IProps> = ({ liaison, setModalState }) => (
   <LiaisonWrapper onClick={() => setModalState({ action: 'update', item: liaison })}>
     <NameAndLocation>
       <Name>{liaison.name}</Name>
-      <Location>{`${liaison.region} (${liaison.abbreviation || 'None'})`}</Location>
+      <Location>{`${liaison.stateOrRegion} (${liaison.abbreviation || 'None'})`}</Location>
     </NameAndLocation>
     <Contact>
       <Item>{liaison.email}</Item>
       <Item>{liaison.phoneNumber}</Item>
     </Contact>
-    <SchoolLogo src={liaison.image} alt={`${liaison.region} Land Grand University Logo`} />
+    <SchoolLogo src={liaison.image} alt={`${liaison.stateOrRegion} Land Grand University Logo`} />
   </LiaisonWrapper>
 )
 

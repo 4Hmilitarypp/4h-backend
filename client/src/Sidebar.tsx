@@ -40,7 +40,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           <ActiveLink to="/camps" text="Camps" path={path} />
           <ActiveLink to="/partners" text="Partners" path={path} />
           <ActiveLink to="/liaisons" text="Liaisons" path={path} />
-          <ActiveLink to="/latest-news" text="Latest News" path={path} />
+          {/* <ActiveLink to="/latest-news" text="Latest News" path={path} /> */}
         </Links>
       </ConditionalLinkGroup>
       <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
@@ -52,8 +52,6 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
       <ConditionalLinkGroup permissions={['admin']} userContext={userContext}>
         <GroupHeader>Resources</GroupHeader>
         <Links>
-          <ActiveLink to="/webinars" text="Webinars" path={path} />
-          <ActiveLink to="/research" text="Research" path={path} />
           <ActiveLink to="/educator-resources" text="Educator Resources" path={path} />
           <ActiveLink to="/tech-curriculum" text="Tech Curriculum" path={path} />
         </Links>
@@ -66,7 +64,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
           <ActiveLink to="/admin/users" text="Manage Users" path={path} />
         </Links>
       </ConditionalLinkGroup>
-      <ConditionalLinkGroup permissions={['application-user', 'admin']} userContext={userContext}>
+      {/* <ConditionalLinkGroup permissions={['application-user', 'admin']} userContext={userContext}>
         <GroupHeader>Grant Applications</GroupHeader>
         <Links>
           <ActiveLink to="/applications" text="Applications" path={path} exact={true} />
@@ -74,7 +72,7 @@ const Sidebar: React.FC<RouteComponentProps> = ({ location: { pathname: path = '
             <ActiveLink to="/applications-admin" text="Applications Admin" path={path} />
           )}
         </Links>
-      </ConditionalLinkGroup>
+      </ConditionalLinkGroup> */}
     </SidebarWrapper>
   )
 }

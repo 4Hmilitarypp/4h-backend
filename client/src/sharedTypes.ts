@@ -65,7 +65,8 @@ export interface ILiaison {
   image: string
   name?: string
   phoneNumber?: string
-  region: string
+  stateOrRegion: string
+  countryCode: string
 }
 
 export interface IImage {
