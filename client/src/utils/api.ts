@@ -20,78 +20,38 @@ import {
   IUser,
   IUserApplication,
   IWebinar,
-  Omit,
+  IPageInfo,
 } from '../sharedTypes'
 
 let restApi: AxiosInstance
-let aws4hRestApi: AxiosInstance
-let awsAlex4hRestApi: AxiosInstance
 
 const envBaseURL = process.env.REACT_APP_API_URL
-const aws4hBaseURL = process.env.REACT_APP_AWS_4H_BASEURL
-// const awsAlex4hBaseURL = process.env.REACT_APP_AWS_ALEX_4H_BASEURL
 
 const getData = (res: { data: object }) => res.data
-
-const requests = {
-  delete: (url: string): Promise<any> => restApi.delete(url).then(getData),
-  get: (url: string): Promise<any> => restApi.get(url).then(getData),
-  post: (url: string, body: object): Promise<any> => restApi.post(url, body).then(getData),
-  put: (url: string, body: object): Promise<any> => restApi.put(url, body).then(getData),
-}
-
-const getCookie = () => {
-  const keys = document.cookie.split(';')
-  const tokenKey = keys.find(key => key.includes('token='))
-  if (!tokenKey) return ''
-  const formattedKey = tokenKey.split(' ').join('')
-  return formattedKey
-}
 
 export const getAccessTokenCookie = () => {
   const keys = document.cookie.split(';')
   const accessTokenKey = keys.find(key => key.includes('token='))
   if (!accessTokenKey) return ''
-  const accessToken = accessTokenKey.replace('token=', '')
+  const accessToken = accessTokenKey.replace('token=', '').trim()
   return accessToken
 }
 
-const aws4hRequests = {
+const requests = {
   delete: (url: string): Promise<any> => {
-    return aws4hRestApi.delete(url, { headers: { Authorization: getCookie() } }).then(getData)
+    return restApi.delete(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
   },
   get: (url: string): Promise<any> => {
-    return aws4hRestApi.get(url, { headers: { Authorization: getCookie() } }).then(getData)
+    return restApi.get(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
   },
   post: (url: string, body: object): Promise<any> => {
-    return aws4hRestApi.post(url, body, { headers: { Authorization: getCookie() } }).then(getData)
+    return restApi.post(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
   },
   put: (url: string, body: object): Promise<any> => {
-    return aws4hRestApi.put(url, body, { headers: { Authorization: getCookie() } }).then(getData)
-  },
-}
-
-const awsAlex4hRequests = {
-  delete: (url: string): Promise<any> => {
-    return awsAlex4hRestApi
-      .delete(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
-      .then(getData)
-  },
-  get: (url: string): Promise<any> => {
-    return awsAlex4hRestApi.get(url, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
-  },
-  post: (url: string, body: object): Promise<any> => {
-    return awsAlex4hRestApi
-      .post(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
-      .then(getData)
-  },
-  put: (url: string, body: object): Promise<any> => {
-    return awsAlex4hRestApi
-      .put(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } })
-      .then(getData)
+    return restApi.put(url, body, { headers: { Authorization: `Bearer ${getAccessTokenCookie()}` } }).then(getData)
   },
   login: (url: string, accessToken: string): Promise<any> => {
-    return awsAlex4hRestApi
+    return restApi
       .post(url, null, {
         withCredentials: true,
         headers: {
@@ -162,24 +122,24 @@ const lessons = {
 // }
 
 const liaisons = {
-  create: (data: ILiaison): Promise<ILiaison> => awsAlex4hRequests.post('/liaisons', data),
-  delete: (id: string): Promise<string> => awsAlex4hRequests.delete(`/liaisons/${id}`),
-  get: (): Promise<ILiaison[]> => awsAlex4hRequests.get('/liaisons'),
-  update: (id: string, updates: ILiaison): Promise<ILiaison> => awsAlex4hRequests.put(`/liaisons/${id}`, updates),
+  create: (data: ILiaison): Promise<ILiaison> => requests.post('/liaisons', data),
+  delete: (id: string): Promise<string> => requests.delete(`/liaisons/${id}`),
+  get: (): Promise<ILiaison[]> => requests.get('/liaisons'),
+  update: (id: string, updates: ILiaison): Promise<ILiaison> => requests.put(`/liaisons/${id}`, updates),
 }
 
 const pageInfo = {
-  create: (data: any): Promise<any> => requests.post('/page-info', { info: data, page: data.page }),
-  get: (page: string): Promise<any> => requests.get(`/page-info/${page}`),
-  update: (page: string, updates: any): Promise<any> => requests.put(`/page-info/${page}`, { info: updates }),
+  create: (data: IPageInfo): Promise<IPageInfo> => requests.post('/page-info', data),
+  get: (page: string): Promise<IPageInfo> => requests.get(`/page-info/${page}`),
+  update: (page: string, updates: IPageInfo): Promise<IPageInfo> => requests.put(`/page-info/${page}`, updates),
 }
 
 const latestNews = {
-  create: (data: ILatestNews): Promise<ILatestNews> => aws4hRequests.post('/latest-news', data),
-  update: (id: string, update: ILatestNews): Promise<ILatestNews> => aws4hRequests.put(`/latest-news/${id}`, update),
-  delete: (id: string): Promise<string> => aws4hRequests.delete(`/latest-news/${id}`),
-  get: (): Promise<ILatestNews[]> => aws4hRequests.get('/latest-news'),
-  getBySlug: (slug: string): Promise<ILatestNews> => aws4hRequests.get(`/latest-news/${slug}`),
+  create: (data: ILatestNews): Promise<ILatestNews> => requests.post('/latest-news', data),
+  update: (id: string, update: ILatestNews): Promise<ILatestNews> => requests.put(`/latest-news/${id}`, update),
+  delete: (id: string): Promise<string> => requests.delete(`/latest-news/${id}`),
+  get: (): Promise<ILatestNews[]> => requests.get('/latest-news'),
+  getBySlug: (slug: string): Promise<ILatestNews> => requests.get(`/latest-news/${slug}`),
 }
 
 const partners = {
@@ -228,17 +188,17 @@ const userApplications = {
 }
 
 const users = {
-  checkIfSpam: (token: string): Promise<boolean> => awsAlex4hRequests.post('/users/checkIfSpam', { token }),
-  create: (form: IRegisterForm): Promise<IUser> => awsAlex4hRequests.post('/users', form),
-  delete: (id: string): Promise<string> => awsAlex4hRequests.delete(`/users/${id}`),
-  get: (): Promise<IUser[]> => awsAlex4hRequests.get('/users'),
-  getApplicationUserIds: (): Promise<string[]> => awsAlex4hRequests.get('/users/application-users'),
-  login: (accessToken: string): Promise<IUser> => awsAlex4hRequests.login('/users/login', accessToken),
-  // logout: (): Promise<string> => awsAlex4hRequests.post('/users/logout', {}),
-  // logout: (accessToken: string): Promise<string> => awsAlex4hRequests.logout(accessToken),
-  me: (): Promise<IUser> => awsAlex4hRequests.get('/users/me'),
-  register: (form: IRegisterForm): Promise<IUser> => awsAlex4hRequests.post('/users/register', form),
-  update: (id: string, updates: IUser): Promise<IUser> => awsAlex4hRequests.put(`/users/${id}`, updates),
+  checkIfSpam: (token: string): Promise<boolean> => requests.post('/users/checkIfSpam', { token }),
+  create: (form: IRegisterForm): Promise<IUser> => requests.post('/users', form),
+  delete: (id: string): Promise<string> => requests.delete(`/users/${id}`),
+  get: (): Promise<IUser[]> => requests.get('/users'),
+  getApplicationUserIds: (): Promise<string[]> => requests.get('/users/application-users'),
+  login: (accessToken: string): Promise<IUser> => requests.login('/users/login', accessToken),
+  // logout: (): Promise<string> => requests.post('/users/logout', {}),
+  // logout: (accessToken: string): Promise<string> => requests.logout(accessToken),
+  me: (): Promise<IUser> => requests.get('/users/me'),
+  register: (form: IRegisterForm): Promise<IUser> => requests.post('/users/register', form),
+  update: (id: string, updates: IUser): Promise<IUser> => requests.put(`/users/${id}`, updates),
 }
 
 const webinars = {
@@ -254,21 +214,6 @@ function init({
 } = {}) {
   restApi = (axios as any).create({
     baseURL,
-    ...axiosOptions,
-    headers: {
-      ...axiosOptions.headers,
-    },
-  })
-  aws4hRestApi = (axios as any).create({
-    baseURL: aws4hBaseURL,
-    ...axiosOptions,
-    headers: {
-      ...axiosOptions.headers,
-    },
-  })
-  awsAlex4hRestApi = (axios as any).create({
-    baseURL,
-    // baseURL: `${awsAlex4hBaseURL}/api`,
     ...axiosOptions,
     headers: {
       ...axiosOptions.headers,

@@ -190,4 +190,9 @@ export interface IFullUserApplication extends IUserApplication {
   userName: string
 }
 
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+export interface IPageInfo {
+  page: string
+  title: string
+  text: string
+  featuredImage: IImage
+}

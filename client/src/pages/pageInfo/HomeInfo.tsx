@@ -23,10 +23,7 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
   usePermission('admin')
   const [homeInfo, setHomeInfo] = React.useState<any>()
   React.useEffect(() => {
-    api.pageInfo
-      .get('home')
-      .then(setHomeInfo)
-      .catch(handleError)
+    api.pageInfo.get('home').then(setHomeInfo).catch(handleError)
   }, []) // eslint-disable-line
 
   const [featuredImageUrl, setFeaturedImageUrl] = React.useState<string | undefined>(undefined)
@@ -70,11 +67,23 @@ const HomeInfo: React.FC<RouteComponentProps> = () => {
           alt: title.value,
           url: featuredImageUrl,
         }
-      : undefined
+      : { alt: '', url: '' }
 
-    homeInfo
-      ? api.pageInfo.update('home', { title: title.value, featuredImage, text: sectionText })
-      : api.pageInfo.create({ featuredImage, title: title.value, text: sectionText, page: 'home' })
+    if (homeInfo) {
+      api.pageInfo
+        .update('home', { page: 'home', title: title.value, featuredImage, text: sectionText || '' })
+        .then(newHomeInfo => {
+          setHomeInfo(newHomeInfo)
+        })
+        .catch(handleError)
+    } else {
+      api.pageInfo
+        .create({ featuredImage, title: title.value, text: sectionText || '', page: 'home' })
+        .then(newHomeInfo => {
+          setHomeInfo(newHomeInfo)
+        })
+        .catch(handleError)
+    }
   }
   return (
     <Form onSubmit={handleSubmit} id="LiaisonForm">
